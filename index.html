@@ -81,13 +81,6 @@
       margin: 4px 0 6px;
     }
 
-    .form-row-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-    }
-
     .form-group { margin-bottom: 8px; }
     label {
       display: block;
@@ -334,6 +327,11 @@
           <input type="text" id="adLinkUrl" placeholder="예) https://youtube.com/@yourchannel 또는 광고주 사이트">
         </div>
 
+        <div class="form-group">
+          <label for="adText">광고 문구 (배너에서 흘러갈 텍스트)</label>
+          <input type="text" id="adText" placeholder="예) so.t 채널에서 다음 여행 준비하기">
+        </div>
+
         <div class="form-group inline">
           <div style="flex:1;">
             <label for="adDuration">노출 시간 (초)</label>
@@ -471,7 +469,6 @@
   </div>
 </div>
 
-<!-- 리더 리스트 썸네일 변경용 숨겨진 파일 입력 -->
 <input type="file" id="thumbFileInput" accept="image/*" style="display:none;">
 
 <script>
@@ -517,10 +514,11 @@
   let ads     = data.ads;
   let leaders = data.leaders;
 
-  /* ===== 광고 관련 ===== */
+  /* ---------- 광고 관련 ---------- */
 
   const editingAdIndexEl   = document.getElementById("editingAdIndex");
   const adLinkInput        = document.getElementById("adLinkUrl");
+  const adTextInput        = document.getElementById("adText");
   const adDurationInput    = document.getElementById("adDuration");
   const adEnabledInput     = document.getElementById("adEnabled");
   const adImageInput       = document.getElementById("adImageFile");
@@ -559,6 +557,9 @@
                 </span>
               </div>
               <div style="font-size:11px;color:#6b7280;">노출 시간: ${ad.duration || 2}초</div>
+              <div style="font-size:11px;color:#4b5563;">
+                문구: ${ad.text ? ad.text : "<span style='color:#9ca3af;'>설정되지 않음</span>"}
+              </div>
               ${
                 ad.linkUrl
                   ? `<a href="${ad.linkUrl}" target="_blank" rel="noopener noreferrer" class="link-small">${ad.linkUrl}</a>`
@@ -627,6 +628,7 @@
   function clearAdForm() {
     editingAdIndexEl.value = -1;
     adLinkInput.value   = "";
+    adTextInput.value   = "";
     adDurationInput.value = 2;
     adEnabledInput.checked = true;
     adImageInput.value = "";
@@ -638,10 +640,11 @@
 
   document.getElementById("saveAdBtn").addEventListener("click", () => {
     const linkUrl  = adLinkInput.value.trim();
+    const text     = adTextInput.value.trim();
     const duration = parseInt(adDurationInput.value, 10) || 2;
     const enabled  = adEnabledInput.checked;
     const idx      = parseInt(editingAdIndexEl.value, 10);
-    const base     = { linkUrl, duration, enabled };
+    const base     = { linkUrl, text, duration, enabled };
 
     if (idx >= 0) {
       const prev = ads[idx];
@@ -669,6 +672,7 @@
     const ad = ads[index];
     editingAdIndexEl.value = index;
     adLinkInput.value      = ad.linkUrl || "";
+    adTextInput.value      = ad.text || "";
     adDurationInput.value  = ad.duration || 2;
     adEnabledInput.checked = !!ad.enabled;
     tempAdImageDataUrl     = ad.imageUrl || "";
@@ -692,7 +696,7 @@
     renderAds();
   };
 
-  /* ===== 리더 관련 ===== */
+  /* ---------- 리더 관련 ---------- */
 
   const editingLeaderIndexEl = document.getElementById("editingLeaderIndex");
   const leaderListEl         = document.getElementById("leaderList");
@@ -896,7 +900,7 @@
   document.getElementById("clearLeaderFormBtn").addEventListener("click", clearLeaderForm);
   newLeaderBtn.addEventListener("click", () => {
     clearLeaderForm();
-    window.scrollTo({ top: 0, behavior: "smooth" }); // 폼 쪽으로 올라가고 싶으면
+    window.scrollTo({ top: 0, behavior: "smooth" });
   });
 
   document.getElementById("saveLeaderBtn").addEventListener("click", () => {
@@ -980,7 +984,7 @@
     window.open(leader.sheetUrl, "_blank");
   };
 
-  /* ===== JSON 생성 / 복사 ===== */
+  /* ---------- JSON 생성 / 복사 ---------- */
 
   generateJsonBtn.addEventListener("click", () => {
     const jsonObj = { ads: ads, leaders: leaders };
@@ -1012,7 +1016,7 @@
     );
   });
 
-  /* ===== 초기 렌더 ===== */
+  /* ---------- 초기 렌더 ---------- */
 
   renderAds();
   renderLeaders();
