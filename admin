@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>여행 리더 관리자 페이지</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      color: #111827;
+      background-image: url("bg_wallpaper.jpg");
+      background-size: cover;
+      background-position: center top;
+      background-attachment: fixed;
+    }
+
+    .page-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 12px 32px;
+    }
+
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 24px;
+      border: 1px solid rgba(209,213,219,1);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+      padding: 20px 18px 22px;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .page-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .page-subtitle {
+      font-size: 12px;
+      color: #4b5563;
+      line-height: 1.6;
+    }
+
+    .admin-layout {
+      display: grid;
+      grid-template-columns: 1.1fr 1.1fr;
+      gap: 18px;
+      margin-top: 8px;
+    }
+
+    .admin-card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 14px 16px;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+      font-size: 13px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .admin-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .form-group { margin-bottom: 8px; }
+    label {
+      display: block;
+      font-size: 12px;
+      margin-bottom: 3px;
+      color: #374151;
+    }
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid #d1d5db;
+      font-size: 12px;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+    input[type="file"] { font-size: 11px; }
+    small { font-size: 11px; color: #6b7280; }
+
+    .btn {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: none;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background-color: #2563eb;
+      color: #fff;
+      margin-right: 4px;
+    }
+    .btn-secondary {
+      background-color: #6b7280;
+      color: #fff;
+      margin-right: 4px;
+    }
+    .btn-danger {
+      background-color: #ef4444;
+      color: #fff;
+    }
+
+    .leader-list {
+      max-height: 360px;
+      overflow-y: auto;
+    }
+    .leader-item {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 7px 0;
+      font-size: 12px;
+    }
+    .leader-item:last-child { border-bottom: none; }
+
+    .leader-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2px;
+    }
+    .leader-item-name { font-weight: 600; }
+
+    .thumb {
+      width: 32px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 5px;
+      margin-right: 6px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .drop-zone {
+      margin-top: 6px;
+      padding: 10px;
+      border-radius: 10px;
+      border: 2px dashed #cbd5f5;
+      background: #f9fafb;
+      font-size: 11px;
+      color: #4b5563;
+      text-align: center;
+    }
+    .drop-zone.dragover {
+      border-color: #2563eb;
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+
+    @media (max-width: 900px) {
+      .admin-layout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page-wrap">
+  <div class="glass-panel">
+    <header class="page-header">
+      <div class="page-title">여행 리더 관리자 페이지</div>
+      <p class="page-subtitle">
+        이 페이지는 운영자 전용입니다. 리더 정보를 수정하면 브라우저 <b>localStorage</b>에 저장되고,<br>
+        공개 페이지(<code>index.html</code>)에서 자동으로 사용됩니다.<br>
+        상담 / 신청 링크에는 각 리더의 <b>구글폼 URL</b>을 넣어주세요.
+      </p>
+    </header>
+
+    <div class="admin-layout">
+      <!-- 입력 폼 -->
+      <div class="admin-card">
+        <div class="admin-title">리더 정보 입력 / 수정</div>
+
+        <input type="hidden" id="editingIndex" value="-1">
+
+        <div class="form-group">
+          <label for="leaderName">이름</label>
+          <input type="text" id="leaderName" placeholder="예) 김철수">
+        </div>
+
+        <div class="form-group">
+          <label for="leaderRole">역할 / 직함</label>
+          <input type="text" id="leaderRole" placeholder="예) 베트남 장기 체류 리더 · 10년 차 가이드">
+        </div>
+
+        <div class="form-group">
+          <label for="leaderLink">상담 / 신청 링크 (구글폼 URL)</label>
+          <input type="text" id="leaderLink" placeholder="예) https://docs.google.com/forms/...">
+        </div>
+
+        <div class="form-group">
+          <label for="leaderTags">키워드 태그 (쉼표로 구분)</label>
+          <input type="text" id="leaderTags" placeholder="예) 장기 체류, 로컬 생활, 루틴 여행">
+        </div>
+
+        <div class="form-group">
+          <label for="leaderIntro">한 줄 소개 / 짧은 설명</label>
+          <textarea id="leaderIntro" placeholder="예) 여행이 아니라 ‘살아보는 시간’을 설계합니다. 최소 1개월 이상 머무는 루트를 함께 짭니다."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>프로필 미디어 (이미지 또는 동영상)</label>
+          <input type="file" id="leaderMediaFile" accept="image/*,video/*">
+          <small>파일 선택 또는 아래 영역에 드래그 앤 드롭 (이미지/동영상 지원)</small>
+          <div id="dropZone" class="drop-zone">
+            여기로 이미지를 또는 동영상을 끌어다 놓으세요.
+          </div>
+          <div id="imagePreviewWrap" style="margin-top:8px; display:none;">
+            <video id="videoPreview" style="display:none;width:120px;height:150px;object-fit:cover;border-radius:8px;border:1px solid #e5e7eb;" muted loop></video>
+            <img id="imagePreview" src="" alt="미리보기"
+                 style="display:none;width:120px;height:150px;object-fit:cover;border-radius:8px;border:1px solid #e5e7eb;">
+          </div>
+        </div>
+
+        <button class="btn btn-primary" id="saveLeaderBtn">저장하기</button>
+        <button class="btn btn-secondary" id="clearFormBtn">새로 입력</button>
+      </div>
+
+      <!-- 리스트 -->
+      <div class="admin-card">
+        <div class="admin-title">리더 리스트</div>
+        <div class="leader-list" id="leaderList"></div>
+        <small>※ 수정/삭제 후 <b>저장하기</b>를 누르면 index.html 화면에 바로 반영됩니다.</small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const STORAGE_KEY = "so_t_leaders_v1";
+
+  function getDefaultLeaders() {
+    return [
+      {
+        name: "김현수",
+        role: "베트남 장기 체류 리더 · 10년 차 가이드",
+        mediaType: "image",
+        mediaUrl: "https://via.placeholder.com/300x380.png?text=Leader+1",
+        link: "#",
+        tags: ["장기 체류", "로컬 생활", "루틴 여행"],
+        introShort: "여행이 아니라 ‘살아보는 시간’을 설계합니다. 최소 1개월 이상 머무는 루트를 함께 짭니다."
+      },
+      {
+        name: "이민지",
+        role: "디지털 노마드 & 카페 투어 리더",
+        mediaType: "image",
+        mediaUrl: "https://via.placeholder.com/300x380.png?text=Leader+2",
+        link: "#",
+        tags: ["카페 탐방", "노마드 작업", "도시 감성"],
+        introShort: "일·휴식을 함께 가져가고 싶은 분들을 위해 카페와 코워킹 위주의 동선을 만듭니다."
+      },
+      {
+        name: "박영호",
+        role: "액티비티 · 자연 러버 리더",
+        mediaType: "image",
+        mediaUrl: "https://via.placeholder.com/300x380.png?text=Leader+3",
+        link: "#",
+        tags: ["트래킹", "바다", "액티비티"],
+        introShort: "도시보다 자연, 카페보다 땀. 몸을 움직이며 머리를 비우는 여행을 좋아합니다."
+      }
+    ];
+  }
+
+  function loadLeaders() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return getDefaultLeaders();
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed) || parsed.length === 0) return getDefaultLeaders();
+      return parsed.map(l => ({
+        mediaType: l.mediaType || (l.mediaUrl ? "image" : "image"),
+        mediaUrl: l.mediaUrl || l.imageUrl || "",
+        ...l
+      }));
+    } catch {
+      return getDefaultLeaders();
+    }
+  }
+
+  let leaders = loadLeaders();
+
+  function saveLeaders() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(leaders));
+    renderLeaderList();
+    alert("저장되었습니다. index.html 페이지를 새로고침하면 반영됩니다.");
+  }
+
+  const leaderListEl = document.getElementById("leaderList");
+  const editingIndexEl = document.getElementById("editingIndex");
+
+  function renderLeaderList() {
+    leaderListEl.innerHTML = "";
+    if (leaders.length === 0) {
+      leaderListEl.innerHTML = "<p style='font-size:12px;color:#6b7280;'>등록된 리더가 없습니다.</p>";
+      return;
+    }
+    leaders.forEach((leader, index) => {
+      const item = document.createElement("div");
+      item.className = "leader-item";
+      item.innerHTML = `
+        <div class="leader-item-header">
+          <div style="display:flex;align-items:center;">
+            ${leader.mediaUrl ? `<img src="${leader.mediaUrl}" class="thumb" alt="">` : ""}
+            <div>
+              <div class="leader-item-name">${leader.name || "(이름 없음)"}</div>
+              <div style="font-size:11px;color:#6b7280;">${leader.role || ""}</div>
+              <div style="font-size:10px;color:#9ca3af;">${leader.link ? leader.link : ""}</div>
+            </div>
+          </div>
+          <div>
+            <button class="btn btn-secondary" onclick="editLeader(${index})">수정</button>
+            <button class="btn btn-danger" onclick="deleteLeader(${index})">삭제</button>
+          </div>
+        </div>
+        <div style="font-size:11px;color:#4b5563;">
+          태그: ${(leader.tags || []).join(", ") || "-"}
+        </div>
+      `;
+      leaderListEl.appendChild(item);
+    });
+  }
+
+  const nameInput  = document.getElementById("leaderName");
+  const roleInput  = document.getElementById("leaderRole");
+  const linkInput  = document.getElementById("leaderLink");
+  const tagsInput  = document.getElementById("leaderTags");
+  const introInput = document.getElementById("leaderIntro");
+  const mediaInput = document.getElementById("leaderMediaFile");
+  const dropZone   = document.getElementById("dropZone");
+  const imagePreviewWrap = document.getElementById("imagePreviewWrap");
+  const imagePreview     = document.getElementById("imagePreview");
+  const videoPreview     = document.getElementById("videoPreview");
+
+  let tempMediaDataUrl = "";
+  let tempMediaType    = "image";
+
+  function clearPreview() {
+    imagePreviewWrap.style.display = "none";
+    imagePreview.style.display = "none";
+    videoPreview.style.display = "none";
+    imagePreview.src = "";
+    videoPreview.src = "";
+  }
+
+  function showPreview(type, dataUrl) {
+    tempMediaType = type;
+    tempMediaDataUrl = dataUrl;
+    imagePreviewWrap.style.display = "block";
+    if (type === "video") {
+      imagePreview.style.display = "none";
+      videoPreview.style.display = "block";
+      videoPreview.src = dataUrl;
+      videoPreview.play();
+    } else {
+      videoPreview.pause();
+      videoPreview.style.display = "none";
+      imagePreview.style.display = "block";
+      imagePreview.src = dataUrl;
+    }
+  }
+
+  function handleFile(file) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const dataUrl = e.target.result;
+      if (file.type.startsWith("video/")) {
+        showPreview("video", dataUrl);
+      } else {
+        showPreview("image", dataUrl);
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // 파일 입력
+  mediaInput.addEventListener("change", function () {
+    const file = this.files[0];
+    handleFile(file);
+  });
+
+  // 드래그 앤 드롭
+  ;["dragenter","dragover"].forEach(evt => {
+    dropZone.addEventListener(evt, e => {
+      e.preventDefault();
+      e.stopPropagation();
+      dropZone.classList.add("dragover");
+    });
+  });
+
+  ;["dragleave","drop"].forEach(evt => {
+    dropZone.addEventListener(evt, e => {
+      e.preventDefault();
+      e.stopPropagation();
+      dropZone.classList.remove("dragover");
+    });
+  });
+
+  dropZone.addEventListener("drop", e => {
+    const file = e.dataTransfer.files[0];
+    handleFile(file);
+  });
+
+  function clearForm() {
+    editingIndexEl.value = -1;
+    nameInput.value = "";
+    roleInput.value = "";
+    linkInput.value = "";
+    tagsInput.value = "";
+    introInput.value = "";
+    mediaInput.value = "";
+    tempMediaDataUrl = "";
+    tempMediaType = "image";
+    clearPreview();
+  }
+
+  document.getElementById("clearFormBtn").addEventListener("click", clearForm);
+
+  document.getElementById("saveLeaderBtn").addEventListener("click", function () {
+    const name = nameInput.value.trim();
+    if (!name) {
+      alert("이름은 필수입니다.");
+      return;
+    }
+    const role = roleInput.value.trim();
+    const link = linkInput.value.trim();
+    const tags = tagsInput.value.split(",").map(t => t.trim()).filter(Boolean);
+    const introShort = introInput.value.trim();
+    const index = parseInt(editingIndexEl.value, 10);
+
+    const baseData = { name, role, link, tags, introShort };
+
+    if (index >= 0) {
+      const prev = leaders[index];
+      leaders[index] = {
+        ...prev,
+        ...baseData,
+        mediaType: tempMediaDataUrl ? tempMediaType : (prev.mediaType || "image"),
+        mediaUrl: tempMediaDataUrl || prev.mediaUrl || ""
+      };
+    } else {
+      leaders.push({
+        ...baseData,
+        mediaType: tempMediaDataUrl ? tempMediaType : "image",
+        mediaUrl: tempMediaDataUrl || ""
+      });
+    }
+
+    saveLeaders();
+    clearForm();
+  });
+
+  window.editLeader = function (index) {
+    const leader = leaders[index];
+    editingIndexEl.value = index;
+    nameInput.value  = leader.name || "";
+    roleInput.value  = leader.role || "";
+    linkInput.value  = leader.link || "";
+    tagsInput.value  = (leader.tags || []).join(", ");
+    introInput.value = leader.introShort || "";
+
+    tempMediaDataUrl = leader.mediaUrl || "";
+    tempMediaType    = leader.mediaType || "image";
+
+    if (tempMediaDataUrl) {
+      showPreview(tempMediaType, tempMediaDataUrl);
+    } else {
+      clearPreview();
+    }
+    mediaInput.value = "";
+  };
+
+  window.deleteLeader = function (index) {
+    if (!confirm("이 리더를 삭제할까요?")) return;
+    leaders.splice(index, 1);
+    saveLeaders();
+    clearForm();
+  };
+
+  renderLeaderList();
+</script>
+
+</body>
+</html>
