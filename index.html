@@ -68,6 +68,13 @@
       margin-bottom: 10px;
     }
 
+    .admin-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
     .section-label {
       font-size: 12px;
       font-weight: 600;
@@ -139,6 +146,22 @@
     .btn-xs {
       padding: 4px 8px;
       font-size: 11px;
+    }
+
+    /* 새 리더 추가 강조 버튼 */
+    .btn-new-leader {
+      background-color: #2563eb;
+      color: #ffffff;
+      border-radius: 999px;
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      box-shadow: 0 4px 10px rgba(37,99,235,0.35);
+      cursor: pointer;
+    }
+    .btn-new-leader:hover {
+      background-color: #1d4ed8;
     }
 
     .ad-list, .leader-list {
@@ -280,6 +303,8 @@
 
     @media (max-width: 900px) {
       .admin-layout { grid-template-columns: 1fr; }
+      .admin-title-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .btn-new-leader { width: 100%; text-align: center; }
     }
   </style>
 </head>
@@ -414,13 +439,15 @@
         <div class="form-group inline" style="margin-top:4px;">
           <button class="btn btn-primary" id="saveLeaderBtn">리더 저장</button>
           <button class="btn btn-secondary" id="clearLeaderFormBtn">리더 폼 초기화</button>
-          <button class="btn btn-outline btn-xs" id="newLeaderBtn2">+ 새 리더 추가</button>
         </div>
       </div>
 
       <!-- 우측: 리더 리스트 + JSON -->
       <div class="admin-card">
-        <div class="admin-title">리더 리스트</div>
+        <div class="admin-title-row">
+          <div class="admin-title" style="margin-bottom:0;">리더 리스트</div>
+          <button class="btn-new-leader" id="newLeaderBtn">+ 새 리더 추가</button>
+        </div>
         <div class="leader-list" id="leaderList"></div>
         <hr style="margin:10px 0;">
         <div class="admin-title" style="margin-top:4px;">leaders.json 생성 / 복사</div>
@@ -462,12 +489,7 @@
           sheetUrl: "",
           tags: ["장기 체류", "로컬 생활", "루틴 여행"],
           introShort: "여행이 아니라 ‘살아보는 시간’을 설계합니다. 최소 1개월 이상 머무는 루트를 함께 짭니다.",
-          sns: {
-            youtube: "",
-            tiktok: "",
-            instagram: "",
-            facebook: ""
-          }
+          sns: { youtube: "", tiktok: "", instagram: "", facebook: "" }
         }
       ]
     };
@@ -495,7 +517,7 @@
   let ads     = data.ads;
   let leaders = data.leaders;
 
-  /* ===== 광고 관련 엘리먼트 & 함수 ===== */
+  /* ===== 광고 관련 ===== */
 
   const editingAdIndexEl   = document.getElementById("editingAdIndex");
   const adLinkInput        = document.getElementById("adLinkUrl");
@@ -514,6 +536,7 @@
 
   let tempAdImageDataUrl     = "";
   let tempLeaderMediaDataUrl = "";
+  let currentThumbIndex      = null;
 
   function renderAds() {
     adListEl.innerHTML = "";
@@ -618,8 +641,7 @@
     const duration = parseInt(adDurationInput.value, 10) || 2;
     const enabled  = adEnabledInput.checked;
     const idx      = parseInt(editingAdIndexEl.value, 10);
-
-    const base = { linkUrl, duration, enabled };
+    const base     = { linkUrl, duration, enabled };
 
     if (idx >= 0) {
       const prev = ads[idx];
@@ -633,10 +655,7 @@
         alert("광고 이미지를 선택해 주세요.");
         return;
       }
-      ads.push({
-        ...base,
-        imageUrl: tempAdImageDataUrl
-      });
+      ads.push({ ...base, imageUrl: tempAdImageDataUrl });
     }
 
     data.ads = ads;
@@ -653,11 +672,8 @@
     adDurationInput.value  = ad.duration || 2;
     adEnabledInput.checked = !!ad.enabled;
     tempAdImageDataUrl     = ad.imageUrl || "";
-    if (tempAdImageDataUrl) {
-      showAdPreview(tempAdImageDataUrl);
-    } else {
-      clearAdPreview();
-    }
+    if (tempAdImageDataUrl) showAdPreview(tempAdImageDataUrl);
+    else clearAdPreview();
   };
 
   window.deleteAd = function (index) {
@@ -694,9 +710,8 @@
   const leaderDropZone       = document.getElementById("leaderDropZone");
   const leaderPreviewWrap    = document.getElementById("leaderPreviewWrap");
   const leaderPreviewImage   = document.getElementById("leaderPreviewImage");
-
+  const newLeaderBtn         = document.getElementById("newLeaderBtn");
   const thumbFileInput       = document.getElementById("thumbFileInput");
-  let currentThumbIndex      = null;
 
   function renderLeaders() {
     leaderListEl.innerHTML = "";
@@ -756,17 +771,14 @@
       leaderListEl.appendChild(item);
     });
 
-    // 썸네일 클릭 / 드래그-앤-드롭 이벤트 연결
     attachThumbEvents();
   }
 
   function attachThumbEvents() {
-    const thumbElements = document.querySelectorAll(".leader-thumb");
-    thumbElements.forEach(el => {
+    const thumbs = document.querySelectorAll(".leader-thumb");
+    thumbs.forEach(el => {
       const idx = parseInt(el.dataset.index, 10);
       el.style.cursor = "pointer";
-
-      // 클릭 → 파일 선택
       el.addEventListener("click", () => {
         currentThumbIndex = idx;
         thumbFileInput.value = "";
@@ -774,8 +786,8 @@
       });
     });
 
-    const dropZones = document.querySelectorAll(".leader-thumb-drop");
-    dropZones.forEach(zone => {
+    const drops = document.querySelectorAll(".leader-thumb-drop");
+    drops.forEach(zone => {
       const idx = parseInt(zone.dataset.index, 10);
       ["dragenter","dragover"].forEach(evt => {
         zone.addEventListener(evt, e => {
@@ -796,7 +808,6 @@
     });
   }
 
-  // 썸네일용 숨겨진 input → 이미지 변경
   thumbFileInput.addEventListener("change", function () {
     const file = this.files[0];
     if (currentThumbIndex === null) return;
@@ -883,7 +894,10 @@
   }
 
   document.getElementById("clearLeaderFormBtn").addEventListener("click", clearLeaderForm);
-  document.getElementById("newLeaderBtn2").addEventListener("click", clearLeaderForm);
+  newLeaderBtn.addEventListener("click", () => {
+    clearLeaderForm();
+    window.scrollTo({ top: 0, behavior: "smooth" }); // 폼 쪽으로 올라가고 싶으면
+  });
 
   document.getElementById("saveLeaderBtn").addEventListener("click", () => {
     const name = nameInput.value.trim();
@@ -903,7 +917,6 @@
       facebook:  leaderFacebookInput.value.trim()
     };
     const idx = parseInt(editingLeaderIndexEl.value, 10);
-
     const base = { name, role, link, sheetUrl, tags, introShort, sns };
 
     if (idx >= 0) {
@@ -944,11 +957,8 @@
     leaderFacebookInput.value  = sns.facebook  || "";
 
     tempLeaderMediaDataUrl = leader.mediaUrl || "";
-    if (tempLeaderMediaDataUrl) {
-      showLeaderPreview(tempLeaderMediaDataUrl);
-    } else {
-      clearLeaderPreview();
-    }
+    if (tempLeaderMediaDataUrl) showLeaderPreview(tempLeaderMediaDataUrl);
+    else clearLeaderPreview();
     leaderMediaInput.value = "";
   };
 
@@ -973,10 +983,7 @@
   /* ===== JSON 생성 / 복사 ===== */
 
   generateJsonBtn.addEventListener("click", () => {
-    const jsonObj = {
-      ads: ads,
-      leaders: leaders
-    };
+    const jsonObj = { ads: ads, leaders: leaders };
     const json = JSON.stringify(jsonObj, null, 2);
     jsonOutput.value = json;
     jsonOutput.scrollTop = 0;
