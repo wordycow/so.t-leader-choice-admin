@@ -270,14 +270,16 @@
         <div class="admin-title" style="margin-top:4px;">leaders.json 생성 / 복사</div>
         <button class="btn btn-primary" id="generateJsonBtn">JSON 생성하기</button>
         <button class="btn btn-secondary" id="copyJsonBtn">JSON 복사하기</button>
+        <button class="btn btn-outline" id="openJsonBtn">GitHub leaders.json 열기</button>
         <textarea id="jsonOutput" class="json-area" placeholder="여기에 leaders.json 내용이 생성됩니다." readonly></textarea>
         <div class="help-box">
           <b>[GitHub에 붙여 넣는 방법]</b><br>
-          1) GitHub에서 <code>so.t-leader-choice</code> 레포로 이동.<br>
-          2) <code>leaders.json</code> 파일 클릭 → 우측 상단 연필(✏️ Edit) 버튼 클릭.<br>
-          3) 파일 내용 전체 선택(Ctrl+A) 후 삭제 → 위 JSON 영역의 내용을 통째로 복사(Ctrl+C)하여 붙여 넣기(Ctrl+V).<br>
-          4) 아래쪽 <b>Commit changes</b> 버튼을 눌러 저장.<br>
-          5) 공개 페이지(<code>https://wordycow.github.io/so.t-leader-choice/</code>)에서 새로고침하면 모든 사용자가 동일한 리더 정보를 보게 됩니다.
+          1) 위에서 리더들을 모두 원하는 대로 추가/수정/삭제한 뒤, <b>JSON 생성하기</b> 버튼을 누릅니다.<br>
+          2) <b>JSON 복사하기</b> 버튼을 눌러 leaders.json 내용을 클립보드에 복사합니다.<br>
+          3) <b>GitHub leaders.json 열기</b> 버튼을 눌러 GitHub의 leaders.json 파일 편집 화면으로 이동합니다.<br>
+          4) GitHub에서 내용 전체 선택(Ctrl+A) 후 삭제 → 복사한 JSON을 붙여 넣기(Ctrl+V).<br>
+          5) 아래쪽 <b>Commit changes</b> 버튼을 눌러 저장.<br>
+          6) 공개 페이지(<code>https://wordycow.github.io/so.t-leader-choice/</code>)에서 새로고침하면 모든 사용자가 동일한 리더 정보를 보게 됩니다.
         </div>
       </div>
     </div>
@@ -336,6 +338,7 @@
   const jsonOutput      = document.getElementById("jsonOutput");
   const generateJsonBtn = document.getElementById("generateJsonBtn");
   const copyJsonBtn     = document.getElementById("copyJsonBtn");
+  const openJsonBtn     = document.getElementById("openJsonBtn");
 
   let tempMediaDataUrl  = "";
 
@@ -457,6 +460,7 @@
         mediaUrl: tempMediaDataUrl || prev.mediaUrl || ""
       };
     } else {
+      // 새 리더 추가
       leaders.push({
         ...baseData,
         mediaUrl: tempMediaDataUrl || ""
@@ -516,6 +520,14 @@
       document.execCommand("copy");
       alert("JSON이 복사되었습니다. (클립보드 API 미지원 브라우저에서는 선택된 내용을 직접 확인해 주세요.)");
     }
+  });
+
+  // GitHub leaders.json 페이지 열기
+  openJsonBtn.addEventListener("click", function () {
+    window.open(
+      "https://github.com/wordycow/so.t-leader-choice/blob/main/leaders.json",
+      "_blank"
+    );
   });
 
   // 초기 렌더
