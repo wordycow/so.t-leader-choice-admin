@@ -152,6 +152,17 @@
       border: 1px solid #e5e7eb;
     }
 
+    .link-small {
+      font-size: 10px;
+      color: #2563eb;
+      text-decoration: underline;
+      display: inline-block;
+      max-width: 260px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     .drop-zone {
       margin-top: 6px;
       padding: 10px;
@@ -236,6 +247,11 @@
         </div>
 
         <div class="form-group">
+          <label for="leaderSheetUrl">응답 시트 링크 (구글 시트 URL)</label>
+          <input type="text" id="leaderSheetUrl" placeholder="예) https://docs.google.com/spreadsheets/...">
+        </div>
+
+        <div class="form-group">
           <label for="leaderTags">키워드 태그 (쉼표로 구분)</label>
           <input type="text" id="leaderTags" placeholder="예) 장기 체류, 로컬 생활, 루틴 여행">
         </div>
@@ -287,7 +303,7 @@
 </div>
 
 <script>
-  // 브라우저 안에서만 사용하는 임시 저장용 (관리자 편의)
+  // 브라우저 안에서만 사용하는 임시 저장용 (관리자 편의용)
   const DRAFT_KEY = "so_t_leaders_draft_v1";
 
   function getDefaultLeaders() {
@@ -297,6 +313,7 @@
         role: "베트남 장기 체류 리더 · 10년 차 가이드",
         mediaUrl: "https://via.placeholder.com/300x380.png?text=Leader+1",
         link: "#",
+        sheetUrl: "",
         tags: ["장기 체류", "로컬 생활", "루틴 여행"],
         introShort: "여행이 아니라 ‘살아보는 시간’을 설계합니다. 최소 1개월 이상 머무는 루트를 함께 짭니다."
       }
@@ -327,6 +344,7 @@
   const nameInput       = document.getElementById("leaderName");
   const roleInput       = document.getElementById("leaderRole");
   const linkInput       = document.getElementById("leaderLink");
+  const sheetInput      = document.getElementById("leaderSheetUrl");
   const tagsInput       = document.getElementById("leaderTags");
   const introInput      = document.getElementById("leaderIntro");
   const mediaInput      = document.getElementById("leaderMediaFile");
@@ -351,6 +369,10 @@
     leaders.forEach((leader, index) => {
       const item = document.createElement("div");
       item.className = "leader-item";
+      const sheetLinkHtml = leader.sheetUrl
+        ? `<a href="${leader.sheetUrl}" target="_blank" rel="noopener noreferrer" class="link-small">응답 시트 열기</a>`
+        : "<span style='font-size:10px;color:#9ca3af;'>응답 시트 링크 없음</span>";
+
       item.innerHTML = `
         <div class="leader-item-header">
           <div style="display:flex;align-items:center;">
@@ -358,12 +380,17 @@
             <div>
               <div class="leader-item-name">${leader.name || "(이름 없음)"}</div>
               <div style="font-size:11px;color:#6b7280;">${leader.role || ""}</div>
-              <div style="font-size:10px;color:#9ca3af;max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                ${leader.link || ""}
-              </div>
+              ${
+                leader.link
+                  ? `<a href="${leader.link}" target="_blank" rel="noopener noreferrer" class="link-small">${leader.link}</a>`
+                  : "<span class='link-small' style='color:#9ca3af;text-decoration:none;'>상담 링크 없음</span>"
+              }
+              <br>
+              ${sheetLinkHtml}
             </div>
           </div>
           <div>
+            <button class="btn btn-outline" onclick="openSheet(${index})">결과 보기</button>
             <button class="btn btn-secondary" onclick="editLeader(${index})">수정</button>
             <button class="btn btn-danger" onclick="deleteLeader(${index})">삭제</button>
           </div>
@@ -429,6 +456,7 @@
     nameInput.value = "";
     roleInput.value = "";
     linkInput.value = "";
+    sheetInput.value = "";
     tagsInput.value = "";
     introInput.value = "";
     mediaInput.value = "";
@@ -446,11 +474,12 @@
     }
     const role = roleInput.value.trim();
     const link = linkInput.value.trim();
+    const sheetUrl = sheetInput.value.trim();
     const tags = tagsInput.value.split(",").map(t => t.trim()).filter(Boolean);
     const introShort = introInput.value.trim();
     const index = parseInt(editingIndexEl.value, 10);
 
-    const baseData = { name, role, link, tags, introShort };
+    const baseData = { name, role, link, sheetUrl, tags, introShort };
 
     if (index >= 0) {
       const prev = leaders[index];
@@ -479,6 +508,7 @@
     nameInput.value       = leader.name || "";
     roleInput.value       = leader.role || "";
     linkInput.value       = leader.link || "";
+    sheetInput.value      = leader.sheetUrl || "";
     tagsInput.value       = (leader.tags || []).join(", ");
     introInput.value      = leader.introShort || "";
     tempMediaDataUrl      = leader.mediaUrl || "";
@@ -497,6 +527,15 @@
     saveDraft();
     renderLeaderList();
     clearForm();
+  };
+
+  window.openSheet = function (index) {
+    const leader = leaders[index];
+    if (!leader.sheetUrl) {
+      alert("이 리더의 응답 시트 링크가 설정되어 있지 않습니다.");
+      return;
+    }
+    window.open(leader.sheetUrl, "_blank");
   };
 
   // JSON 생성 / 복사
