@@ -141,7 +141,6 @@
       font-size: 11px;
     }
 
-    /* 새 리더 추가 강조 버튼 */
     .btn-new-leader {
       background-color: #2563eb;
       color: #ffffff;
@@ -333,10 +332,6 @@
         </div>
 
         <div class="form-group inline">
-          <div style="flex:1;">
-            <label for="adDuration">노출 시간 (초)</label>
-            <input type="number" id="adDuration" min="1" value="2">
-          </div>
           <div>
             <label>
               <input type="checkbox" id="adEnabled" checked> 이 광고 노출
@@ -519,7 +514,6 @@
   const editingAdIndexEl   = document.getElementById("editingAdIndex");
   const adLinkInput        = document.getElementById("adLinkUrl");
   const adTextInput        = document.getElementById("adText");
-  const adDurationInput    = document.getElementById("adDuration");
   const adEnabledInput     = document.getElementById("adEnabled");
   const adImageInput       = document.getElementById("adImageFile");
   const adDropZone         = document.getElementById("adDropZone");
@@ -538,7 +532,7 @@
 
   function renderAds() {
     adListEl.innerHTML = "";
-    if (ads.length === 0) {
+    if (!ads.length) {
       adListEl.innerHTML = "<p style='font-size:12px;color:#6b7280;'>등록된 광고가 없습니다.</p>";
       return;
     }
@@ -556,10 +550,7 @@
                   ${ad.enabled ? "노출" : "비노출"}
                 </span>
               </div>
-              <div style="font-size:11px;color:#6b7280;">노출 시간: ${ad.duration || 2}초</div>
-              <div style="font-size:11px;color:#4b5563;">
-                문구: ${ad.text ? ad.text : "<span style='color:#9ca3af;'>설정되지 않음</span>"}
-              </div>
+              <div style="font-size:11px;color:#6b7280;">문구: ${ad.text || "<span style='color:#9ca3af;'>설정되지 않음</span>"}</div>
               ${
                 ad.linkUrl
                   ? `<a href="${ad.linkUrl}" target="_blank" rel="noopener noreferrer" class="link-small">${ad.linkUrl}</a>`
@@ -599,7 +590,7 @@
       return;
     }
     const reader = new FileReader();
-    reader.onload = (e) => showAdPreview(e.target.result);
+    reader.onload = e => showAdPreview(e.target.result);
     reader.readAsDataURL(file);
   }
 
@@ -608,19 +599,19 @@
     handleAdFile(file);
   });
 
-  ["dragenter","dragover"].forEach((evt) => {
-    adDropZone.addEventListener(evt, (e) => {
+  ["dragenter","dragover"].forEach(evt => {
+    adDropZone.addEventListener(evt, e => {
       e.preventDefault(); e.stopPropagation();
       adDropZone.classList.add("dragover");
     });
   });
-  ["dragleave","drop"].forEach((evt) => {
-    adDropZone.addEventListener(evt, (e) => {
+  ["dragleave","drop"].forEach(evt => {
+    adDropZone.addEventListener(evt, e => {
       e.preventDefault(); e.stopPropagation();
       adDropZone.classList.remove("dragover");
     });
   });
-  adDropZone.addEventListener("drop", (e) => {
+  adDropZone.addEventListener("drop", e => {
     const file = e.dataTransfer.files[0];
     handleAdFile(file);
   });
@@ -629,9 +620,8 @@
     editingAdIndexEl.value = -1;
     adLinkInput.value   = "";
     adTextInput.value   = "";
-    adDurationInput.value = 2;
     adEnabledInput.checked = true;
-    adImageInput.value = "";
+    adImageInput.value  = "";
     clearAdPreview();
   }
 
@@ -641,10 +631,9 @@
   document.getElementById("saveAdBtn").addEventListener("click", () => {
     const linkUrl  = adLinkInput.value.trim();
     const text     = adTextInput.value.trim();
-    const duration = parseInt(adDurationInput.value, 10) || 2;
     const enabled  = adEnabledInput.checked;
     const idx      = parseInt(editingAdIndexEl.value, 10);
-    const base     = { linkUrl, text, duration, enabled };
+    const base     = { linkUrl, text, enabled };
 
     if (idx >= 0) {
       const prev = ads[idx];
@@ -673,7 +662,6 @@
     editingAdIndexEl.value = index;
     adLinkInput.value      = ad.linkUrl || "";
     adTextInput.value      = ad.text || "";
-    adDurationInput.value  = ad.duration || 2;
     adEnabledInput.checked = !!ad.enabled;
     tempAdImageDataUrl     = ad.imageUrl || "";
     if (tempAdImageDataUrl) showAdPreview(tempAdImageDataUrl);
@@ -719,7 +707,7 @@
 
   function renderLeaders() {
     leaderListEl.innerHTML = "";
-    if (leaders.length === 0) {
+    if (!leaders.length) {
       leaderListEl.innerHTML = "<p style='font-size:12px;color:#6b7280;'>등록된 리더가 없습니다.</p>";
       return;
     }
@@ -783,11 +771,11 @@
     thumbs.forEach(el => {
       const idx = parseInt(el.dataset.index, 10);
       el.style.cursor = "pointer";
-      el.addEventListener("click", () => {
+      el.onclick = () => {
         currentThumbIndex = idx;
         thumbFileInput.value = "";
         thumbFileInput.click();
-      });
+      };
     });
 
     const drops = document.querySelectorAll(".leader-thumb-drop");
@@ -864,19 +852,19 @@
     handleLeaderFile(file);
   });
 
-  ["dragenter","dragover"].forEach((evt) => {
-    leaderDropZone.addEventListener(evt, (e) => {
+  ["dragenter","dragover"].forEach(evt => {
+    leaderDropZone.addEventListener(evt, e => {
       e.preventDefault(); e.stopPropagation();
       leaderDropZone.classList.add("dragover");
     });
   });
-  ["dragleave","drop"].forEach((evt) => {
-    leaderDropZone.addEventListener(evt, (e) => {
+  ["dragleave","drop"].forEach(evt => {
+    leaderDropZone.addEventListener(evt, e => {
       e.preventDefault(); e.stopPropagation();
       leaderDropZone.classList.remove("dragover");
     });
   });
-  leaderDropZone.addEventListener("drop", (e) => {
+  leaderDropZone.addEventListener("drop", e => {
     const file = e.dataTransfer.files[0];
     handleLeaderFile(file);
   });
@@ -912,7 +900,7 @@
     const role      = roleInput.value.trim();
     const link      = linkInput.value.trim();
     const sheetUrl  = sheetInput.value.trim();
-    const tags      = tagsInput.value.split(",").map((t) => t.trim()).filter(Boolean);
+    const tags      = tagsInput.value.split(",").map(t => t.trim()).filter(Boolean);
     const introShort= introInput.value.trim();
     const sns = {
       youtube:   leaderYoutubeInput.value.trim(),
@@ -920,7 +908,7 @@
       instagram: leaderInstagramInput.value.trim(),
       facebook:  leaderFacebookInput.value.trim()
     };
-    const idx = parseInt(editingLeaderIndexEl.value, 10);
+    const idx  = parseInt(editingLeaderIndexEl.value, 10);
     const base = { name, role, link, sheetUrl, tags, introShort, sns };
 
     if (idx >= 0) {
@@ -1001,7 +989,7 @@
     }
     try {
       await navigator.clipboard.writeText(jsonOutput.value);
-      alert("JSON이 클립보드에 복사되었습니다. GitHub의 leaders.json에 붙여 넣으세요.");
+      alert("JSON이 복사되었습니다.");
     } catch {
       jsonOutput.select();
       document.execCommand("copy");
