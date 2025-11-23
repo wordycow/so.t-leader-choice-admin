@@ -67,6 +67,13 @@
       margin-bottom: 10px;
     }
 
+    .form-row-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
     .form-group { margin-bottom: 8px; }
     label {
       display: block;
@@ -110,10 +117,15 @@
       background-color: #ef4444;
       color: #fff;
     }
+    .btn-outline {
+      background-color: #ffffff;
+      color: #4b5563;
+      border: 1px solid #d1d5db;
+    }
 
     .leader-list {
-      max-height: 360px;
-      overflow-y: auto;
+      max-height: none;
+      overflow-y: visible;
     }
     .leader-item {
       border-bottom: 1px solid #e5e7eb;
@@ -176,7 +188,10 @@
     <div class="admin-layout">
       <!-- 입력 폼 -->
       <div class="admin-card">
-        <div class="admin-title">리더 정보 입력 / 수정</div>
+        <div class="form-row-top">
+          <div class="admin-title">리더 정보 입력 / 수정</div>
+          <button class="btn btn-outline" id="newLeaderBtn">+ 새 리더 추가</button>
+        </div>
 
         <input type="hidden" id="editingIndex" value="-1">
 
@@ -206,28 +221,28 @@
         </div>
 
         <div class="form-group">
-          <label>프로필 미디어 (이미지 또는 동영상)</label>
-          <input type="file" id="leaderMediaFile" accept="image/*,video/*">
-          <small>파일 선택 또는 아래 영역에 드래그 앤 드롭 (이미지/동영상 지원)</small>
+          <label>프로필 이미지 (이미지 파일만)</label>
+          <input type="file" id="leaderMediaFile" accept="image/*">
+          <small>파일 선택 또는 아래 영역에 드래그 앤 드롭 (이미지 전용)</small>
           <div id="dropZone" class="drop-zone">
-            여기로 이미지를 또는 동영상을 끌어다 놓으세요.
+            여기로 이미지를 끌어다 놓으세요.
           </div>
           <div id="imagePreviewWrap" style="margin-top:8px; display:none;">
-            <video id="videoPreview" style="display:none;width:120px;height:150px;object-fit:cover;border-radius:8px;border:1px solid #e5e7eb;" muted loop></video>
             <img id="imagePreview" src="" alt="미리보기"
-                 style="display:none;width:120px;height:150px;object-fit:cover;border-radius:8px;border:1px solid #e5e7eb;">
+                 style="width:120px;height:150px;object-fit:cover;border-radius:8px;border:1px solid #e5e7eb;">
           </div>
         </div>
 
         <button class="btn btn-primary" id="saveLeaderBtn">저장하기</button>
-        <button class="btn btn-secondary" id="clearFormBtn">새로 입력</button>
+        <button class="btn btn-secondary" id="clearFormBtn">폼 초기화</button>
       </div>
 
       <!-- 리스트 -->
       <div class="admin-card">
         <div class="admin-title">리더 리스트</div>
         <div class="leader-list" id="leaderList"></div>
-        <small>※ 수정/삭제 후 <b>저장하기</b>를 누르면 공개 페이지에 바로 반영됩니다.</small>
+        <small>※ 새 리더: “+ 새 리더 추가” → 정보 입력 → <b>저장하기</b>.<br>
+              수정/삭제 후에도 <b>저장하기</b>를 누르면 공개 페이지에 반영됩니다.</small>
       </div>
     </div>
   </div>
@@ -241,7 +256,6 @@
       {
         name: "김현수",
         role: "베트남 장기 체류 리더 · 10년 차 가이드",
-        mediaType: "image",
         mediaUrl: "https://via.placeholder.com/300x380.png?text=Leader+1",
         link: "#",
         tags: ["장기 체류", "로컬 생활", "루틴 여행"],
@@ -270,8 +284,21 @@
     alert("저장되었습니다. 공개 페이지(index.html)를 새로고침하면 반영됩니다.");
   }
 
-  const leaderListEl = document.getElementById("leaderList");
-  const editingIndexEl = document.getElementById("editingIndex");
+  const leaderListEl    = document.getElementById("leaderList");
+  const editingIndexEl  = document.getElementById("editingIndex");
+
+  const nameInput       = document.getElementById("leaderName");
+  const roleInput       = document.getElementById("leaderRole");
+  const linkInput       = document.getElementById("leaderLink");
+  const tagsInput       = document.getElementById("leaderTags");
+  const introInput      = document.getElementById("leaderIntro");
+  const mediaInput      = document.getElementById("leaderMediaFile");
+  const dropZone        = document.getElementById("dropZone");
+  const imagePreviewWrap= document.getElementById("imagePreviewWrap");
+  const imagePreview    = document.getElementById("imagePreview");
+  const newLeaderBtn    = document.getElementById("newLeaderBtn");
+
+  let tempMediaDataUrl  = "";
 
   function renderLeaderList() {
     leaderListEl.innerHTML = "";
@@ -289,7 +316,7 @@
             <div>
               <div class="leader-item-name">${leader.name || "(이름 없음)"}</div>
               <div style="font-size:11px;color:#6b7280;">${leader.role || ""}</div>
-              <div style="font-size:10px;color:#9ca3af;max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+              <div style="font-size:10px;color:#9ca3af;max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
                 ${leader.link || ""}
               </div>
             </div>
@@ -307,55 +334,28 @@
     });
   }
 
-  const nameInput  = document.getElementById("leaderName");
-  const roleInput  = document.getElementById("leaderRole");
-  const linkInput  = document.getElementById("leaderLink");
-  const tagsInput  = document.getElementById("leaderTags");
-  const introInput = document.getElementById("leaderIntro");
-  const mediaInput = document.getElementById("leaderMediaFile");
-  const dropZone   = document.getElementById("dropZone");
-  const imagePreviewWrap = document.getElementById("imagePreviewWrap");
-  const imagePreview     = document.getElementById("imagePreview");
-  const videoPreview     = document.getElementById("videoPreview");
-
-  let tempMediaDataUrl = "";
-  let tempMediaType    = "image";
-
   function clearPreview() {
     imagePreviewWrap.style.display = "none";
-    imagePreview.style.display = "none";
-    videoPreview.style.display = "none";
     imagePreview.src = "";
-    videoPreview.src = "";
+    tempMediaDataUrl = "";
   }
 
-  function showPreview(type, dataUrl) {
-    tempMediaType = type;
+  function showPreview(dataUrl) {
     tempMediaDataUrl = dataUrl;
+    imagePreview.src = dataUrl;
     imagePreviewWrap.style.display = "block";
-    if (type === "video") {
-      imagePreview.style.display = "none";
-      videoPreview.style.display = "block";
-      videoPreview.src = dataUrl;
-      videoPreview.play();
-    } else {
-      videoPreview.pause();
-      videoPreview.style.display = "none";
-      imagePreview.style.display = "block";
-      imagePreview.src = dataUrl;
-    }
   }
 
   function handleFile(file) {
     if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      alert("이미지 파일만 업로드할 수 있습니다.");
+      return;
+    }
     const reader = new FileReader();
     reader.onload = e => {
       const dataUrl = e.target.result;
-      if (file.type.startsWith("video/")) {
-        showPreview("video", dataUrl);
-      } else {
-        showPreview("image", dataUrl);
-      }
+      showPreview(dataUrl);
     };
     reader.readAsDataURL(file);
   }
@@ -390,12 +390,11 @@
     tagsInput.value = "";
     introInput.value = "";
     mediaInput.value = "";
-    tempMediaDataUrl = "";
-    tempMediaType = "image";
     clearPreview();
   }
 
   document.getElementById("clearFormBtn").addEventListener("click", clearForm);
+  newLeaderBtn.addEventListener("click", clearForm);
 
   document.getElementById("saveLeaderBtn").addEventListener("click", function () {
     const name = nameInput.value.trim();
@@ -416,13 +415,12 @@
       leaders[index] = {
         ...prev,
         ...baseData,
-        mediaType: tempMediaDataUrl ? tempMediaType : (prev.mediaType || "image"),
         mediaUrl: tempMediaDataUrl || prev.mediaUrl || ""
       };
     } else {
+      // 새 리더 추가
       leaders.push({
         ...baseData,
-        mediaType: tempMediaDataUrl ? tempMediaType : "image",
         mediaUrl: tempMediaDataUrl || ""
       });
     }
@@ -433,18 +431,16 @@
 
   window.editLeader = function (index) {
     const leader = leaders[index];
-    editingIndexEl.value = index;
-    nameInput.value  = leader.name || "";
-    roleInput.value  = leader.role || "";
-    linkInput.value  = leader.link || "";
-    tagsInput.value  = (leader.tags || []).join(", ");
-    introInput.value = leader.introShort || "";
-
-    tempMediaDataUrl = leader.mediaUrl || "";
-    tempMediaType    = leader.mediaType || "image";
+    editingIndexEl.value  = index;
+    nameInput.value       = leader.name || "";
+    roleInput.value       = leader.role || "";
+    linkInput.value       = leader.link || "";
+    tagsInput.value       = (leader.tags || []).join(", ");
+    introInput.value      = leader.introShort || "";
+    tempMediaDataUrl      = leader.mediaUrl || "";
 
     if (tempMediaDataUrl) {
-      showPreview(tempMediaType, tempMediaDataUrl);
+      showPreview(tempMediaDataUrl);
     } else {
       clearPreview();
     }
