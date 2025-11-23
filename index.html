@@ -310,33 +310,33 @@
         <!-- 광고 배너 설정 -->
         <div class="admin-title">광고 배너 관리</div>
 
-        <input type="hidden" id="editingAdIndex" value="-1">
+        <input type="hidden" id="editingAdIndex" value="-1" />
 
         <div class="form-group">
           <label for="adLinkUrl">광고 링크 URL</label>
-          <input type="text" id="adLinkUrl" placeholder="예) https://youtube.com/@yourchannel 또는 광고주 사이트">
+          <input type="text" id="adLinkUrl" placeholder="예) https://youtube.com/@yourchannel 또는 광고주 사이트" />
         </div>
 
         <div class="form-group">
           <label for="adText">광고 문구 (배너에서 흘러갈 텍스트)</label>
-          <input type="text" id="adText" placeholder="예) so.t 채널에서 다음 여행 준비하기">
+          <input type="text" id="adText" placeholder="예) so.t 채널에서 다음 여행 준비하기" />
         </div>
 
         <div class="form-group inline">
           <label>
-            <input type="checkbox" id="adEnabled" checked> 이 광고 노출
+            <input type="checkbox" id="adEnabled" checked /> 이 광고 노출
           </label>
         </div>
 
         <div class="form-group">
           <label>배너 이미지 (가로형 이미지)</label>
-          <input type="file" id="adImageFile" accept="image/*">
+          <input type="file" id="adImageFile" accept="image/*" />
           <small>파일 선택 또는 아래 영역에 드래그 앤 드롭. (이미지 전용)</small>
           <div id="adDropZone" class="drop-zone">
             여기로 광고 이미지를 끌어다 놓으세요.
           </div>
           <div id="adPreviewWrap" class="preview-wrap">
-            <img id="adPreviewImage" src="" alt="광고 미리보기">
+            <img id="adPreviewImage" src="" alt="광고 미리보기" />
           </div>
         </div>
 
@@ -346,41 +346,41 @@
           <button class="btn btn-outline btn-xs" id="newAdBtn">+ 새 광고 추가</button>
         </div>
 
-        <hr style="margin:14px 0;">
+        <hr style="margin:14px 0;" />
 
         <div class="section-label">광고 리스트</div>
         <div class="ad-list" id="adList"></div>
 
-        <hr style="margin:14px 0;">
+        <hr style="margin:14px 0;" />
 
         <!-- 리더 입력 -->
         <div class="section-label" style="margin-top:2px;">리더 정보 입력 / 수정</div>
 
-        <input type="hidden" id="editingLeaderIndex" value="-1">
+        <input type="hidden" id="editingLeaderIndex" value="-1" />
 
         <div class="form-group">
           <label for="leaderName">이름</label>
-          <input type="text" id="leaderName" placeholder="예) 김철수">
+          <input type="text" id="leaderName" placeholder="예) 김철수" />
         </div>
 
         <div class="form-group">
           <label for="leaderRole">역할 / 직함</label>
-          <input type="text" id="leaderRole" placeholder="예) 베트남 장기 체류 리더 · 10년 차 가이드">
+          <input type="text" id="leaderRole" placeholder="예) 베트남 장기 체류 리더 · 10년 차 가이드" />
         </div>
 
         <div class="form-group">
           <label for="leaderLink">상담 / 신청 링크 (구글폼 URL)</label>
-          <input type="text" id="leaderLink" placeholder="예) https://docs.google.com/forms/...">
+          <input type="text" id="leaderLink" placeholder="예) https://docs.google.com/forms/..." />
         </div>
 
         <div class="form-group">
           <label for="leaderSheetUrl">응답 시트 링크 (구글 시트 URL)</label>
-          <input type="text" id="leaderSheetUrl" placeholder="예) https://docs.google.com/spreadsheets/...">
+          <input type="text" id="leaderSheetUrl" placeholder="예) https://docs.google.com/spreadsheets/..." />
         </div>
 
         <div class="form-group">
           <label for="leaderTags">키워드 태그 (쉼표로 구분)</label>
-          <input type="text" id="leaderTags" placeholder="예) 장기 체류, 로컬 생활, 루틴 여행">
+          <input type="text" id="leaderTags" placeholder="예) 장기 체류, 로컬 생활, 루틴 여행" />
         </div>
 
         <div class="form-group">
@@ -391,31 +391,38 @@
         <div class="section-label">리더별 SNS 채널</div>
         <div class="form-group">
           <label for="leaderYoutube">YouTube URL</label>
-          <input type="text" id="leaderYoutube" placeholder="https://www.youtube.com/@leaderchannel">
+          <input type="text" id="leaderYoutube" placeholder="https://www.youtube.com/@leaderchannel" />
         </div>
         <div class="form-group">
           <label for="leaderTiktok">TikTok URL</label>
-          <input type="text" id="leaderTiktok" placeholder="https://www.tiktok.com/@leaderid">
+          <input type="text" id="leaderTiktok" placeholder="https://www.tiktok.com/@leaderid" />
         </div>
         <div class="form-group">
           <label for="leaderInstagram">Instagram URL</label>
-          <input type="text" id="leaderInstagram" placeholder="https://www.instagram.com/leaderid">
+          <input type="text" id="leaderInstagram" placeholder="https://www.instagram.com/leaderid" />
         </div>
         <div class="form-group">
           <label for="leaderFacebook">Facebook URL</label>
-          <input type="text" id="leaderFacebook" placeholder="https://www.facebook.com/leaderpage">
+          <input type="text" id="leaderFacebook" placeholder="https://www.facebook.com/leaderpage" />
         </div>
 
         <div class="form-group">
           <label>프로필 이미지 (이미지 파일)</label>
-          <input type="file" id="leaderMediaFile" accept="image/*">
+          <input type="file" id="leaderMediaFile" accept="image/*" />
           <small>파일 선택 또는 아래 영역에 드래그 앤 드롭 (이미지 전용).</small>
           <div id="leaderDropZone" class="drop-zone">
             여기로 프로필 이미지를 끌어다 놓으세요.
           </div>
           <div id="leaderPreviewWrap" class="preview-wrap">
-            <img id="leaderPreviewImage" src="" alt="리더 미리보기">
+            <img id="leaderPreviewImage" src="" alt="리더 미리보기" />
           </div>
+        </div>
+
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="leaderEnabled" checked /> 이 리더 노출
+          </label>
+          <small>체크 해제하면 공개 페이지에서 이 리더 카드가 숨겨집니다.</small>
         </div>
 
         <div class="form-group inline" style="margin-top:4px;">
@@ -428,10 +435,10 @@
       <div class="admin-card">
         <div class="admin-title-row">
           <div class="admin-title" style="margin-bottom:0;">리더 리스트</div>
-          <button class="btn-new-leader" id="newLeaderBtn2">+ 새 리더 추가</button>
+          <button class="btn-new-leader" id="newLeaderBtn">+ 새 리더 추가</button>
         </div>
         <div class="leader-list" id="leaderList"></div>
-        <hr style="margin:10px 0;">
+        <hr style="margin:10px 0;" />
         <div class="admin-title" style="margin-top:4px;">leaders.json 생성 / 복사</div>
         <div style="display:flex;gap:8px;margin-bottom:6px;">
           <button class="btn btn-primary" id="generateJsonBtn">JSON 생성하기</button>
@@ -440,12 +447,12 @@
         </div>
         <textarea id="jsonOutput" class="json-area" placeholder="여기에 leaders.json 내용이 생성됩니다." readonly></textarea>
         <div class="help-box">
-          <b>[GitHub에 붙여 넣는 방법]</b><br>
-          1) 위에서 광고 + 리더들을 모두 원하는 대로 추가/수정/삭제한 뒤, <b>JSON 생성하기</b> 버튼을 누릅니다.<br>
-          2) <b>JSON 복사하기</b> 버튼을 눌러 leaders.json 내용을 클립보드에 복사합니다.<br>
-          3) <b>GitHub leaders.json 열기</b> 버튼을 눌러 GitHub의 leaders.json 파일 편집 화면으로 이동합니다.<br>
-          4) GitHub에서 내용 전체 선택(Ctrl+A) 후 삭제 → 복사한 JSON을 붙여 넣기(Ctrl+V).<br>
-          5) 아래쪽 <b>Commit changes</b> 버튼을 눌러 저장.<br>
+          <b>[GitHub에 붙여 넣는 방법]</b><br />
+          1) 위에서 광고 + 리더들을 모두 원하는 대로 추가/수정/삭제한 뒤, <b>JSON 생성하기</b> 버튼을 누릅니다.<br />
+          2) <b>JSON 복사하기</b> 버튼을 눌러 leaders.json 내용을 클립보드에 복사합니다.<br />
+          3) <b>GitHub leaders.json 열기</b> 버튼을 눌러 GitHub의 leaders.json 파일 편집 화면으로 이동합니다.<br />
+          4) GitHub에서 내용 전체 선택(Ctrl+A) 후 삭제 → 복사한 JSON을 붙여 넣기(Ctrl+V).<br />
+          5) 아래쪽 <b>Commit changes</b> 버튼을 눌러 저장.<br />
           6) 공개 페이지(<code>https://wordycow.github.io/so.t-leader-choice/</code>)에서 새로고침하면 모든 사용자가 동일한 정보를 보게 됩니다.
         </div>
       </div>
@@ -454,7 +461,7 @@
 </div>
 
 <script>
-  const DRAFT_KEY = "so_t_leaders_ads_draft_simple";
+  const DRAFT_KEY = "so_t_leaders_ads_draft_final";
 
   function getDefaultData() {
     return {
@@ -468,7 +475,8 @@
           sheetUrl: "",
           tags: ["장기 체류", "로컬 생활", "루틴 여행"],
           introShort: "여행이 아니라 ‘살아보는 시간’을 설계합니다. 최소 1개월 이상 머무는 루트를 함께 짭니다.",
-          sns: { youtube: "", tiktok: "", instagram: "", facebook: "" }
+          sns: { youtube: "", tiktok: "", instagram: "", facebook: "" },
+          enabled: true
         }
       ]
     };
@@ -484,6 +492,7 @@
       if (!Array.isArray(parsed.leaders)) parsed.leaders = [];
       parsed.leaders.forEach(l => {
         if (!l.sns) l.sns = { youtube: "", tiktok: "", instagram: "", facebook: "" };
+        if (typeof l.enabled !== "boolean") l.enabled = true;
       });
       return parsed;
     } catch {
@@ -499,7 +508,7 @@
   let ads     = data.ads;
   let leaders = data.leaders;
 
-  /* ---------- 광고 관련 ---------- */
+  /* ----- 광고 관련 ----- */
 
   const editingAdIndexEl   = document.getElementById("editingAdIndex");
   const adLinkInput        = document.getElementById("adLinkUrl");
@@ -591,7 +600,7 @@
       return;
     }
     const reader = new FileReader();
-    reader.onload = e => showAdPreview(e.target.result);
+    reader.onload = (e) => showAdPreview(e.target.result);
     reader.readAsDataURL(file);
   }
 
@@ -600,19 +609,19 @@
     handleAdFile(file);
   });
 
-  ["dragenter","dragover"].forEach(evt => {
-    adDropZone.addEventListener(evt, e => {
+  ["dragenter","dragover"].forEach((evt) => {
+    adDropZone.addEventListener(evt, (e) => {
       e.preventDefault(); e.stopPropagation();
       adDropZone.classList.add("dragover");
     });
   });
-  ["dragleave","drop"].forEach(evt => {
-    adDropZone.addEventListener(evt, e => {
+  ["dragleave","drop"].forEach((evt) => {
+    adDropZone.addEventListener(evt, (e) => {
       e.preventDefault(); e.stopPropagation();
       adDropZone.classList.remove("dragover");
     });
   });
-  adDropZone.addEventListener("drop", e => {
+  adDropZone.addEventListener("drop", (e) => {
     const file = e.dataTransfer.files[0];
     handleAdFile(file);
   });
@@ -622,7 +631,7 @@
     adLinkInput.value   = "";
     adTextInput.value   = "";
     adEnabledInput.checked = true;
-    adImageInput.value = "";
+    adImageInput.value  = "";
     clearAdPreview();
   });
 
@@ -631,7 +640,7 @@
     adLinkInput.value   = "";
     adTextInput.value   = "";
     adEnabledInput.checked = true;
-    adImageInput.value = "";
+    adImageInput.value  = "";
     clearAdPreview();
   });
 
@@ -689,7 +698,7 @@
     renderAds();
   };
 
-  /* ---------- 리더 관련 (간단한 CRUD, JSON 구조 맞추기) ---------- */
+  /* ----- 리더 관련 ----- */
 
   const editingLeaderIndexEl = document.getElementById("editingLeaderIndex");
   const leaderListEl         = document.getElementById("leaderList");
@@ -707,7 +716,8 @@
   const leaderDropZone       = document.getElementById("leaderDropZone");
   const leaderPreviewWrap    = document.getElementById("leaderPreviewWrap");
   const leaderPreviewImage   = document.getElementById("leaderPreviewImage");
-  const newLeaderBtn2        = document.getElementById("newLeaderBtn2");
+  const newLeaderBtn         = document.getElementById("newLeaderBtn");
+  const leaderEnabledInput   = document.getElementById("leaderEnabled");
 
   function renderLeaders() {
     leaderListEl.innerHTML = "";
@@ -715,7 +725,6 @@
       leaderListEl.innerHTML = "<p style='font-size:12px;color:#6b7280;'>등록된 리더가 없습니다.</p>";
       return;
     }
-
     leaders.forEach((leader, index) => {
       const sns = leader.sns || {};
       const snsParts = [];
@@ -732,6 +741,13 @@
         ? `<a href="${leader.sheetUrl}" target="_blank" rel="noopener noreferrer" class="link-small">응답 시트 열기</a>`
         : "<span style='font-size:10px;color:#9ca3af;'>응답 시트 링크 없음</span>";
 
+      const enabled = leader.enabled !== false;
+      const enableBadge = enabled
+        ? `<span class="enable-badge enable-yes">노출</span>`
+        : `<span class="enable-badge enable-no">비노출</span>`;
+      const toggleBtnClass = enabled ? "btn btn-primary btn-xs" : "btn btn-outline btn-xs";
+      const toggleBtnLabel = enabled ? "노출 끄기" : "노출 켜기";
+
       const item = document.createElement("div");
       item.className = "leader-item";
       item.innerHTML = `
@@ -739,7 +755,9 @@
           <div style="display:flex;align-items:center;">
             ${thumbHtml}
             <div>
-              <div class="leader-item-name">${leader.name || "(이름 없음)"}</div>
+              <div class="leader-item-name">
+                ${leader.name || "(이름 없음)"} ${enableBadge}
+              </div>
               <div style="font-size:11px;color:#6b7280;">${leader.role || ""}</div>
               ${
                 leader.link
@@ -750,9 +768,7 @@
               ${sheetLinkHtml}
               ${
                 snsParts.length
-                  ? `<div style="font-size:10px;color:#6b7280;margin-top:2px;">SNS: ${snsParts.join(
-                      ", "
-                    )}</div>`
+                  ? `<div style="font-size:10px;color:#6b7280;margin-top:2px;">SNS: ${snsParts.join(", ")}</div>`
                   : ""
               }
               <div style="font-size:10px;color:#9ca3af;margin-top:2px;">
@@ -761,6 +777,9 @@
             </div>
           </div>
           <div>
+            <button class="${toggleBtnClass}" onclick="toggleLeaderEnable(${index})">
+              ${toggleBtnLabel}
+            </button>
             <button class="btn btn-secondary btn-xs" onclick="editLeader(${index})">수정</button>
             <button class="btn btn-danger btn-xs" onclick="deleteLeader(${index})">삭제</button>
           </div>
@@ -789,7 +808,7 @@
       return;
     }
     const reader = new FileReader();
-    reader.onload = e => showLeaderPreview(e.target.result);
+    reader.onload = (e) => showLeaderPreview(e.target.result);
     reader.readAsDataURL(file);
   }
 
@@ -798,19 +817,19 @@
     handleLeaderFile(file);
   });
 
-  ["dragenter","dragover"].forEach(evt => {
-    leaderDropZone.addEventListener(evt, e => {
+  ["dragenter","dragover"].forEach((evt) => {
+    leaderDropZone.addEventListener(evt, (e) => {
       e.preventDefault(); e.stopPropagation();
       leaderDropZone.classList.add("dragover");
     });
   });
-  ["dragleave","drop"].forEach(evt => {
-    leaderDropZone.addEventListener(evt, e => {
+  ["dragleave","drop"].forEach((evt) => {
+    leaderDropZone.addEventListener(evt, (e) => {
       e.preventDefault(); e.stopPropagation();
       leaderDropZone.classList.remove("dragover");
     });
   });
-  leaderDropZone.addEventListener("drop", e => {
+  leaderDropZone.addEventListener("drop", (e) => {
     const file = e.dataTransfer.files[0];
     handleLeaderFile(file);
   });
@@ -828,11 +847,12 @@
     leaderInstagramInput.value = "";
     leaderFacebookInput.value  = "";
     leaderMediaInput.value     = "";
+    leaderEnabledInput.checked = true;
     clearLeaderPreview();
   }
 
   document.getElementById("clearLeaderFormBtn").addEventListener("click", clearLeaderForm);
-  newLeaderBtn2.addEventListener("click", clearLeaderForm);
+  newLeaderBtn.addEventListener("click", clearLeaderForm);
 
   document.getElementById("saveLeaderBtn").addEventListener("click", () => {
     const name = leaderNameInput.value.trim();
@@ -844,7 +864,7 @@
     const role      = leaderRoleInput.value.trim();
     const link      = leaderLinkInput.value.trim();
     const sheetUrl  = leaderSheetInput.value.trim();
-    const tags      = leaderTagsInput.value.split(",").map(t => t.trim()).filter(Boolean);
+    const tags      = leaderTagsInput.value.split(",").map((t) => t.trim()).filter(Boolean);
     const introShort= leaderIntroInput.value.trim();
     const sns = {
       youtube:   leaderYoutubeInput.value.trim(),
@@ -852,8 +872,9 @@
       instagram: leaderInstagramInput.value.trim(),
       facebook:  leaderFacebookInput.value.trim()
     };
-    const idx  = parseInt(editingLeaderIndexEl.value, 10);
-    const base = { name, role, link, sheetUrl, tags, introShort, sns };
+    const enabled   = leaderEnabledInput.checked;
+    const idx       = parseInt(editingLeaderIndexEl.value, 10);
+    const base      = { name, role, link, sheetUrl, tags, introShort, sns, enabled };
 
     if (idx >= 0) {
       const prev = leaders[idx];
@@ -890,6 +911,7 @@
     leaderTiktokInput.value    = sns.tiktok    || "";
     leaderInstagramInput.value = sns.instagram || "";
     leaderFacebookInput.value  = sns.facebook  || "";
+    leaderEnabledInput.checked = l.enabled !== false;
     tempLeaderMediaDataUrl     = l.mediaUrl || "";
     if (tempLeaderMediaDataUrl) showLeaderPreview(tempLeaderMediaDataUrl);
     else clearLeaderPreview();
@@ -905,7 +927,12 @@
     clearLeaderForm();
   };
 
-  /* ---------- JSON 생성/복사 ---------- */
+  window.toggleLeaderEnable = function (index) {
+    leaders[index].enabled = !leaders[index].enabled;
+    data.leaders = leaders;
+    saveDraft();
+    renderLeaders();
+  };
 
   generateJsonBtn.addEventListener("click", () => {
     const jsonObj = { ads, leaders };
@@ -937,7 +964,6 @@
     );
   });
 
-  /* 초기 렌더 */
   renderAds();
   renderLeaders();
 </script>
