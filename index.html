@@ -203,6 +203,16 @@
       line-height: 1.5;
     }
 
+    .banner-box {
+      margin-bottom: 10px;
+      padding: 8px;
+      border-radius: 10px;
+      background-color: #f3f4ff;
+      border: 1px solid #c7d2fe;
+      font-size: 11px;
+      color: #374151;
+    }
+
     @media (max-width: 900px) {
       .admin-layout { grid-template-columns: 1fr; }
     }
@@ -215,15 +225,41 @@
     <header class="page-header">
       <div class="page-title">여행 리더 관리자 페이지 (JSON 생성기)</div>
       <p class="page-subtitle">
-        이 페이지에서 리더 정보를 추가 / 수정 / 삭제한 뒤, 아래 JSON을 복사하여<br>
+        이 페이지에서 리더 정보를 추가 / 수정 / 삭제하고, 아래 JSON을 복사하여<br>
         <b>so.t-leader-choice</b> 레포의 <code>leaders.json</code> 파일에 붙여 넣으면<br>
         PC / 모바일 / 모든 사용자의 공개 페이지가 동일하게 업데이트됩니다.
       </p>
     </header>
 
     <div class="admin-layout">
-      <!-- 입력 폼 -->
+      <!-- 배너 + 입력 폼 -->
       <div class="admin-card">
+        <!-- 배너 설정 -->
+        <div class="banner-box">
+          <div class="admin-title" style="margin-bottom:6px;">하단 광고 / 채널 링크 바 설정</div>
+          <div class="form-group">
+            <label for="bannerLabel">배너 문구</label>
+            <input type="text" id="bannerLabel" placeholder="예) 🌏 so.t 채널에서 다음 여행 준비하기">
+          </div>
+          <div class="form-group">
+            <label for="bannerYoutube">YouTube 채널 URL</label>
+            <input type="text" id="bannerYoutube" placeholder="https://www.youtube.com/@yourchannel">
+          </div>
+          <div class="form-group">
+            <label for="bannerTiktok">TikTok 채널 URL</label>
+            <input type="text" id="bannerTiktok" placeholder="https://www.tiktok.com/@yourid">
+          </div>
+          <div class="form-group">
+            <label for="bannerInstagram">Instagram 채널 URL</label>
+            <input type="text" id="bannerInstagram" placeholder="https://www.instagram.com/yourid">
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label for="bannerFacebook">Facebook 페이지 URL</label>
+            <input type="text" id="bannerFacebook" placeholder="https://www.facebook.com/yourpage">
+          </div>
+        </div>
+
+        <!-- 리더 입력 폼 -->
         <div class="form-row-top">
           <div class="admin-title">리더 정보 입력 / 수정</div>
           <button class="btn btn-outline" id="newLeaderBtn">+ 새 리더 추가</button>
@@ -290,7 +326,7 @@
         <textarea id="jsonOutput" class="json-area" placeholder="여기에 leaders.json 내용이 생성됩니다." readonly></textarea>
         <div class="help-box">
           <b>[GitHub에 붙여 넣는 방법]</b><br>
-          1) 위에서 리더들을 모두 원하는 대로 추가/수정/삭제한 뒤, <b>JSON 생성하기</b> 버튼을 누릅니다.<br>
+          1) 위에서 배너 + 리더들을 모두 원하는 대로 추가/수정/삭제한 뒤, <b>JSON 생성하기</b> 버튼을 누릅니다.<br>
           2) <b>JSON 복사하기</b> 버튼을 눌러 leaders.json 내용을 클립보드에 복사합니다.<br>
           3) <b>GitHub leaders.json 열기</b> 버튼을 눌러 GitHub의 leaders.json 파일 편집 화면으로 이동합니다.<br>
           4) GitHub에서 내용 전체 선택(Ctrl+A) 후 삭제 → 복사한 JSON을 붙여 넣기(Ctrl+V).<br>
@@ -303,43 +339,61 @@
 </div>
 
 <script>
-  // 브라우저 안에서만 사용하는 임시 저장용 (관리자 편의용)
-  const DRAFT_KEY = "so_t_leaders_draft_v1";
+  // 브라우저 안 임시 저장용 (배너 + 리더 통합)
+  const DRAFT_KEY = "so_t_leaders_draft_v2";
 
-  function getDefaultLeaders() {
-    return [
-      {
-        name: "김현수",
-        role: "베트남 장기 체류 리더 · 10년 차 가이드",
-        mediaUrl: "https://via.placeholder.com/300x380.png?text=Leader+1",
-        link: "#",
-        sheetUrl: "",
-        tags: ["장기 체류", "로컬 생활", "루틴 여행"],
-        introShort: "여행이 아니라 ‘살아보는 시간’을 설계합니다. 최소 1개월 이상 머무는 루트를 함께 짭니다."
-      }
-    ];
+  function getDefaultData() {
+    return {
+      banner: {
+        label: "🌏 so.t 채널에서 다음 여행 준비하기",
+        youtube: "",
+        tiktok: "",
+        instagram: "",
+        facebook: ""
+      },
+      leaders: [
+        {
+          name: "김현수",
+          role: "베트남 장기 체류 리더 · 10년 차 가이드",
+          mediaUrl: "https://via.placeholder.com/300x380.png?text=Leader+1",
+          link: "#",
+          sheetUrl: "",
+          tags: ["장기 체류", "로컬 생활", "루틴 여행"],
+          introShort: "여행이 아니라 ‘살아보는 시간’을 설계합니다. 최소 1개월 이상 머무는 루트를 함께 짭니다."
+        }
+      ]
+    };
   }
 
   function loadDraft() {
     try {
       const raw = localStorage.getItem(DRAFT_KEY);
-      if (!raw) return getDefaultLeaders();
+      if (!raw) return getDefaultData();
       const parsed = JSON.parse(raw);
-      if (!Array.isArray(parsed) || parsed.length === 0) return getDefaultLeaders();
+      if (!parsed || typeof parsed !== "object") return getDefaultData();
+      if (!Array.isArray(parsed.leaders)) parsed.leaders = [];
+      if (!parsed.banner) parsed.banner = getDefaultData().banner;
       return parsed;
     } catch {
-      return getDefaultLeaders();
+      return getDefaultData();
     }
   }
 
   function saveDraft() {
-    localStorage.setItem(DRAFT_KEY, JSON.stringify(leaders));
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
   }
 
-  let leaders = loadDraft();
+  let data   = loadDraft();
+  let leaders = data.leaders;
 
   const leaderListEl    = document.getElementById("leaderList");
   const editingIndexEl  = document.getElementById("editingIndex");
+
+  const bannerLabelInput    = document.getElementById("bannerLabel");
+  const bannerYoutubeInput  = document.getElementById("bannerYoutube");
+  const bannerTiktokInput   = document.getElementById("bannerTiktok");
+  const bannerInstagramInput= document.getElementById("bannerInstagram");
+  const bannerFacebookInput = document.getElementById("bannerFacebook");
 
   const nameInput       = document.getElementById("leaderName");
   const roleInput       = document.getElementById("leaderRole");
@@ -360,6 +414,27 @@
 
   let tempMediaDataUrl  = "";
 
+  // ---- 초기 배너 값 채우기 ----
+  function fillBannerForm() {
+    const b = data.banner || {};
+    bannerLabelInput.value     = b.label     || "";
+    bannerYoutubeInput.value   = b.youtube   || "";
+    bannerTiktokInput.value    = b.tiktok    || "";
+    bannerInstagramInput.value = b.instagram || "";
+    bannerFacebookInput.value  = b.facebook  || "";
+  }
+
+  function updateBannerFromForm() {
+    data.banner = {
+      label:     bannerLabelInput.value.trim(),
+      youtube:   bannerYoutubeInput.value.trim(),
+      tiktok:    bannerTiktokInput.value.trim(),
+      instagram: bannerInstagramInput.value.trim(),
+      facebook:  bannerFacebookInput.value.trim()
+    };
+  }
+
+  // ---- 리더 리스트 렌더링 ----
   function renderLeaderList() {
     leaderListEl.innerHTML = "";
     if (leaders.length === 0) {
@@ -369,6 +444,7 @@
     leaders.forEach((leader, index) => {
       const item = document.createElement("div");
       item.className = "leader-item";
+
       const sheetLinkHtml = leader.sheetUrl
         ? `<a href="${leader.sheetUrl}" target="_blank" rel="noopener noreferrer" class="link-small">응답 시트 열기</a>`
         : "<span style='font-size:10px;color:#9ca3af;'>응답 시트 링크 없음</span>";
@@ -422,7 +498,7 @@
       return;
     }
     const reader = new FileReader();
-    reader.onload = e => {
+    reader.onload = (e) => {
       const dataUrl = e.target.result;
       showPreview(dataUrl);
     };
@@ -434,30 +510,30 @@
     handleFile(file);
   });
 
-  ["dragenter","dragover"].forEach(evt => {
-    dropZone.addEventListener(evt, e => {
+  ["dragenter","dragover"].forEach((evt) => {
+    dropZone.addEventListener(evt, (e) => {
       e.preventDefault(); e.stopPropagation();
       dropZone.classList.add("dragover");
     });
   });
-  ["dragleave","drop"].forEach(evt => {
-    dropZone.addEventListener(evt, e => {
+  ["dragleave","drop"].forEach((evt) => {
+    dropZone.addEventListener(evt, (e) => {
       e.preventDefault(); e.stopPropagation();
       dropZone.classList.remove("dragover");
     });
   });
-  dropZone.addEventListener("drop", e => {
+  dropZone.addEventListener("drop", (e) => {
     const file = e.dataTransfer.files[0];
     handleFile(file);
   });
 
   function clearForm() {
     editingIndexEl.value = -1;
-    nameInput.value = "";
-    roleInput.value = "";
-    linkInput.value = "";
+    nameInput.value  = "";
+    roleInput.value  = "";
+    linkInput.value  = "";
     sheetInput.value = "";
-    tagsInput.value = "";
+    tagsInput.value  = "";
     introInput.value = "";
     mediaInput.value = "";
     clearPreview();
@@ -466,18 +542,18 @@
   document.getElementById("clearFormBtn").addEventListener("click", clearForm);
   newLeaderBtn.addEventListener("click", clearForm);
 
-  document.getElementById("saveLeaderBtn").addEventListener("click", function () {
+  document.getElementById("saveLeaderBtn").addEventListener("click", () => {
     const name = nameInput.value.trim();
     if (!name) {
       alert("이름은 필수입니다.");
       return;
     }
-    const role = roleInput.value.trim();
-    const link = linkInput.value.trim();
-    const sheetUrl = sheetInput.value.trim();
-    const tags = tagsInput.value.split(",").map(t => t.trim()).filter(Boolean);
-    const introShort = introInput.value.trim();
-    const index = parseInt(editingIndexEl.value, 10);
+    const role      = roleInput.value.trim();
+    const link      = linkInput.value.trim();
+    const sheetUrl  = sheetInput.value.trim();
+    const tags      = tagsInput.value.split(",").map((t) => t.trim()).filter(Boolean);
+    const introShort= introInput.value.trim();
+    const index     = parseInt(editingIndexEl.value, 10);
 
     const baseData = { name, role, link, sheetUrl, tags, introShort };
 
@@ -489,13 +565,13 @@
         mediaUrl: tempMediaDataUrl || prev.mediaUrl || ""
       };
     } else {
-      // 새 리더 추가
       leaders.push({
         ...baseData,
         mediaUrl: tempMediaDataUrl || ""
       });
     }
 
+    updateBannerFromForm();
     saveDraft();
     renderLeaderList();
     alert("임시 저장되었습니다. JSON 생성하기 버튼을 눌러 leaders.json 내용을 업데이트하세요.");
@@ -504,14 +580,14 @@
 
   window.editLeader = function (index) {
     const leader = leaders[index];
-    editingIndexEl.value  = index;
-    nameInput.value       = leader.name || "";
-    roleInput.value       = leader.role || "";
-    linkInput.value       = leader.link || "";
-    sheetInput.value      = leader.sheetUrl || "";
-    tagsInput.value       = (leader.tags || []).join(", ");
-    introInput.value      = leader.introShort || "";
-    tempMediaDataUrl      = leader.mediaUrl || "";
+    editingIndexEl.value = index;
+    nameInput.value  = leader.name || "";
+    roleInput.value  = leader.role || "";
+    linkInput.value  = leader.link || "";
+    sheetInput.value = leader.sheetUrl || "";
+    tagsInput.value  = (leader.tags || []).join(", ");
+    introInput.value = leader.introShort || "";
+    tempMediaDataUrl = leader.mediaUrl || "";
 
     if (tempMediaDataUrl) {
       showPreview(tempMediaDataUrl);
@@ -524,6 +600,7 @@
   window.deleteLeader = function (index) {
     if (!confirm("이 리더를 삭제할까요?")) return;
     leaders.splice(index, 1);
+    updateBannerFromForm();
     saveDraft();
     renderLeaderList();
     clearForm();
@@ -539,14 +616,19 @@
   };
 
   // JSON 생성 / 복사
-  generateJsonBtn.addEventListener("click", function () {
-    const json = JSON.stringify(leaders, null, 2);
+  generateJsonBtn.addEventListener("click", () => {
+    updateBannerFromForm();
+    const jsonObj = {
+      banner: data.banner,
+      leaders: leaders
+    };
+    const json = JSON.stringify(jsonObj, null, 2);
     jsonOutput.value = json;
     jsonOutput.scrollTop = 0;
     alert("leaders.json 내용이 생성되었습니다. 아래 영역을 복사해서 GitHub에 붙여 넣으세요.");
   });
 
-  copyJsonBtn.addEventListener("click", async function () {
+  copyJsonBtn.addEventListener("click", async () => {
     if (!jsonOutput.value.trim()) {
       alert("먼저 'JSON 생성하기' 버튼을 눌러 leaders.json 내용을 생성해주세요.");
       return;
@@ -554,7 +636,7 @@
     try {
       await navigator.clipboard.writeText(jsonOutput.value);
       alert("JSON이 클립보드에 복사되었습니다. GitHub의 leaders.json에 붙여 넣으세요.");
-    } catch (e) {
+    } catch {
       jsonOutput.select();
       document.execCommand("copy");
       alert("JSON이 복사되었습니다. (클립보드 API 미지원 브라우저에서는 선택된 내용을 직접 확인해 주세요.)");
@@ -562,14 +644,15 @@
   });
 
   // GitHub leaders.json 페이지 열기
-  openJsonBtn.addEventListener("click", function () {
+  openJsonBtn.addEventListener("click", () => {
     window.open(
       "https://github.com/wordycow/so.t-leader-choice/blob/main/leaders.json",
       "_blank"
     );
   });
 
-  // 초기 렌더
+  // 초기화
+  fillBannerForm();
   renderLeaderList();
 </script>
 
