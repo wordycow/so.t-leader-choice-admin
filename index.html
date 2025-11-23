@@ -332,11 +332,9 @@
         </div>
 
         <div class="form-group inline">
-          <div>
-            <label>
-              <input type="checkbox" id="adEnabled" checked> 이 광고 노출
-            </label>
-          </div>
+          <label>
+            <input type="checkbox" id="adEnabled" checked> 이 광고 노출
+          </label>
         </div>
 
         <div class="form-group">
@@ -417,8 +415,8 @@
           <input type="text" id="leaderFacebook" placeholder="https://www.facebook.com/leaderpage">
         </div>
 
+        <div class="section-label">프로필 이미지 (이미지 파일)</div>
         <div class="form-group">
-          <label>프로필 이미지 (이미지 파일)</label>
           <input type="file" id="leaderMediaFile" accept="image/*">
           <small>파일 선택 또는 아래 영역에 드래그 앤 드롭 (이미지 전용).</small>
           <div id="leaderDropZone" class="drop-zone">
@@ -427,6 +425,15 @@
           <div id="leaderPreviewWrap" class="preview-wrap">
             <img id="leaderPreviewImage" src="" alt="리더 미리보기">
           </div>
+        </div>
+
+        <div class="form-group">
+          <label for="leaderCropX">이미지 가로 위치 (왼쪽↔오른쪽, 0~100)</label>
+          <div class="inline" style="gap:12px;">
+            <input type="range" id="leaderCropX" min="0" max="100" value="50" style="flex:1;">
+            <span id="leaderCropXValue" style="width:40px;font-size:11px;color:#4b5563;">50%</span>
+          </div>
+          <small>리더 카드 안에서 사진이 보이는 가로 위치입니다. (가운데 기본값 50%)</small>
         </div>
 
         <div class="form-group inline" style="margin-top:4px;">
@@ -467,7 +474,7 @@
 <input type="file" id="thumbFileInput" accept="image/*" style="display:none;">
 
 <script>
-  const DRAFT_KEY = "so_t_leaders_ads_draft_v1";
+  const DRAFT_KEY = "so_t_leaders_ads_draft_v2";
 
   function getDefaultData() {
     return {
@@ -476,12 +483,13 @@
         {
           name: "김현수",
           role: "베트남 장기 체류 리더 · 10년 차 가이드",
-          mediaUrl: "https://via.placeholder.com/300x380.png?text=Leader+1",
+          mediaUrl: "https://via.placeholder.com/400x225.png?text=Leader+1",
           link: "#",
           sheetUrl: "",
           tags: ["장기 체류", "로컬 생활", "루틴 여행"],
           introShort: "여행이 아니라 ‘살아보는 시간’을 설계합니다. 최소 1개월 이상 머무는 루트를 함께 짭니다.",
-          sns: { youtube: "", tiktok: "", instagram: "", facebook: "" }
+          sns: { youtube: "", tiktok: "", instagram: "", facebook: "" },
+          cropX: 50
         }
       ]
     };
@@ -704,6 +712,12 @@
   const leaderPreviewImage   = document.getElementById("leaderPreviewImage");
   const newLeaderBtn         = document.getElementById("newLeaderBtn");
   const thumbFileInput       = document.getElementById("thumbFileInput");
+  const cropXInput           = document.getElementById("leaderCropX");
+  const cropXValue           = document.getElementById("leaderCropXValue");
+
+  cropXInput.addEventListener("input", () => {
+    cropXValue.textContent = cropXInput.value + "%";
+  });
 
   function renderLeaders() {
     leaderListEl.innerHTML = "";
@@ -748,6 +762,7 @@
                   ? `<div style="font-size:10px;color:#6b7280;margin-top:2px;">SNS: ${snsParts.join(", ")}</div>`
                   : ""
               }
+              <div style="font-size:10px;color:#9ca3af;margin-top:2px;">cropX: ${typeof leader.cropX === "number" ? leader.cropX : 50}%</div>
             </div>
           </div>
           <div>
@@ -816,6 +831,7 @@
     reader.onload = e => {
       const dataUrl = e.target.result;
       leaders[index].mediaUrl = dataUrl;
+      if (typeof leaders[index].cropX !== "number") leaders[index].cropX = 50;
       data.leaders = leaders;
       saveDraft();
       renderLeaders();
@@ -882,6 +898,8 @@
     leaderInstagramInput.value = "";
     leaderFacebookInput.value  = "";
     leaderMediaInput.value     = "";
+    cropXInput.value           = 50;
+    cropXValue.textContent     = "50%";
     clearLeaderPreview();
   }
 
@@ -908,8 +926,9 @@
       instagram: leaderInstagramInput.value.trim(),
       facebook:  leaderFacebookInput.value.trim()
     };
-    const idx  = parseInt(editingLeaderIndexEl.value, 10);
-    const base = { name, role, link, sheetUrl, tags, introShort, sns };
+    const cropX     = parseInt(cropXInput.value, 10) || 50;
+    const idx       = parseInt(editingLeaderIndexEl.value, 10);
+    const base = { name, role, link, sheetUrl, tags, introShort, sns, cropX };
 
     if (idx >= 0) {
       const prev = leaders[idx];
@@ -947,6 +966,10 @@
     leaderTiktokInput.value    = sns.tiktok    || "";
     leaderInstagramInput.value = sns.instagram || "";
     leaderFacebookInput.value  = sns.facebook  || "";
+
+    const cx = typeof leader.cropX === "number" ? leader.cropX : 50;
+    cropXInput.value       = cx;
+    cropXValue.textContent = cx + "%";
 
     tempLeaderMediaDataUrl = leader.mediaUrl || "";
     if (tempLeaderMediaDataUrl) showLeaderPreview(tempLeaderMediaDataUrl);
