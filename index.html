@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>여행 리더 관리자 페이지 (광고 + JSON 생성기)</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     * { box-sizing: border-box; }
 
@@ -48,7 +48,7 @@
 
     .admin-layout {
       display: grid;
-      grid-template-columns: 1.15fr 1.05fr;
+      grid-template-columns: 1.1fr 1.1fr;
       gap: 18px;
       margin-top: 8px;
     }
@@ -151,9 +151,7 @@
       box-shadow: 0 4px 10px rgba(37,99,235,0.35);
       cursor: pointer;
     }
-    .btn-new-leader:hover {
-      background-color: #1d4ed8;
-    }
+    .btn-new-leader:hover { background-color: #1d4ed8; }
 
     .ad-list, .leader-list {
       max-height: none;
@@ -210,10 +208,7 @@
     }
 
     .leader-item-name { font-weight: 600; }
-    .ad-item-title {
-      font-weight: 600;
-      font-size: 12px;
-    }
+    .ad-item-title { font-weight: 600; font-size: 12px; }
 
     .link-small {
       font-size: 10px;
@@ -433,7 +428,7 @@
       <div class="admin-card">
         <div class="admin-title-row">
           <div class="admin-title" style="margin-bottom:0;">리더 리스트</div>
-          <button class="btn-new-leader" id="newLeaderBtn">+ 새 리더 추가</button>
+          <button class="btn-new-leader" id="newLeaderBtn2">+ 새 리더 추가</button>
         </div>
         <div class="leader-list" id="leaderList"></div>
         <hr style="margin:10px 0;">
@@ -459,7 +454,7 @@
 </div>
 
 <script>
-  const DRAFT_KEY = "so_t_leaders_ads_draft_v1";
+  const DRAFT_KEY = "so_t_leaders_ads_draft_simple";
 
   function getDefaultData() {
     return {
@@ -468,7 +463,7 @@
         {
           name: "김현수",
           role: "베트남 장기 체류 리더 · 10년 차 가이드",
-          mediaUrl: "https://via.placeholder.com/300x380.png?text=Leader+1",
+          mediaUrl: "https://via.placeholder.com/400x225.png?text=Leader+1",
           link: "#",
           sheetUrl: "",
           tags: ["장기 체류", "로컬 생활", "루틴 여행"],
@@ -487,6 +482,9 @@
       if (!parsed || typeof parsed !== "object") return getDefaultData();
       if (!Array.isArray(parsed.ads)) parsed.ads = [];
       if (!Array.isArray(parsed.leaders)) parsed.leaders = [];
+      parsed.leaders.forEach(l => {
+        if (!l.sns) l.sns = { youtube: "", tiktok: "", instagram: "", facebook: "" };
+      });
       return parsed;
     } catch {
       return getDefaultData();
@@ -501,7 +499,8 @@
   let ads     = data.ads;
   let leaders = data.leaders;
 
-  /* 광고 관련 */
+  /* ---------- 광고 관련 ---------- */
+
   const editingAdIndexEl   = document.getElementById("editingAdIndex");
   const adLinkInput        = document.getElementById("adLinkUrl");
   const adTextInput        = document.getElementById("adText");
@@ -536,8 +535,8 @@
         : `<span class="enable-badge enable-no">비노출</span>`;
 
       const toggleBtnClass = ad.enabled
-        ? "btn btn-primary btn-xs"      // ON → 파란색
-        : "btn btn-outline btn-xs";     // OFF → 회색
+        ? "btn btn-primary btn-xs"
+        : "btn btn-outline btn-xs";
 
       const toggleBtnLabel = ad.enabled ? "노출 끄기" : "노출 켜기";
 
@@ -690,10 +689,224 @@
     renderAds();
   };
 
-  /* 리더 관련은 생략 – 기존 그대로 쓰고 있다면 여기 이어서 들어감 */
-  /* 이하에서는 leaders 배열로 리더 리스트 렌더링 + JSON 생성 등 기존 코드 유지 */
+  /* ---------- 리더 관련 (간단한 CRUD, JSON 구조 맞추기) ---------- */
 
-  /* JSON 생성 / 복사 */
+  const editingLeaderIndexEl = document.getElementById("editingLeaderIndex");
+  const leaderListEl         = document.getElementById("leaderList");
+  const leaderNameInput      = document.getElementById("leaderName");
+  const leaderRoleInput      = document.getElementById("leaderRole");
+  const leaderLinkInput      = document.getElementById("leaderLink");
+  const leaderSheetInput     = document.getElementById("leaderSheetUrl");
+  const leaderTagsInput      = document.getElementById("leaderTags");
+  const leaderIntroInput     = document.getElementById("leaderIntro");
+  const leaderYoutubeInput   = document.getElementById("leaderYoutube");
+  const leaderTiktokInput    = document.getElementById("leaderTiktok");
+  const leaderInstagramInput = document.getElementById("leaderInstagram");
+  const leaderFacebookInput  = document.getElementById("leaderFacebook");
+  const leaderMediaInput     = document.getElementById("leaderMediaFile");
+  const leaderDropZone       = document.getElementById("leaderDropZone");
+  const leaderPreviewWrap    = document.getElementById("leaderPreviewWrap");
+  const leaderPreviewImage   = document.getElementById("leaderPreviewImage");
+  const newLeaderBtn2        = document.getElementById("newLeaderBtn2");
+
+  function renderLeaders() {
+    leaderListEl.innerHTML = "";
+    if (!leaders.length) {
+      leaderListEl.innerHTML = "<p style='font-size:12px;color:#6b7280;'>등록된 리더가 없습니다.</p>";
+      return;
+    }
+
+    leaders.forEach((leader, index) => {
+      const sns = leader.sns || {};
+      const snsParts = [];
+      if (sns.youtube)   snsParts.push("YouTube");
+      if (sns.tiktok)    snsParts.push("TikTok");
+      if (sns.instagram) snsParts.push("Instagram");
+      if (sns.facebook)  snsParts.push("Facebook");
+
+      const thumbHtml = leader.mediaUrl
+        ? `<img src="${leader.mediaUrl}" class="thumb" alt="">`
+        : `<div class="leader-thumb-slot">이미지</div>`;
+
+      const sheetLinkHtml = leader.sheetUrl
+        ? `<a href="${leader.sheetUrl}" target="_blank" rel="noopener noreferrer" class="link-small">응답 시트 열기</a>`
+        : "<span style='font-size:10px;color:#9ca3af;'>응답 시트 링크 없음</span>";
+
+      const item = document.createElement("div");
+      item.className = "leader-item";
+      item.innerHTML = `
+        <div class="leader-item-header">
+          <div style="display:flex;align-items:center;">
+            ${thumbHtml}
+            <div>
+              <div class="leader-item-name">${leader.name || "(이름 없음)"}</div>
+              <div style="font-size:11px;color:#6b7280;">${leader.role || ""}</div>
+              ${
+                leader.link
+                  ? `<a href="${leader.link}" target="_blank" rel="noopener noreferrer" class="link-small">${leader.link}</a>`
+                  : "<span class='link-small' style='color:#9ca3af;text-decoration:none;'>상담 링크 없음</span>"
+              }
+              <br />
+              ${sheetLinkHtml}
+              ${
+                snsParts.length
+                  ? `<div style="font-size:10px;color:#6b7280;margin-top:2px;">SNS: ${snsParts.join(
+                      ", "
+                    )}</div>`
+                  : ""
+              }
+              <div style="font-size:10px;color:#9ca3af;margin-top:2px;">
+                태그: ${(leader.tags || []).join(", ") || "-"}
+              </div>
+            </div>
+          </div>
+          <div>
+            <button class="btn btn-secondary btn-xs" onclick="editLeader(${index})">수정</button>
+            <button class="btn btn-danger btn-xs" onclick="deleteLeader(${index})">삭제</button>
+          </div>
+        </div>
+      `;
+      leaderListEl.appendChild(item);
+    });
+  }
+
+  function clearLeaderPreview() {
+    leaderPreviewWrap.style.display = "none";
+    leaderPreviewImage.src = "";
+    tempLeaderMediaDataUrl = "";
+  }
+
+  function showLeaderPreview(dataUrl) {
+    tempLeaderMediaDataUrl = dataUrl;
+    leaderPreviewImage.src = dataUrl;
+    leaderPreviewWrap.style.display = "block";
+  }
+
+  function handleLeaderFile(file) {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      alert("프로필 이미지는 이미지 파일만 업로드할 수 있습니다.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = e => showLeaderPreview(e.target.result);
+    reader.readAsDataURL(file);
+  }
+
+  leaderMediaInput.addEventListener("change", function () {
+    const file = this.files[0];
+    handleLeaderFile(file);
+  });
+
+  ["dragenter","dragover"].forEach(evt => {
+    leaderDropZone.addEventListener(evt, e => {
+      e.preventDefault(); e.stopPropagation();
+      leaderDropZone.classList.add("dragover");
+    });
+  });
+  ["dragleave","drop"].forEach(evt => {
+    leaderDropZone.addEventListener(evt, e => {
+      e.preventDefault(); e.stopPropagation();
+      leaderDropZone.classList.remove("dragover");
+    });
+  });
+  leaderDropZone.addEventListener("drop", e => {
+    const file = e.dataTransfer.files[0];
+    handleLeaderFile(file);
+  });
+
+  function clearLeaderForm() {
+    editingLeaderIndexEl.value = -1;
+    leaderNameInput.value      = "";
+    leaderRoleInput.value      = "";
+    leaderLinkInput.value      = "";
+    leaderSheetInput.value     = "";
+    leaderTagsInput.value      = "";
+    leaderIntroInput.value     = "";
+    leaderYoutubeInput.value   = "";
+    leaderTiktokInput.value    = "";
+    leaderInstagramInput.value = "";
+    leaderFacebookInput.value  = "";
+    leaderMediaInput.value     = "";
+    clearLeaderPreview();
+  }
+
+  document.getElementById("clearLeaderFormBtn").addEventListener("click", clearLeaderForm);
+  newLeaderBtn2.addEventListener("click", clearLeaderForm);
+
+  document.getElementById("saveLeaderBtn").addEventListener("click", () => {
+    const name = leaderNameInput.value.trim();
+    if (!name) {
+      alert("리더 이름은 필수입니다.");
+      return;
+    }
+
+    const role      = leaderRoleInput.value.trim();
+    const link      = leaderLinkInput.value.trim();
+    const sheetUrl  = leaderSheetInput.value.trim();
+    const tags      = leaderTagsInput.value.split(",").map(t => t.trim()).filter(Boolean);
+    const introShort= leaderIntroInput.value.trim();
+    const sns = {
+      youtube:   leaderYoutubeInput.value.trim(),
+      tiktok:    leaderTiktokInput.value.trim(),
+      instagram: leaderInstagramInput.value.trim(),
+      facebook:  leaderFacebookInput.value.trim()
+    };
+    const idx  = parseInt(editingLeaderIndexEl.value, 10);
+    const base = { name, role, link, sheetUrl, tags, introShort, sns };
+
+    if (idx >= 0) {
+      const prev = leaders[idx];
+      leaders[idx] = {
+        ...prev,
+        ...base,
+        mediaUrl: tempLeaderMediaDataUrl || prev.mediaUrl || ""
+      };
+    } else {
+      leaders.push({
+        ...base,
+        mediaUrl: tempLeaderMediaDataUrl || ""
+      });
+    }
+
+    data.leaders = leaders;
+    saveDraft();
+    renderLeaders();
+    alert("리더가 임시 저장되었습니다. JSON 생성하기 → leaders.json 업데이트를 진행해주세요.");
+    clearLeaderForm();
+  });
+
+  window.editLeader = function (index) {
+    const l = leaders[index];
+    editingLeaderIndexEl.value = index;
+    leaderNameInput.value      = l.name || "";
+    leaderRoleInput.value      = l.role || "";
+    leaderLinkInput.value      = l.link || "";
+    leaderSheetInput.value     = l.sheetUrl || "";
+    leaderTagsInput.value      = (l.tags || []).join(", ");
+    leaderIntroInput.value     = l.introShort || "";
+    const sns = l.sns || {};
+    leaderYoutubeInput.value   = sns.youtube   || "";
+    leaderTiktokInput.value    = sns.tiktok    || "";
+    leaderInstagramInput.value = sns.instagram || "";
+    leaderFacebookInput.value  = sns.facebook  || "";
+    tempLeaderMediaDataUrl     = l.mediaUrl || "";
+    if (tempLeaderMediaDataUrl) showLeaderPreview(tempLeaderMediaDataUrl);
+    else clearLeaderPreview();
+    leaderMediaInput.value = "";
+  };
+
+  window.deleteLeader = function (index) {
+    if (!confirm("이 리더를 삭제할까요?")) return;
+    leaders.splice(index, 1);
+    data.leaders = leaders;
+    saveDraft();
+    renderLeaders();
+    clearLeaderForm();
+  };
+
+  /* ---------- JSON 생성/복사 ---------- */
+
   generateJsonBtn.addEventListener("click", () => {
     const jsonObj = { ads, leaders };
     const json = JSON.stringify(jsonObj, null, 2);
@@ -726,7 +939,7 @@
 
   /* 초기 렌더 */
   renderAds();
-  /* 리더 렌더링은 기존 코드가 있다면 여기서 호출 */
+  renderLeaders();
 </script>
 
 </body>
