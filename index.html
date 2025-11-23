@@ -89,6 +89,7 @@
       color: #374151;
     }
     input[type="text"],
+    input[type="number"],
     textarea {
       width: 100%;
       padding: 6px 8px;
@@ -151,7 +152,6 @@
       box-shadow: 0 4px 10px rgba(37,99,235,0.35);
       cursor: pointer;
     }
-
     .btn-new-leader:hover {
       background-color: #1d4ed8;
     }
@@ -254,18 +254,19 @@
       color: #1d4ed8;
     }
 
-    /* 리더 프리뷰 (16:9) */
     .preview-wrap {
       margin-top: 8px;
       display: none;
     }
     .preview-wrap img {
-      width: 220px;
-      height: 140px;
+      width: 120px;
+      height: 60px;
       object-fit: cover;
-      object-position: 50% 50%;
-      border-radius: 14px;
-      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+    }
+    #leaderPreviewImage {
+      height: 150px;
     }
 
     .json-area {
@@ -331,9 +332,11 @@
         </div>
 
         <div class="form-group inline">
-          <label>
-            <input type="checkbox" id="adEnabled" checked> 이 광고 노출
-          </label>
+          <div>
+            <label>
+              <input type="checkbox" id="adEnabled" checked> 이 광고 노출
+            </label>
+          </div>
         </div>
 
         <div class="form-group">
@@ -414,8 +417,8 @@
           <input type="text" id="leaderFacebook" placeholder="https://www.facebook.com/leaderpage">
         </div>
 
-        <div class="section-label">프로필 이미지 (16:9 프레임)</div>
         <div class="form-group">
+          <label>프로필 이미지 (이미지 파일)</label>
           <input type="file" id="leaderMediaFile" accept="image/*">
           <small>파일 선택 또는 아래 영역에 드래그 앤 드롭 (이미지 전용).</small>
           <div id="leaderDropZone" class="drop-zone">
@@ -426,19 +429,21 @@
           </div>
         </div>
 
+        <div class="section-label">리더 이미지 위치 & 노출</div>
         <div class="form-group">
-          <label>이미지 위치 (슬라이더로 조정)</label>
-          <div class="inline" style="gap:12px;margin-bottom:4px;">
-            <span style="font-size:11px;color:#4b5563;width:40px;">가로</span>
-            <input type="range" id="leaderCropX" min="0" max="100" value="50" style="flex:1;">
-            <span id="leaderCropXValue" style="width:40px;font-size:11px;color:#4b5563;">50%</span>
-          </div>
-          <div class="inline" style="gap:12px;">
-            <span style="font-size:11px;color:#4b5563;width:40px;">세로</span>
-            <input type="range" id="leaderCropY" min="0" max="100" value="50" style="flex:1;">
-            <span id="leaderCropYValue" style="width:40px;font-size:11px;color:#4b5563;">50%</span>
-          </div>
-          <small>슬라이더를 움직이면 위 프리뷰 안에서 사진 위치가 바로 바뀝니다.</small>
+          <label for="leaderCropX">가로 위치 (0~100%)</label>
+          <input type="range" id="leaderCropX" min="0" max="100" value="50">
+          <small>가운데가 50% 입니다. 좌측으로 이동시키려면 값을 낮추고, 우측으로 이동하려면 값을 높이세요.</small>
+        </div>
+        <div class="form-group">
+          <span id="cropDisplay" style="font-size:11px;color:#4b5563;">cropX: 50%, cropY: 50%</span>
+        </div>
+
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="leaderEnabled" checked> 이 리더 노출
+          </label>
+          <small>체크 해제하면 공개 페이지에서 이 리더 카드가 숨겨집니다.</small>
         </div>
 
         <div class="form-group inline" style="margin-top:4px;">
@@ -476,8 +481,10 @@
   </div>
 </div>
 
+<input type="file" id="thumbFileInput" accept="image/*" style="display:none;">
+
 <script>
-  const DRAFT_KEY = "so_t_leaders_ads_draft_safe";
+  const DRAFT_KEY = "so_t_leaders_ads_draft_v1";
 
   function getDefaultData() {
     return {
@@ -486,14 +493,15 @@
         {
           name: "김현수",
           role: "베트남 장기 체류 리더 · 10년 차 가이드",
-          mediaUrl: "https://via.placeholder.com/400x225.png?text=Leader+1",
+          mediaUrl: "https://via.placeholder.com/300x380.png?text=Leader+1",
           link: "#",
           sheetUrl: "",
           tags: ["장기 체류", "로컬 생활", "루틴 여행"],
           introShort: "여행이 아니라 ‘살아보는 시간’을 설계합니다. 최소 1개월 이상 머무는 루트를 함께 짭니다.",
           sns: { youtube: "", tiktok: "", instagram: "", facebook: "" },
           cropX: 50,
-          cropY: 50
+          cropY: 50,
+          enabled: true
         }
       ]
     };
@@ -507,6 +515,13 @@
       if (!parsed || typeof parsed !== "object") return getDefaultData();
       if (!Array.isArray(parsed.ads)) parsed.ads = [];
       if (!Array.isArray(parsed.leaders)) parsed.leaders = [];
+      // 기본값 보정
+      parsed.leaders.forEach(l => {
+        if (typeof l.cropX !== "number") l.cropX = 50;
+        if (typeof l.cropY !== "number") l.cropY = 50;
+        if (typeof l.enabled !== "boolean") l.enabled = true;
+        if (!l.sns) l.sns = { youtube: "", tiktok: "", instagram: "", facebook: "" };
+      });
       return parsed;
     } catch {
       return getDefaultData();
@@ -521,7 +536,8 @@
   let ads     = data.ads;
   let leaders = data.leaders;
 
-  /* 광고 관련 엘리먼트 */
+  /* ---------- 광고 관련 ---------- */
+
   const editingAdIndexEl   = document.getElementById("editingAdIndex");
   const adLinkInput        = document.getElementById("adLinkUrl");
   const adTextInput        = document.getElementById("adText");
@@ -540,10 +556,9 @@
   let tempAdImageDataUrl     = "";
   let tempLeaderMediaDataUrl = "";
 
-  /* 광고 렌더링 */
   function renderAds() {
     adListEl.innerHTML = "";
-    if (!ads.length) {
+    if (ads.length === 0) {
       adListEl.innerHTML = "<p style='font-size:12px;color:#6b7280;'>등록된 광고가 없습니다.</p>";
       return;
     }
@@ -561,7 +576,7 @@
                   ${ad.enabled ? "노출" : "비노출"}
                 </span>
               </div>
-              <div style="font-size:11px;color:#6b7280;">문구: ${ad.text || "<span style='color:#9ca3af;'>설정되지 않음</span>"}</div>
+              <div style="font-size:11px;color:#6b7280;">${ad.text ? "문구: " + ad.text : "<span style='color:#9ca3af;'>문구 없음</span>"}</div>
               ${
                 ad.linkUrl
                   ? `<a href="${ad.linkUrl}" target="_blank" rel="noopener noreferrer" class="link-small">${ad.linkUrl}</a>`
@@ -601,7 +616,7 @@
       return;
     }
     const reader = new FileReader();
-    reader.onload = e => showAdPreview(e.target.result);
+    reader.onload = (e) => showAdPreview(e.target.result);
     reader.readAsDataURL(file);
   }
 
@@ -610,19 +625,19 @@
     handleAdFile(file);
   });
 
-  ["dragenter","dragover"].forEach(evt => {
-    adDropZone.addEventListener(evt, e => {
+  ["dragenter","dragover"].forEach((evt) => {
+    adDropZone.addEventListener(evt, (e) => {
       e.preventDefault(); e.stopPropagation();
       adDropZone.classList.add("dragover");
     });
   });
-  ["dragleave","drop"].forEach(evt => {
-    adDropZone.addEventListener(evt, e => {
+  ["dragleave","drop"].forEach((evt) => {
+    adDropZone.addEventListener(evt, (e) => {
       e.preventDefault(); e.stopPropagation();
       adDropZone.classList.remove("dragover");
     });
   });
-  adDropZone.addEventListener("drop", e => {
+  adDropZone.addEventListener("drop", (e) => {
     const file = e.dataTransfer.files[0];
     handleAdFile(file);
   });
@@ -631,8 +646,9 @@
     editingAdIndexEl.value = -1;
     adLinkInput.value   = "";
     adTextInput.value   = "";
+    adDuration.value    = 2;
     adEnabledInput.checked = true;
-    adImageInput.value  = "";
+    adImageInput.value = "";
     clearAdPreview();
   }
 
@@ -673,6 +689,7 @@
     editingAdIndexEl.value = index;
     adLinkInput.value      = ad.linkUrl || "";
     adTextInput.value      = ad.text || "";
+    adDurationInput.value  = ad.duration || 2;
     adEnabledInput.checked = !!ad.enabled;
     tempAdImageDataUrl     = ad.imageUrl || "";
     if (tempAdImageDataUrl) showAdPreview(tempAdImageDataUrl);
@@ -688,283 +705,6 @@
     clearAdForm();
   };
 
-  window.toggleAdEnable = function (index) {
-    ads[index].enabled = !ads[index].enabled;
-    data.ads = ads;
-    saveDraft();
-    renderAds();
-  };
-
-  /* 리더 관련 */
-
-  const editingLeaderIndexEl = document.getElementById("editingLeaderIndex");
-  const leaderListEl         = document.getElementById("leaderList");
-  const nameInput            = document.getElementById("leaderName");
-  const roleInput            = document.getElementById("leaderRole");
-  const linkInput            = document.getElementById("leaderLink");
-  const sheetInput           = document.getElementById("leaderSheetUrl");
-  const tagsInput            = document.getElementById("leaderTags");
-  const introInput           = document.getElementById("leaderIntro");
-  const leaderYoutubeInput   = document.getElementById("leaderYoutube");
-  const leaderTiktokInput    = document.getElementById("leaderTiktok");
-  const leaderInstagramInput = document.getElementById("leaderInstagram");
-  const leaderFacebookInput  = document.getElementById("leaderFacebook");
-  const leaderMediaInput     = document.getElementById("leaderMediaFile");
-  const leaderDropZone       = document.getElementById("leaderDropZone");
-  const leaderPreviewWrap    = document.getElementById("leaderPreviewWrap");
-  const leaderPreviewImage   = document.getElementById("leaderPreviewImage");
-  const newLeaderBtn         = document.getElementById("newLeaderBtn");
-  const cropXInput           = document.getElementById("leaderCropX");
-  const cropYInput           = document.getElementById("leaderCropY");
-  const cropXValue           = document.getElementById("leaderCropXValue");
-  const cropYValue           = document.getElementById("leaderCropYValue");
-
-  function updateCropLabels() {
-    cropXValue.textContent = cropXInput.value + "%";
-    cropYValue.textContent = cropYInput.value + "%";
-    leaderPreviewImage.style.objectPosition = `${cropXInput.value}% ${cropYInput.value}%`;
-  }
-
-  cropXInput.addEventListener("input", updateCropLabels);
-  cropYInput.addEventListener("input", updateCropLabels);
-
-  function renderLeaders() {
-    leaderListEl.innerHTML = "";
-    if (!leaders.length) {
-      leaderListEl.innerHTML = "<p style='font-size:12px;color:#6b7280;'>등록된 리더가 없습니다.</p>";
-      return;
-    }
-    leaders.forEach((leader, index) => {
-      const sns = leader.sns || {};
-      const snsParts = [];
-      if (sns.youtube)   snsParts.push("YouTube");
-      if (sns.tiktok)    snsParts.push("TikTok");
-      if (sns.instagram) snsParts.push("Instagram");
-      if (sns.facebook)  snsParts.push("Facebook");
-
-      const thumbHtml = leader.mediaUrl
-        ? `<img src="${leader.mediaUrl}" class="thumb leader-thumb" data-index="${index}" alt="">`
-        : `<div class="leader-thumb-slot leader-thumb" data-index="${index}">이미지</div>`;
-
-      const sheetLinkHtml = leader.sheetUrl
-        ? `<a href="${leader.sheetUrl}" target="_blank" rel="noopener noreferrer" class="link-small">응답 시트 열기</a>`
-        : "<span style='font-size:10px;color:#9ca3af;'>응답 시트 링크 없음</span>";
-
-      const cx = typeof leader.cropX === "number" ? leader.cropX : 50;
-      const cy = typeof leader.cropY === "number" ? leader.cropY : 50;
-
-      const item = document.createElement("div");
-      item.className = "leader-item";
-      item.innerHTML = `
-        <div class="leader-item-header">
-          <div class="leader-thumb-drop" data-index="${index}" style="display:flex;align-items:center;">
-            ${thumbHtml}
-            <div>
-              <div class="leader-item-name">${leader.name || "(이름 없음)"}</div>
-              <div style="font-size:11px;color:#6b7280;">${leader.role || ""}</div>
-              ${
-                leader.link
-                  ? `<a href="${leader.link}" target="_blank" rel="noopener noreferrer" class="link-small">${leader.link}</a>`
-                  : "<span class='link-small' style='color:#9ca3af;text-decoration:none;'>상담 링크 없음</span>"
-              }
-              <br>
-              ${sheetLinkHtml}
-              ${
-                snsParts.length
-                  ? `<div style="font-size:10px;color:#6b7280;margin-top:2px;">SNS: ${snsParts.join(", ")}</div>`
-                  : ""
-              }
-              <div style="font-size:10px;color:#9ca3af;margin-top:2px;">cropX: ${cx}%, cropY: ${cy}%</div>
-            </div>
-          </div>
-          <div>
-            <button class="btn btn-outline btn-xs" onclick="openSheet(${index})">결과 보기</button>
-            <button class="btn btn-secondary btn-xs" onclick="editLeader(${index})">수정</button>
-            <button class="btn btn-danger btn-xs" onclick="deleteLeader(${index})">삭제</button>
-          </div>
-        </div>
-        <div style="font-size:11px;color:#4b5563;">
-          태그: ${(leader.tags || []).join(", ") || "-"}
-        </div>
-      `;
-      leaderListEl.appendChild(item);
-    });
-
-    attachThumbEvents();
-  }
-
-  function attachThumbEvents() {
-    const thumbs = document.querySelectorAll(".leader-thumb");
-    thumbs.forEach(el => {
-      const idx = parseInt(el.dataset.index, 10);
-      el.style.cursor = "pointer";
-      el.onclick = () => {
-        const leader = leaders[idx];
-        tempLeaderMediaDataUrl = leader.mediaUrl || "";
-        if (tempLeaderMediaDataUrl) {
-          const cx = typeof leader.cropX === "number" ? leader.cropX : 50;
-          const cy = typeof leader.cropY === "number" ? leader.cropY : 50;
-          leaderPreviewImage.src = tempLeaderMediaDataUrl;
-          cropXInput.value = cx;
-          cropYInput.value = cy;
-          updateCropLabels();
-          leaderPreviewWrap.style.display = "block";
-        }
-      };
-    });
-  }
-
-  function clearLeaderPreview() {
-    leaderPreviewWrap.style.display = "none";
-    leaderPreviewImage.src = "";
-    tempLeaderMediaDataUrl = "";
-  }
-
-  function showLeaderPreview(dataUrl) {
-    tempLeaderMediaDataUrl = dataUrl;
-    leaderPreviewImage.src = dataUrl;
-    leaderPreviewWrap.style.display = "block";
-    updateCropLabels();
-  }
-
-  function handleLeaderFile(file) {
-    if (!file) return;
-    if (!file.type.startsWith("image/")) {
-      alert("프로필 이미지는 이미지 파일만 업로드할 수 있습니다.");
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = (e) => showLeaderPreview(e.target.result);
-    reader.readAsDataURL(file);
-  }
-
-  leaderMediaInput.addEventListener("change", function () {
-    const file = this.files[0];
-    handleLeaderFile(file);
-  });
-
-  ["dragenter","dragover"].forEach(evt => {
-    leaderDropZone.addEventListener(evt, e => {
-      e.preventDefault(); e.stopPropagation();
-      leaderDropZone.classList.add("dragover");
-    });
-  });
-  ["dragleave","drop"].forEach(evt => {
-    leaderDropZone.addEventListener(evt, e => {
-      e.preventDefault(); e.stopPropagation();
-      leaderDropZone.classList.remove("dragover");
-    });
-  });
-  leaderDropZone.addEventListener("drop", e => {
-    const file = e.dataTransfer.files[0];
-    handleLeaderFile(file);
-  });
-
-  function clearLeaderForm() {
-    editingLeaderIndexEl.value = -1;
-    nameInput.value  = "";
-    roleInput.value  = "";
-    linkInput.value  = "";
-    sheetInput.value = "";
-    tagsInput.value  = "";
-    introInput.value = "";
-    leaderYoutubeInput.value   = "";
-    leaderTiktokInput.value    = "";
-    leaderInstagramInput.value = "";
-    leaderFacebookInput.value  = "";
-    leaderMediaInput.value     = "";
-    cropXInput.value           = 50;
-    cropYInput.value           = 50;
-    updateCropLabels();
-    clearLeaderPreview();
-  }
-
-  document.getElementById("clearLeaderFormBtn").addEventListener("click", clearLeaderForm);
-  newLeaderBtn.addEventListener("click", () => {
-    clearLeaderForm();
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  });
-
-  document.getElementById("saveLeaderBtn").addEventListener("click", () => {
-    const name = nameInput.value.trim();
-    if (!name) {
-      alert("리더 이름은 필수입니다.");
-      return;
-    }
-    const role      = roleInput.value.trim();
-    const link      = linkInput.value.trim();
-    const sheetUrl  = sheetInput.value.trim();
-    const tags      = tagsInput.value.split(",").map(t => t.trim()).filter(Boolean);
-    const introShort= introInput.value.trim();
-    const sns = {
-      youtube:   leaderYoutubeInput.value.trim(),
-      tiktok:    leaderTiktokInput.value.trim(),
-      instagram: leaderInstagramInput.value.trim(),
-      facebook:  leaderFacebookInput.value.trim()
-    };
-    const cropX     = parseInt(cropXInput.value, 10) || 50;
-    const cropY     = parseInt(cropYInput.value, 10) || 50;
-    const idx       = parseInt(editingLeaderIndexEl.value, 10);
-    const base = { name, role, link, sheetUrl, tags, introShort, sns, cropX, cropY };
-
-    if (idx >= 0) {
-      const prev = leaders[idx];
-      leaders[idx] = {
-        ...prev,
-        ...base,
-        mediaUrl: tempLeaderMediaDataUrl || prev.mediaUrl || ""
-      };
-    } else {
-      leaders.push({
-        ...base,
-        mediaUrl: tempLeaderMediaDataUrl || ""
-      });
-    }
-
-    data.leaders = leaders;
-    saveDraft();
-    renderLeaders();
-    alert("리더가 임시 저장되었습니다. JSON 생성하기 → leaders.json 업데이트를 진행해주세요.");
-    clearLeaderForm();
-  });
-
-  window.editLeader = function (index) {
-    const leader = leaders[index];
-    editingLeaderIndexEl.value = index;
-    nameInput.value  = leader.name || "";
-    roleInput.value  = leader.role || "";
-    linkInput.value  = leader.link || "";
-    sheetInput.value = leader.sheetUrl || "";
-    tagsInput.value  = (leader.tags || []).join(", ");
-    introInput.value = leader.introShort || "";
-
-    const sns = leader.sns || {};
-    leaderYoutubeInput.value   = sns.youtube   || "";
-    leaderTiktokInput.value    = sns.tiktok    || "";
-    leaderInstagramInput.value = sns.instagram || "";
-    leaderFacebookInput.value  = sns.facebook  || "";
-
-    const cx = typeof leader.cropX === "number" ? leader.cropX : 50;
-    const cy = typeof leader.cropY === "number" ? leader.cropY : 50;
-    cropXInput.value = cx;
-    cropYInput.value = cy;
-    updateCropLabels();
-
-    tempLeaderMediaDataUrl = leader.mediaUrl || "";
-    if (tempLeaderMediaDataUrl) showLeaderPreview(tempLeaderMediaDataUrl);
-    else clearLeaderPreview();
-    leaderMediaInput.value = "";
-  };
-
-  window.deleteLeader = function (index) {
-    if (!confirm("이 리더를 삭제할까요?")) return;
-    leaders.splice(index, 1);
-    data.leaders = leaders;
-    saveDraft();
-    renderLeaders();
-    clearLeaderForm();
-  };
-
   window.openSheet = function (index) {
     const leader = leaders[index];
     if (!leader.sheetUrl) {
@@ -973,6 +713,8 @@
     }
     window.open(leader.sheetUrl, "_blank");
   };
+
+  /* ---------- JSON 생성 / 복사 ---------- */
 
   generateJsonBtn.addEventListener("click", () => {
     const jsonObj = { ads: ads, leaders: leaders };
@@ -984,7 +726,7 @@
 
   copyJsonBtn.addEventListener("click", async () => {
     if (!jsonOutput.value.trim()) {
-      alert("먼저 'JSON 생성하기' 버튼을 눌러 leaders.json 내용을 생성해주세요.");
+      alert("먼저 'JSON 생성하기' 버튼을 눌러주세요.");
       return;
     }
     try {
@@ -1004,6 +746,7 @@
     );
   });
 
+  // 초기 렌더
   renderAds();
   renderLeaders();
 </script>
