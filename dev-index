@@ -461,7 +461,7 @@
 </div>
 
 <script>
-  const DRAFT_KEY = "so_t_leaders_ads_draft_final";
+  const DRAFT_KEY = "so_t_leaders_ads_draft_dev";
 
   function getDefaultData() {
     return {
