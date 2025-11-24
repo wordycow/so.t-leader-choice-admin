@@ -443,9 +443,9 @@
         <div style="display:flex;gap:8px;margin-bottom:6px;">
           <button class="btn btn-primary" id="generateJsonBtn">JSON 생성하기</button>
           <button class="btn btn-secondary" id="copyJsonBtn">JSON 복사하기</button>
-          <button class="btn btn-outline" id="openJsonBtn">GitHub leaders.json 열기</button>
+          <button class="btn btn-outline" id="openJsonBtn">GitHub dev-leaders.json 열기</button>
         </div>
-        <textarea id="jsonOutput" class="json-area" placeholder="여기에 leaders.json 내용이 생성됩니다." readonly></textarea>
+        <textarea id="jsonOutput" class="json-area" placeholder="여기에 dev-leaders.json 내용이 생성됩니다." readonly></textarea>
         <div class="help-box">
           <b>[GitHub에 붙여 넣는 방법]</b><br />
           1) 위에서 광고 + 리더들을 모두 원하는 대로 추가/수정/삭제한 뒤, <b>JSON 생성하기</b> 버튼을 누릅니다.<br />
@@ -959,7 +959,7 @@
 
   openJsonBtn.addEventListener("click", () => {
     window.open(
-      "https://github.com/wordycow/so.t-leader-choice/blob/main/leaders.json",
+      "https://github.com/wordycow/so.t-leader-choice/blob/main/dev-leaders.json",
       "_blank"
     );
   });
