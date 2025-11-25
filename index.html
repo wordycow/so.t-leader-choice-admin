@@ -405,6 +405,10 @@
           <label for="leaderFacebook">Facebook URL</label>
           <input type="text" id="leaderFacebook" placeholder="https://www.facebook.com/leaderpage" />
         </div>
+        <div class="form-group">
+          <label for="leaderBlog">Blog URL</label>
+          <input type="text" id="leaderBlog" placeholder="https://blog.naver.com/leader" />
+        </div>
 
         <div class="form-group">
           <label>프로필 이미지 (이미지 파일)</label>
@@ -475,7 +479,7 @@
           sheetUrl: "",
           tags: ["장기 체류", "로컬 생활", "루틴 여행"],
           introShort: "여행이 아니라 ‘살아보는 시간’을 설계합니다. 최소 1개월 이상 머무는 루트를 함께 짭니다.",
-          sns: { youtube: "", tiktok: "", instagram: "", facebook: "" },
+          sns: { youtube: "", tiktok: "", instagram: "", facebook: "", blog: "" },
           enabled: true
         }
       ]
@@ -491,7 +495,8 @@
       if (!Array.isArray(parsed.ads)) parsed.ads = [];
       if (!Array.isArray(parsed.leaders)) parsed.leaders = [];
       parsed.leaders.forEach(l => {
-        if (!l.sns) l.sns = { youtube: "", tiktok: "", instagram: "", facebook: "" };
+        if (!l.sns) l.sns = { youtube: "", tiktok: "", instagram: "", facebook: "", blog: "" };
+        if (typeof l.sns.blog !== "string") l.sns.blog = l.sns.blog || "";
         if (typeof l.enabled !== "boolean") l.enabled = true;
       });
       return parsed;
@@ -712,6 +717,7 @@
   const leaderTiktokInput    = document.getElementById("leaderTiktok");
   const leaderInstagramInput = document.getElementById("leaderInstagram");
   const leaderFacebookInput  = document.getElementById("leaderFacebook");
+  const leaderBlogInput      = document.getElementById("leaderBlog");
   const leaderMediaInput     = document.getElementById("leaderMediaFile");
   const leaderDropZone       = document.getElementById("leaderDropZone");
   const leaderPreviewWrap    = document.getElementById("leaderPreviewWrap");
@@ -732,6 +738,7 @@
       if (sns.tiktok)    snsParts.push("TikTok");
       if (sns.instagram) snsParts.push("Instagram");
       if (sns.facebook)  snsParts.push("Facebook");
+      if (sns.blog)      snsParts.push("Blog");
 
       const thumbHtml = leader.mediaUrl
         ? `<img src="${leader.mediaUrl}" class="thumb" alt="">`
@@ -846,6 +853,7 @@
     leaderTiktokInput.value    = "";
     leaderInstagramInput.value = "";
     leaderFacebookInput.value  = "";
+    leaderBlogInput.value      = "";
     leaderMediaInput.value     = "";
     leaderEnabledInput.checked = true;
     clearLeaderPreview();
@@ -870,7 +878,8 @@
       youtube:   leaderYoutubeInput.value.trim(),
       tiktok:    leaderTiktokInput.value.trim(),
       instagram: leaderInstagramInput.value.trim(),
-      facebook:  leaderFacebookInput.value.trim()
+      facebook:  leaderFacebookInput.value.trim(),
+      blog:      leaderBlogInput.value.trim()
     };
     const enabled   = leaderEnabledInput.checked;
     const idx       = parseInt(editingLeaderIndexEl.value, 10);
@@ -911,6 +920,7 @@
     leaderTiktokInput.value    = sns.tiktok    || "";
     leaderInstagramInput.value = sns.instagram || "";
     leaderFacebookInput.value  = sns.facebook  || "";
+    leaderBlogInput.value      = sns.blog      || "";
     leaderEnabledInput.checked = l.enabled !== false;
     tempLeaderMediaDataUrl     = l.mediaUrl || "";
     if (tempLeaderMediaDataUrl) showLeaderPreview(tempLeaderMediaDataUrl);
