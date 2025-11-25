@@ -495,7 +495,7 @@
       if (!Array.isArray(parsed.ads)) parsed.ads = [];
       if (!Array.isArray(parsed.leaders)) parsed.leaders = [];
       parsed.leaders.forEach(l => {
-        if (!l.sns) l.sns = { youtube: "", tiktok: "", instagram: "", facebook: "" };
+        if (!l.sns) l.sns = { youtube: "", tiktok: "", instagram: "", facebook: "", blog: "" };
         if (typeof l.enabled !== "boolean") l.enabled = true;
       });
       return parsed;
@@ -853,6 +853,7 @@
     leaderTiktokInput.value    = "";
     leaderInstagramInput.value = "";
     leaderFacebookInput.value  = "";
+    leaderblogInput.value  = "";
     leaderMediaInput.value     = "";
     leaderEnabledInput.checked = true;
     clearLeaderPreview();
