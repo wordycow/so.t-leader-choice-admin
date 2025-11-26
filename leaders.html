@@ -1,338 +1,221 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>리더 데이터 관리자</title>
-    <style>
-        /* CSS Reset & Basic Styles */
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: #f4f6f8;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .container {
-            background: white;
-            width: 100%;
-            max-width: 900px;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            margin-top: 0;
-            font-size: 24px;
-            color: #2c3e50;
-            margin-bottom: 20px;
-        }
-
-        .controls {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        button {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: background 0.2s;
-        }
-
-        .btn-primary {
-            background-color: #3498db;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: #2980b9;
-        }
-
-        .btn-success {
-            background-color: #2ecc71;
-            color: white;
-        }
-
-        .btn-success:hover {
-            background-color: #27ae60;
-        }
-
-        .btn-secondary {
-            background-color: #95a5a6;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background-color: #7f8c8d;
-        }
-
-        .btn-danger {
-            background-color: #e74c3c;
-            color: white;
-            padding: 4px 8px;
-            font-size: 12px;
-        }
-
-        .btn-danger:hover {
-            background-color: #c0392b;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        th,
-        td {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-            text-align: left;
-            vertical-align: middle;
-        }
-
-        th {
-            background-color: #f8f9fa;
-            font-weight: 600;
-            color: #555;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 6px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        input[type="checkbox"] {
-            transform: scale(1.2);
-            cursor: pointer;
-        }
-
-        .output-area {
-            margin-top: 30px;
-            border-top: 2px solid #eee;
-            padding-top: 20px;
-        }
-
-        textarea {
-            width: 100%;
-            height: 200px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 13px;
-            resize: vertical;
-        }
-
-        .actions-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>리더 데이터 관리자 | so.t</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root {
+      --bg: #f3f4f6;
+      --card: #ffffff;
+      --border: #e5e7eb;
+      --text-main: #111827;
+      --text-sub: #6b7280;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --success: #16a34a;
+      --danger: #dc2626;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+    }
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 22px;
+      margin: 0 0 4px;
+    }
+    .sub {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-bottom: 16px;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 18px 20px 20px;
+      box-shadow: 0 18px 40px rgba(15,23,42,.06);
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      font-size: 13px;
+      cursor: pointer;
+      color: #374151;
+    }
+    .btn-primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+    }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-success {
+      background: var(--success);
+      border-color: var(--success);
+      color: #ffffff;
+    }
+    .btn-danger {
+      background: var(--danger);
+      border-color: var(--danger);
+      color: #ffffff;
+    }
+    .btn + .btn { margin-left: 6px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+    thead {
+      background: #f9fafb;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 6px 8px;
+      vertical-align: middle;
+    }
+    th {
+      text-align: left;
+      font-weight: 600;
+      color: #4b5563;
+    }
+    td.center {
+      text-align: center;
+    }
+    input[type="text"] {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      padding: 4px 6px;
+      font-size: 12px;
+    }
+    input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+    }
+    textarea {
+      width: 100%;
+      min-height: 180px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+      resize: vertical;
+    }
+    .json-actions {
+      margin-bottom: 8px;
+    }
+    .hint {
+      font-size: 11px;
+      color: var(--text-sub);
+      margin-top: 4px;
+    }
+    @media (max-width: 720px) {
+      body { padding: 12px; }
+      .card { padding: 14px 12px 16px; }
+      h1 { font-size: 18px; }
+      table { font-size: 12px; }
+      th, td { padding: 4px 4px; }
+    }
+  </style>
 </head>
-
 <body>
-
-    <div class="container">
-        <div class="actions-row">
-            <h1>리더 데이터 관리자</h1>
-            <div class="controls">
-                <button id="btnLoad" class="btn-primary">리더 불러오기</button>
-                <button id="btnAdd" class="btn-success">리더 추가</button>
-            </div>
+  <main class="page">
+    <section class="card">
+      <header class="card-header">
+        <div>
+          <h1>리더 데이터 관리자</h1>
+          <p class="sub">메인 리포의 <code>leaders.json</code>을 불러와서 수정하고, JSON을 복사해 교체합니다.</p>
         </div>
-
-        <div style="overflow-x: auto;">
-            <table id="leadersTable">
-                <thead>
-                    <tr>
-                        <th style="width: 60px;">ID</th>
-                        <th>이름</th>
-                        <th>닉네임</th>
-                        <th>역할</th>
-                        <th style="width: 60px; text-align: center;">노출</th>
-                        <th>메모</th>
-                        <th style="width: 60px;">삭제</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Rows will be added here -->
-                </tbody>
-            </table>
+        <div>
+          <button class="btn btn-primary" id="loadBtn">리더 불러오기</button>
+          <button class="btn btn-success" id="addBtn">리더 추가</button>
         </div>
+      </header>
 
-        <div class="output-area">
-            <div class="controls">
-                <button id="btnExport" class="btn-secondary">JSON 내보내기</button>
-                <button id="btnCopy" class="btn-secondary">전체 복사</button>
-            </div>
-            <textarea id="jsonOutput" readonly placeholder="[JSON 내보내기] 버튼을 누르면 여기에 데이터가 표시됩니다."></textarea>
-        </div>
-    </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:12%;">ID</th>
+              <th style="width:14%;">이름</th>
+              <th style="width:14%;">닉네임</th>
+              <th style="width:14%;">역할</th>
+              <th style="width:8%;">노출</th>
+              <th>메모</th>
+              <th style="width:10%;">삭제</th>
+            </tr>
+          </thead>
+          <tbody id="leadersTbody">
+            <!-- JS에서 렌더링 -->
+          </tbody>
+        </table>
+      </div>
 
-    <script>
-        const LEADERS_URL = 'https://raw.githubusercontent.com/wordycow/so.t-leader-choice/main/leaders.json';
-        let leaders = [];
+      <div class="json-actions">
+        <button class="btn" id="exportBtn">JSON 내보내기</button>
+        <button class="btn" id="copyBtn">전체 복사</button>
+      </div>
+      <textarea id="jsonOutput" placeholder="[JSON 내보내기] 버튼을 누르면 여기에 데이터가 표시됩니다."></textarea>
+      <p class="hint">
+        1) [리더 불러오기] → 테이블에서 수정 / 리더 추가·삭제<br>
+        2) [JSON 내보내기] → 아래 JSON 확인<br>
+        3) [전체 복사] → 메인 리포의 <code>leaders.json</code>에 그대로 붙여넣고 저장
+      </p>
+    </section>
+  </main>
 
-        const tableBody = document.querySelector('#leadersTable tbody');
-        const jsonOutput = document.getElementById('jsonOutput');
+  <script>
+    const LEADERS_URL =
+      'https://raw.githubusercontent.com/wordycow/so.t-leader-choice/main/leaders.json';
 
-        // Load Leaders
-        document.getElementById('btnLoad').addEventListener('click', async () => {
-            try {
-                const res = await fetch(`${LEADERS_URL}?t=${Date.now()}`);
-                if (!res.ok) throw new Error('Network response was not ok');
-                leaders = await res.json();
-                renderTable();
-                alert('데이터를 성공적으로 불러왔습니다.');
-            } catch (error) {
-                console.error('Fetch error:', error);
-                alert('데이터를 불러오는 중 오류가 발생했습니다.');
-            }
-        });
+    let leaders = [];
 
-        // Add Leader
-        document.getElementById('btnAdd').addEventListener('click', () => {
-            const newId = leaders.length > 0 ? Math.max(...leaders.map(l => parseInt(l.id) || 0)) + 1 : 1;
-            leaders.push({
-                id: newId,
-                name: '',
-                nickname: '',
-                role: '',
-                visible: true,
-                memo: ''
-            });
-            renderTable();
-        });
+    const tbody = document.getElementById('leadersTbody');
+    const loadBtn = document.getElementById('loadBtn');
+    const addBtn = document.getElementById('addBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const jsonOutput = document.getElementById('jsonOutput');
 
-        // Export JSON
-        document.getElementById('btnExport').addEventListener('click', () => {
-            const jsonStr = JSON.stringify(leaders, null, 2);
-            jsonOutput.value = jsonStr;
-        });
+    async function loadLeaders() {
+      try {
+        loadBtn.disabled = true;
+        loadBtn.textContent = '불러오는 중...';
 
-        // Copy All
-        document.getElementById('btnCopy').addEventListener('click', () => {
-            if (!jsonOutput.value) {
-                alert('먼저 [JSON 내보내기]를 해주세요.');
-                return;
-            }
-            jsonOutput.select();
-            // Fallback or use navigator.clipboard
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(jsonOutput.value).then(() => {
-                    alert('leaders.json 내용이 클립보드에 복사되었습니다.');
-                }).catch(err => {
-                    // Fallback if writeText fails (e.g. permission issues)
-                    document.execCommand('copy');
-                    alert('leaders.json 내용이 클립보드에 복사되었습니다.');
-                });
-            } else {
-                document.execCommand('copy');
-                alert('leaders.json 내용이 클립보드에 복사되었습니다.');
-            }
-        });
-
-        function renderTable() {
-            tableBody.innerHTML = '';
-            leaders.forEach((leader, index) => {
-                const tr = document.createElement('tr');
-
-                // ID
-                const tdId = document.createElement('td');
-                tdId.textContent = leader.id;
-                tr.appendChild(tdId);
-
-                // Name
-                const tdName = document.createElement('td');
-                const inputName = document.createElement('input');
-                inputName.type = 'text';
-                inputName.value = leader.name || '';
-                inputName.oninput = (e) => updateLeader(index, 'name', e.target.value);
-                tdName.appendChild(inputName);
-                tr.appendChild(tdName);
-
-                // Nickname
-                const tdNick = document.createElement('td');
-                const inputNick = document.createElement('input');
-                inputNick.type = 'text';
-                inputNick.value = leader.nickname || '';
-                inputNick.oninput = (e) => updateLeader(index, 'nickname', e.target.value);
-                tdNick.appendChild(inputNick);
-                tr.appendChild(tdNick);
-
-                // Role
-                const tdRole = document.createElement('td');
-                const inputRole = document.createElement('input');
-                inputRole.type = 'text';
-                inputRole.value = leader.role || '';
-                inputRole.oninput = (e) => updateLeader(index, 'role', e.target.value);
-                tdRole.appendChild(inputRole);
-                tr.appendChild(tdRole);
-
-                // Visible
-                const tdVisible = document.createElement('td');
-                tdVisible.style.textAlign = 'center';
-                const inputVisible = document.createElement('input');
-                inputVisible.type = 'checkbox';
-                inputVisible.checked = leader.visible !== false; // default true if undefined
-                inputVisible.onchange = (e) => updateLeader(index, 'visible', e.target.checked);
-                tdVisible.appendChild(inputVisible);
-                tr.appendChild(tdVisible);
-
-                // Memo
-                const tdMemo = document.createElement('td');
-                const inputMemo = document.createElement('input');
-                inputMemo.type = 'text';
-                inputMemo.value = leader.memo || '';
-                inputMemo.oninput = (e) => updateLeader(index, 'memo', e.target.value);
-                tdMemo.appendChild(inputMemo);
-                tr.appendChild(tdMemo);
-
-                // Delete
-                const tdDel = document.createElement('td');
-                const btnDel = document.createElement('button');
-                btnDel.textContent = '삭제';
-                btnDel.className = 'btn-danger';
-                btnDel.onclick = () => deleteLeader(index);
-                tdDel.appendChild(btnDel);
-                tr.appendChild(tdDel);
-
-                tableBody.appendChild(tr);
-            });
+        const res = await fetch(LEADERS_URL + '?t=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) {
+          throw new Error('HTTP ' + res.status + ' ' + res.statusText);
         }
-
-        function updateLeader(index, key, value) {
-            leaders[index][key] = value;
+        const data = await res.json();
+        if (!Array.isArray(data)) {
+          throw new Error('leaders.json 최상위가 배열이 아닙니다.');
         }
-
-        function deleteLeader(index) {
-            if (confirm('정말 삭제하시겠습니까?')) {
-                leaders.splice(index, 1);
-                renderTable();
-            }
-        }
-    </script>
-
-</body>
-
-</html>
+        leaders = data;
+        renderTable();
+      } catch (err) {
+        console.error('loadLeaders error:', err);
+        alert('데이터를 불러오는 중 오류가 발생했습니다.\n\n' + err.message);
+      } finally {
+        loadBtn.disabled = false;
+        loadB
