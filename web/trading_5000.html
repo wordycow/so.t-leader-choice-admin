@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>트레이딩 대시보드 - Lee May Trading</title>
+    <link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📈 트레이딩 대시보드</h1>
+            <p class="subtitle">Lee May Trading System - Live Trading Dashboard</p>
+        </header>
+
+        <main>
+            <section class="market-section">
+                <h2>💰 시장 현황</h2>
+                <div class="market-grid">
+                    <div class="market-card">
+                        <h3>비트코인 (BTC)</h3>
+                        <p class="price" id="btc-price">로딩 중...</p>
+                        <p class="change" id="btc-change">-</p>
+                    </div>
+                    <div class="market-card">
+                        <h3>이더리움 (ETH)</h3>
+                        <p class="price" id="eth-price">로딩 중...</p>
+                        <p class="change" id="eth-change">-</p>
+                    </div>
+                    <div class="market-card">
+                        <h3>리플 (XRP)</h3>
+                        <p class="price" id="xrp-price">로딩 중...</p>
+                        <p class="change" id="xrp-change">-</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="trading-section">
+                <h2>🤖 봇 거래 현황</h2>
+                <div id="bot-trades" class="trades-list">
+                    <p class="loading">거래 내역을 불러오는 중...</p>
+                </div>
+            </section>
+
+            <section class="portfolio-section">
+                <h2>💼 포트폴리오</h2>
+                <div class="portfolio-grid">
+                    <div class="portfolio-card">
+                        <h3>총 자산</h3>
+                        <p class="value" id="total-assets">0 KRW</p>
+                    </div>
+                    <div class="portfolio-card">
+                        <h3>수익률</h3>
+                        <p class="value profit" id="profit-rate">0%</p>
+                    </div>
+                    <div class="portfolio-card">
+                        <h3>보유 코인</h3>
+                        <p class="value" id="holdings-count">0개</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="log-section">
+                <h2>📝 트레이딩 로그</h2>
+                <div id="log-output" class="log-output"></div>
+            </section>
+
+            <section class="links-section">
+                <h2>🔗 빠른 링크</h2>
+                <div class="links-grid">
+                    <a href="control_5001.html" class="link-card">🎛️ 운영 제어 센터</a>
+                    <a href="/api/trades/recent" class="link-card" target="_blank">📊 최근 거래 (JSON)</a>
+                    <a href="/api/portfolio" class="link-card" target="_blank">💼 포트폴리오 (JSON)</a>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Lee May Trading System © 2026 | Port: 5000</p>
+        </footer>
+    </div>
+
+    <script src="assets/app.js"></script>
+    <script>
+        async function loadMarketData() {
+            try {
+                const response = await fetch('/api/market/prices');
+                const data = await response.json();
+                if (data.success) {
+                    updateMarketCard('btc', data.prices.BTC);
+                    updateMarketCard('eth', data.prices.ETH);
+                    updateMarketCard('xrp', data.prices.XRP);
+                }
+            } catch (error) {
+                addLog('❌ 시장 데이터 로드 실패: ' + error.message);
+            }
+        }
+
+        function updateMarketCard(coin, data) {
+            document.getElementById(`${coin}-price`).textContent = formatPrice(data.price);
+            const changeEl = document.getElementById(`${coin}-change`);
+            changeEl.textContent = `${data.change >= 0 ? '+' : ''}${data.change.toFixed(2)}%`;
+            changeEl.className = data.change >= 0 ? 'change positive' : 'change negative';
+        }
+
+        async function loadTrades() {
+            try {
+                const response = await fetch('/api/trades/recent');
+                const data = await response.json();
+                if (data.success && data.trades) {
+                    displayTrades(data.trades);
+                }
+            } catch (error) {
+                addLog('❌ 거래 내역 로드 실패: ' + error.message);
+            }
+        }
+
+        function displayTrades(trades) {
+            const container = document.getElementById('bot-trades');
+            if (trades.length === 0) {
+                container.innerHTML = '<p class="no-data">거래 내역이 없습니다.</p>';
+                return;
+            }
+            container.innerHTML = trades.map(trade => `
+                <div class="trade-item ${trade.type}">
+                    <span class="trade-time">${formatTime(trade.time)}</span>
+                    <span class="trade-coin">${trade.coin}</span>
+                    <span class="trade-type">${trade.type === 'buy' ? '매수' : '매도'}</span>
+                    <span class="trade-price">${formatPrice(trade.price)}</span>
+                    <span class="trade-amount">${trade.amount}</span>
+                </div>
+            `).join('');
+        }
+
+        async function loadPortfolio() {
+            try {
+                const response = await fetch('/api/portfolio');
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById('total-assets').textContent = formatPrice(data.totalAssets);
+                    document.getElementById('profit-rate').textContent = `${data.profitRate >= 0 ? '+' : ''}${data.profitRate.toFixed(2)}%`;
+                    document.getElementById('holdings-count').textContent = `${data.holdingsCount}개`;
+                }
+            } catch (error) {
+                addLog('❌ 포트폴리오 로드 실패: ' + error.message);
+            }
+        }
+
+        function formatPrice(price) {
+            return new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(price);
+        }
+
+        function formatTime(timestamp) {
+            return new Date(timestamp).toLocaleTimeString('ko-KR');
+        }
+
+        window.addEventListener('load', () => {
+            addLog('📈 트레이딩 대시보드 시작');
+            loadMarketData();
+            loadTrades();
+            loadPortfolio();
+            refreshStatus();
+            setInterval(() => {
+                loadMarketData();
+                loadTrades();
+                loadPortfolio();
+            }, 5000);
+            setInterval(refreshStatus, 10000);
+        });
+    </script>
+</body>
+</html>

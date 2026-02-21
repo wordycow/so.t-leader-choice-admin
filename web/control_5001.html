@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>운영 제어 센터 - Lee May Trading</title>
+    <link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎛️ 운영 제어 센터</h1>
+            <p class="subtitle">Lee May Trading System - Operations Control</p>
+        </header>
+
+        <main>
+            <section class="status-section">
+                <h2>📊 시스템 상태</h2>
+                <div class="status-grid">
+                    <div class="status-card" id="control-status">
+                        <h3>Control Server</h3>
+                        <div class="status-indicator" data-service="control">⏳</div>
+                        <p class="status-text">확인 중...</p>
+                    </div>
+                    <div class="status-card" id="trading-status">
+                        <h3>Trading Server</h3>
+                        <div class="status-indicator" data-service="trading">⏳</div>
+                        <p class="status-text">확인 중...</p>
+                    </div>
+                    <div class="status-card" id="bots-status">
+                        <h3>Bot Engines</h3>
+                        <div class="status-indicator" data-service="bots">⏳</div>
+                        <p class="status-text">확인 중...</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="control-section">
+                <h2>🎮 제어 패널</h2>
+                <div class="control-grid">
+                    <button class="control-btn start" onclick="startAllBots()">▶️ 모든 봇 시작</button>
+                    <button class="control-btn stop" onclick="stopAllBots()">⏹️ 모든 봇 정지</button>
+                    <button class="control-btn restart" onclick="restartSystem()">🔄 시스템 재시작</button>
+                    <button class="control-btn refresh" onclick="refreshStatus()">🔃 상태 새로고침</button>
+                </div>
+            </section>
+
+            <section class="log-section">
+                <h2>📝 실시간 로그</h2>
+                <div id="log-output" class="log-output"></div>
+            </section>
+
+            <section class="links-section">
+                <h2>🔗 빠른 링크</h2>
+                <div class="links-grid">
+                    <a href="trading_5000.html" class="link-card">📈 트레이딩 대시보드</a>
+                    <a href="/api/health" class="link-card" target="_blank">❤️ Health Check</a>
+                    <a href="/api/status" class="link-card" target="_blank">📊 시스템 상태</a>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Lee May Trading System © 2026 | Port: 5001</p>
+        </footer>
+    </div>
+
+    <script src="assets/app.js"></script>
+    <script>
+        async function startAllBots() {
+            addLog('🚀 모든 봇 시작 요청...');
+            try {
+                const response = await fetch('/api/ops/start-all', { method: 'POST' });
+                const data = await response.json();
+                addLog(data.success ? '✅ 시작 성공' : '❌ 시작 실패: ' + data.error);
+                refreshStatus();
+            } catch (error) {
+                addLog('❌ 오류: ' + error.message);
+            }
+        }
+
+        async function stopAllBots() {
+            addLog('🛑 모든 봇 정지 요청...');
+            try {
+                const response = await fetch('/api/ops/stop-all', { method: 'POST' });
+                const data = await response.json();
+                addLog(data.success ? '✅ 정지 성공' : '❌ 정지 실패: ' + data.error);
+                refreshStatus();
+            } catch (error) {
+                addLog('❌ 오류: ' + error.message);
+            }
+        }
+
+        async function restartSystem() {
+            if (!confirm('시스템을 재시작하시겠습니까?')) return;
+            addLog('🔄 시스템 재시작 요청...');
+            try {
+                const response = await fetch('/api/ops/restart', { method: 'POST' });
+                const data = await response.json();
+                addLog(data.success ? '✅ 재시작 중...' : '❌ 재시작 실패: ' + data.error);
+            } catch (error) {
+                addLog('❌ 오류: ' + error.message);
+            }
+        }
+
+        window.addEventListener('load', () => {
+            addLog('🎛️ 운영 제어 센터 시작');
+            refreshStatus();
+            setInterval(refreshStatus, 10000);
+        });
+    </script>
+</body>
+</html>
