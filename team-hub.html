@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>The Unique – Team Hub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "Pretendard", sans-serif;
+      background: #020617 url('img/team-background.png') center/cover no-repeat fixed;
+      color: #e5e7eb;
+    }
+
+    a { color: inherit; }
+
+    .page-wrap {
+      max-width: 1200px;
+      margin: 40px auto 32px;
+      padding: 0 16px 24px;
+    }
+
+    /* 헤더 */
+    .hub-header {
+      text-align: left;
+      margin-bottom: 18px;
+    }
+
+    .hub-title {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #facc15;
+      text-shadow: 0 0 12px rgba(250, 204, 21, 0.75);
+    }
+
+    .hub-subtitle {
+      font-size: 12px;
+      margin-top: 4px;
+      color: #9ca3af;
+      line-height: 1.5;
+    }
+
+    /* 공용 섹션 공통 스타일 */
+    .section {
+      border-radius: 24px;
+      padding: 18px 18px 20px;
+      background: radial-gradient(circle at top,
+        rgba(15, 23, 42, 0.9),
+        rgba(15, 23, 42, 0.98)
+      );
+      box-shadow:
+        0 0 0 1px rgba(30, 64, 118, 0.7),
+        0 18px 45px rgba(0, 0, 0, 0.9);
+      margin-bottom: 22px;
+    }
+
+    .section-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #f9fafb;
+    }
+
+    .section-desc {
+      font-size: 12px;
+      color: #9ca3af;
+      line-height: 1.4;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .link-card {
+      border-radius: 18px;
+      padding: 14px 14px 12px;
+      background: linear-gradient(145deg, #020617, #020617, #020617);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 126px;
+    }
+
+    .link-card.admin {
+      border-color: rgba(248, 181, 84, 0.9);
+    }
+
+    .link-card.sot {
+      border-color: rgba(124, 58, 237, 0.9);
+      box-shadow:
+        0 14px 32px rgba(0, 0, 0, 0.9),
+        0 0 0 1px rgba(124, 58, 237, 0.25);
+    }
+
+    .link-card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #f9fafb;
+    }
+
+    .link-card-desc {
+      font-size: 11px;
+      color: #9ca3af;
+      line-height: 1.45;
+    }
+
+    .link-card-meta {
+      font-size: 11px;
+      color: #6b7280;
+    }
+
+    .link-card-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .link-btn {
+      flex: 1 1 0;
+      border-radius: 999px;
+      padding: 7px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.95);
+      color: #e5e7eb;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      transition:
+        background 0.15s ease,
+        border-color 0.15s ease,
+        transform 0.1s ease;
+      white-space: nowrap;
+    }
+
+    .link-btn.primary {
+      border-color: rgba(248, 181, 84, 0.9);
+      background: radial-gradient(circle at top, #f97316, #7f1d1d);
+      color: #fef2f2;
+    }
+
+    .link-btn.purple {
+      border-color: rgba(124, 58, 237, 0.95);
+      background: radial-gradient(circle at top, rgba(124,58,237,0.75), rgba(30,64,175,0.75));
+      color: #eef2ff;
+    }
+
+    .link-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(248, 250, 252, 0.7);
+      background: rgba(30, 64, 175, 0.85);
+    }
+
+    /* Google 시트/문서 버튼 */
+    .sheet-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .sheet-btn {
+      flex: 1 1 220px;
+      border-radius: 999px;
+      padding: 9px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      background: radial-gradient(circle at top,
+        rgba(15,23,42,0.96),
+        rgba(15,23,42,0.99)
+      );
+      color: #e5e7eb;
+      text-decoration: none;
+      text-align: center;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.8);
+      cursor: pointer;
+      transition:
+        background 0.15s ease,
+        transform 0.1s ease,
+        border-color 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .sheet-btn:hover {
+      transform: translateY(-1px);
+      background: rgba(30, 64, 175, 0.9);
+      border-color: rgba(248, 250, 252, 0.8);
+    }
+
+    /* ✅ Up Coin 대형 미리보기 섹션 */
+    .section-upcoin {
+      border-radius: 24px;
+      padding: 18px 18px 18px;
+      background: radial-gradient(circle at top,
+        rgba(15, 23, 42, 0.98),
+        rgba(15, 23, 42, 0.995)
+      );
+      box-shadow:
+        0 0 0 1px rgba(77, 163, 255, 0.55),
+        0 20px 55px rgba(0, 0, 0, 1);
+      margin-bottom: 22px;
+    }
+
+    .preview-shell {
+      border-radius: 18px;
+      padding: 10px;
+      border: 1px solid rgba(77, 163, 255, 0.75);
+      background: radial-gradient(circle at top,
+        rgba(15, 23, 42, 0.96),
+        rgba(15, 23, 42, 0.99)
+      );
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .preview-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .preview-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #dbe9ff;
+      letter-spacing: 0.02em;
+    }
+
+    .preview-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .mini-btn {
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      background: rgba(2, 6, 23, 0.55);
+      color: #e5e7eb;
+      cursor: pointer;
+      transition: transform 0.12s ease, background 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mini-btn:hover {
+      transform: translateY(-1px);
+      background: rgba(30, 64, 175, 0.75);
+      border-color: rgba(191, 219, 254, 0.9);
+    }
+
+    .mini-btn.active {
+      border-color: rgba(77, 163, 255, 0.95);
+      background: rgba(77, 163, 255, 0.18);
+      color: #eef2ff;
+    }
+
+    /* ✅ preview-frame: 높이는 JS가 결정 */
+    .preview-frame{
+      border-radius:14px;
+      overflow:hidden;
+      background:#020617;
+      border:1px solid rgba(30, 41, 59, 1);
+      height: 70vh;          /* 초기값 */
+      min-height: 720px;     /* 초기 최소 */
+    }
+
+    .preview-frame iframe{
+      width:100%;
+      height: 100%;          /* ✅ wrapper 높이를 그대로 사용 */
+      border:0;
+      display:block;
+      background:#020617;
+    }
+
+    .hint {
+      font-size: 11px;
+      color: #9ca3af;
+      line-height: 1.5;
+      margin-top: 6px;
+    }
+
+    .footer-note {
+      margin-top: 10px;
+      font-size: 11px;
+      color: #9ca3af;
+      text-align: right;
+      opacity: 0.8;
+    }
+
+    @media (max-width: 960px) {
+      .card-grid { grid-template-columns: minmax(0, 1fr); }
+      .sheet-links { flex-direction: column; }
+      .preview-frame { min-height: 640px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page-wrap">
+    <header class="hub-header">
+      <div class="hub-title">THE UNIQUE – TEAM HUB</div>
+      <div class="hub-subtitle">
+        참가자가 보는 공용 페이지와, 관리자가 조정하는 도구/현황을 한 곳에서 관리합니다.<br/>
+        ✅ 아래 링크들로 바로 이동 가능하며, 맨 아래에서 <b>Up Coin 현황</b>을 <b>대형 미리보기</b>로 확인할 수 있습니다.
+      </div>
+    </header>
+
+    <!-- 1. 공동 노출 화면 -->
+    <section class="section">
+      <div class="section-title-row">
+        <div class="section-title">공동 노출 화면 (참가자용)</div>
+        <div class="section-desc">
+          The Unique 참가자들에게 실제로 보여지는 주요 화면입니다.
+        </div>
+      </div>
+
+      <div class="card-grid">
+        <article class="link-card">
+          <div class="link-card-title">The Unique 대문</div>
+          <div class="link-card-desc">
+            초대 링크로 처음 접속할 때 보이는 로그인 게이트 화면입니다.
+          </div>
+          <div class="link-card-meta">파일: the-unique-gate.html</div>
+          <div class="link-card-actions">
+            <a class="link-btn primary" href="the-unique-gate.html" target="_blank" rel="noopener noreferrer">페이지 열기</a>
+            <a class="link-btn" href="https://github.com/wordycow/so.t-leader-choice/blob/main/the-unique-gate.html" target="_blank" rel="noopener noreferrer">GITHUB 이동</a>
+          </div>
+        </article>
+
+        <article class="link-card">
+          <div class="link-card-title">The Unique 메인</div>
+          <div class="link-card-desc">
+            로그인 후 멤버들이 보는 메인 대시보드입니다. 직급·목표·eBook과 주간 스케줄이 노출됩니다.
+          </div>
+          <div class="link-card-meta">파일: the-unique-main.html</div>
+          <div class="link-card-actions">
+            <a class="link-btn primary" href="the-unique-main.html" target="_blank" rel="noopener noreferrer">페이지 열기</a>
+            <a class="link-btn" href="https://github.com/wordycow/so.t-leader-choice/blob/main/the-unique-main.html" target="_blank" rel="noopener noreferrer">GITHUB 이동</a>
+          </div>
+        </article>
+
+        <article class="link-card">
+          <div class="link-card-title">The Unique 금고</div>
+          <div class="link-card-desc">
+            현재 사용 중인 프로모션 페이지입니다.
+          </div>
+          <div class="link-card-meta">파일: the-unique-promo.html</div>
+          <div class="link-card-actions">
+            <a class="link-btn primary" href="the-unique-promo.html" target="_blank" rel="noopener noreferrer">페이지 열기</a>
+            <a class="link-btn" href="https://github.com/wordycow/so.t-leader-choice/blob/main/the-unique-promo.html" target="_blank" rel="noopener noreferrer">GITHUB 이동</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 2. 관리자 전용 도구 -->
+    <section class="section">
+      <div class="section-title-row">
+        <div class="section-title">관리자 전용 도구</div>
+        <div class="section-desc">
+          eBook 설정, 직급 전당, 전체 허브 설정을 관리하는 페이지입니다.
+        </div>
+      </div>
+
+      <div class="card-grid">
+        <article class="link-card admin">
+          <div class="link-card-title">The Unique eBook 관리자</div>
+          <div class="link-card-desc">
+            the-unique-ebook.html에 노출되는 eBook 목록과 순서를 관리합니다.
+          </div>
+          <div class="link-card-meta">파일: the-unique-ebook-admin.html</div>
+          <div class="link-card-actions">
+            <a class="link-btn primary" href="the-unique-ebook-admin.html" target="_blank" rel="noopener noreferrer">페이지 열기</a>
+            <a class="link-btn" href="https://github.com/wordycow/so.t-leader-choice/blob/main/the-unique-ebook-admin.html" target="_blank" rel="noopener noreferrer">GITHUB 이동</a>
+          </div>
+        </article>
+
+        <article class="link-card admin">
+          <div class="link-card-title">직급 전당 관리자</div>
+          <div class="link-card-desc">
+            rank-hall.html / rank-hall.json 에 들어가는 직급 정보를 관리합니다.
+          </div>
+          <div class="link-card-meta">파일: admin-rank-hall.html</div>
+          <div class="link-card-actions">
+            <a class="link-btn primary" href="admin-rank-hall.html" target="_blank" rel="noopener noreferrer">페이지 열기</a>
+            <a class="link-btn" href="https://github.com/wordycow/so.t-leader-choice/blob/main/admin-rank-hall.html" target="_blank" rel="noopener noreferrer">GITHUB 이동</a>
+          </div>
+        </article>
+
+        <article class="link-card admin">
+          <div class="link-card-title">여행 leader보드</div>
+          <div class="link-card-desc">
+            통합 허브 설정 및 다른 관리 도구로 이동하는 인덱스 페이지입니다.
+          </div>
+          <div class="link-card-meta">파일: admin-index.html</div>
+          <div class="link-card-actions">
+            <a class="link-btn primary" href="admin-index.html" target="_blank" rel="noopener noreferrer">페이지 열기</a>
+            <a class="link-btn" href="https://github.com/wordycow/so.t-leader-choice/blob/main/admin-index.html" target="_blank" rel="noopener noreferrer">GITHUB 이동</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 2-b. 구글 시트 / 문서 바로가기 -->
+    <section class="section">
+      <div class="section-title-row">
+        <div class="section-title">관리자용 Google 시트·문서</div>
+        <div class="section-desc">
+          주간 스케줄, 회원가입 정보, 공지 문서를 바로 열 수 있습니다.
+        </div>
+      </div>
+
+      <div class="sheet-links">
+        <a class="sheet-btn" href="https://docs.google.com/spreadsheets/d/1C4fyJtyBHSaBIWyN_lM75Zp7myvtz3cKfHYUbAmoVQY/edit?gid=0#gid=0" target="_blank" rel="noopener noreferrer">
+          🗓 스케줄 시트 열기
+        </a>
+
+        <a class="sheet-btn" href="https://docs.google.com/spreadsheets/d/1SUXCiLg7sbZ_2OxanCEgVwgk3dJhZLhyX0-lltTxBnM/edit?resourcekey#gid=160409301" target="_blank" rel="noopener noreferrer">
+          👥 회원가입 시트 열기
+        </a>
+
+        <a class="sheet-btn" href="https://docs.google.com/spreadsheets/d/1iKzvq2Xg8fvZ1uY3DEZQPSd0A4K9nU8pC9YSZkqd6KE/edit?gid=780033903#gid=780033903" target="_blank" rel="noopener noreferrer">
+          🗺 여행 대장 신청서 시트
+        </a>
+
+        <a class="sheet-btn" href="https://docs.google.com/spreadsheets/d/1YdlbmgBvNm7suDmDFctaQwsBpvsD_5xn9Ebc51KZaQs/edit?resourcekey=&gid=15456827#gid=15456827" target="_blank" rel="noopener noreferrer">
+          🚶 어슬렁 로드 대장별 상담신청 시트
+        </a>
+
+        <a class="sheet-btn" href="https://docs.google.com/document/d/1EYu8HQm-pUKmK3UF-O0oVC8oEKRcbwQ9ZZfH1BBngUo/edit?tab=t.0" target="_blank" rel="noopener noreferrer">
+          📢 공지 문서(PPT 스타일) 열기
+        </a>
+
+        <a class="sheet-btn" href="https://docs.google.com/spreadsheets/d/1AJPz0H0j23nejlzH47o0UCZZwEthA05gUvTpyYH7d3M/edit?usp=sharing" target="_blank" rel="noopener noreferrer">
+          📋 so.t 판매·레그 확인 시트
+        </a>
+
+        <a class="sheet-btn" href="https://docs.google.com/spreadsheets/d/1rUUFSSs00NOaojEynDMPcB2pjMtQ8UHx0oUExhtKik0/edit?usp=sharing" target="_blank" rel="noopener noreferrer">
+          🧾 Linkon 사전가입 응답 시트
+        </a>
+      </div>
+    </section>
+
+    <!-- ✅ Up Coin 대형 미리보기 -->
+    <section class="section-upcoin">
+      <div class="section-title-row">
+        <div class="section-title">so.t – Up Coin (DAYTRADE NOW)</div>
+        <div class="section-desc">
+          업비트 공개 데이터 기반 추천/현황판. 팀 허브에서 바로 확인하세요.
+        </div>
+      </div>
+
+      <article class="link-card sot" style="margin-bottom:14px;">
+        <div class="link-card-title">Up Coin 추천/현황판</div>
+        <div class="link-card-desc">
+          NOW/WAIT/OUT 상태, 실시간 가격(15초), 추천 진입 시간대 등을 한 화면에서 확인합니다.
+        </div>
+        <div class="link-card-meta">페이지: up-coin.html</div>
+        <div class="link-card-actions">
+          <a class="link-btn purple" href="https://wordycow.github.io/so.t-leader-choice/up-coin.html" target="_blank" rel="noopener noreferrer">페이지 열기</a>
+          <button class="link-btn" type="button" id="btnScrollToPreview">미리보기로 이동</button>
+        </div>
+        <div class="hint">
+          • 아래 미리보기는 “현황판 모드(화면맞춤)” 또는 “전체 펼치기(내용맞춤)”로 사용할 수 있음.<br>
+          • 새로고침 버튼은 iframe만 리로드합니다(페이지 전체 리로드 X).
+        </div>
+      </article>
+
+      <div class="preview-shell" id="upcoinPreview">
+        <div class="preview-head">
+          <div class="preview-title" id="previewTitle">대형 미리보기 – Up Coin</div>
+          <div class="preview-actions">
+            <button class="mini-btn active" id="modeFit" type="button">현황판(화면맞춤)</button>
+            <button class="mini-btn" id="modeContent" type="button">전체 펼치기(내용맞춤)</button>
+            <button class="mini-btn" id="btnReload" type="button">새로고침</button>
+            <a class="mini-btn" id="openNew"
+               href="https://wordycow.github.io/so.t-leader-choice/up-coin.html"
+               target="_blank" rel="noopener noreferrer">
+              새탭으로 열기
+            </a>
+          </div>
+        </div>
+
+        <div class="preview-frame" id="previewFrameWrap">
+          <iframe
+            id="previewFrame"
+            src="https://wordycow.github.io/so.t-leader-choice/up-coin.html"
+            title="Up Coin 미리보기"
+            loading="lazy"
+          ></iframe>
+        </div>
+
+        <div class="hint" id="modeHint">
+          • 현재는 “현황판(화면맞춤)” 모드입니다 → 화면 아래 끝까지 꽉 채웁니다.<br>
+          • “전체 펼치기(내용맞춤)”로 바꾸면 iframe 내부 스크롤이 거의/완전 사라집니다.
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      The Unique Team Hub · so.t-leader-choice · internal tool
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const UPCOIN_URL = "https://wordycow.github.io/so.t-leader-choice/up-coin.html";
+
+      const frame = document.getElementById("previewFrame");
+      const frameWrap = document.getElementById("previewFrameWrap");
+      const btnReload = document.getElementById("btnReload");
+      const btnScroll = document.getElementById("btnScrollToPreview");
+      const preview = document.getElementById("upcoinPreview");
+
+      const modeFitBtn = document.getElementById("modeFit");
+      const modeContentBtn = document.getElementById("modeContent");
+      const modeHint = document.getElementById("modeHint");
+
+      if (!frame || !frameWrap) return;
+
+      // -----------------------------
+      // Mode
+      // -----------------------------
+      const MODE_KEY = "TEAMHUB_UPCOIN_MODE"; // "fit" | "content"
+      let mode = (localStorage.getItem(MODE_KEY) || "fit").toLowerCase();
+      if (mode !== "fit" && mode !== "content") mode = "fit";
+
+      function setActiveModeUI() {
+        if (modeFitBtn) modeFitBtn.classList.toggle("active", mode === "fit");
+        if (modeContentBtn) modeContentBtn.classList.toggle("active", mode === "content");
+
+        if (modeHint) {
+          if (mode === "fit") {
+            modeHint.innerHTML =
+              "• 현재는 “현황판(화면맞춤)” 모드입니다 → 화면 아래 끝까지 꽉 채웁니다.<br>" +
+              "• “전체 펼치기(내용맞춤)”로 바꾸면 iframe 내부 스크롤이 거의/완전 사라집니다.";
+          } else {
+            modeHint.innerHTML =
+              "• 현재는 “전체 펼치기(내용맞춤)” 모드입니다 → iframe 콘텐츠 높이로 자동 확장합니다.<br>" +
+              "• 만약 브라우저가 높이 측정을 막으면 자동으로 현황판 모드로 fallback 됩니다.";
+          }
+        }
+      }
+
+      function setMode(nextMode) {
+        mode = (nextMode === "content") ? "content" : "fit";
+        localStorage.setItem(MODE_KEY, mode);
+        setActiveModeUI();
+        scheduleFit(); // 모드 바꾸면 즉시 반영
+        if (mode === "content") scheduleContentResizeBursts();
+      }
+
+      // -----------------------------
+      // Reload + Scroll
+      // -----------------------------
+      if (btnReload) {
+        btnReload.addEventListener("click", () => {
+          frame.src = UPCOIN_URL + (UPCOIN_URL.includes("?") ? "&" : "?") + "r=" + Date.now();
+        });
+      }
+
+      if (btnScroll && preview) {
+        btnScroll.addEventListener("click", () => {
+          preview.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      }
+
+      // -----------------------------
+      // Fit to viewport bottom (dashboard)
+      // -----------------------------
+      let raf = 0;
+
+      function fitPreviewToBottom() {
+        raf = 0;
+        const rect = frameWrap.getBoundingClientRect();
+        const bottomPadding = 18;
+        const available = window.innerHeight - rect.top - bottomPadding;
+
+        // 최소/최대 (너무 작거나 너무 커서 레이아웃 깨지는 것 방지)
+        const minH = 720;
+        const maxH = Math.max(minH, Math.floor(window.innerHeight * 0.95));
+        const h = Math.max(minH, Math.min(maxH, Math.floor(available)));
+
+        frameWrap.style.height = h + "px";
+      }
+
+      function scheduleFit() {
+        if (raf) return;
+        raf = requestAnimationFrame(() => {
+          if (mode === "fit") fitPreviewToBottom();
+          else resizeToContentHeight(); // content 모드면 내용 높이 기준
+        });
+      }
+
+      // -----------------------------
+      // Resize to iframe content height (same-origin only)
+      // -----------------------------
+      let contentRAF = 0;
+      let observer = null;
+
+      function computeIframeContentHeight() {
+        try {
+          const doc = frame.contentDocument || frame.contentWindow.document;
+          if (!doc) return null;
+
+          const body = doc.body;
+          const html = doc.documentElement;
+
+          const h = Math.max(
+            body ? body.scrollHeight : 0,
+            html ? html.scrollHeight : 0,
+            body ? body.offsetHeight : 0,
+            html ? html.offsetHeight : 0
+          );
+
+          if (!h || !isFinite(h)) return null;
+          return h;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function resizeToContentHeight() {
+        contentRAF = 0;
+        if (mode !== "content") return;
+
+        const h = computeIframeContentHeight();
+        if (h == null) {
+          // 접근 불가(다른 도메인/정책)면 fit으로 fallback
+          setMode("fit");
+          return;
+        }
+
+        // 너무 과도하게 커지는 것 방지 (그래도 충분히 크게)
+        const minH = 720;
+        const maxH = 20000;
+        const finalH = Math.max(minH, Math.min(maxH, Math.floor(h)));
+
+        frameWrap.style.height = finalH + "px";
+      }
+
+      function scheduleContentResize() {
+        if (contentRAF) return;
+        contentRAF = requestAnimationFrame(resizeToContentHeight);
+      }
+
+      function scheduleContentResizeBursts() {
+        scheduleContentResize();
+        setTimeout(scheduleContentResize, 250);
+        setTimeout(scheduleContentResize, 800);
+        setTimeout(scheduleContentResize, 1600);
+        setTimeout(scheduleContentResize, 3000);
+      }
+
+      function attachMutationObserver() {
+        try {
+          const doc = frame.contentDocument || frame.contentWindow.document;
+          if (!doc || !doc.documentElement) return;
+
+          if (observer) observer.disconnect();
+          observer = new MutationObserver(() => {
+            if (mode === "content") scheduleContentResize();
+          });
+          observer.observe(doc.documentElement, {
+            childList: true,
+            subtree: true,
+            attributes: true
+          });
+        } catch (e) {
+          // ignore
+        }
+      }
+
+      // -----------------------------
+      // Events
+      // -----------------------------
+      window.addEventListener("resize", scheduleFit);
+      window.addEventListener("scroll", scheduleFit, { passive: true });
+
+      frame.addEventListener("load", () => {
+        // 로드 직후 안정화
+        if (mode === "fit") setTimeout(fitPreviewToBottom, 80);
+        else scheduleContentResizeBursts();
+
+        // iframe 내부 DOM 변화 감지(가능하면)
+        attachMutationObserver();
+      });
+
+      if (modeFitBtn) modeFitBtn.addEventListener("click", () => setMode("fit"));
+      if (modeContentBtn) modeContentBtn.addEventListener("click", () => setMode("content"));
+
+      // -----------------------------
+      // Init
+      // -----------------------------
+      setActiveModeUI();
+
+      // 최초 1회
+      if (mode === "fit") fitPreviewToBottom();
+      else scheduleContentResizeBursts();
+
+      // 첫 로드가 늦는 경우 대비
+      setTimeout(scheduleFit, 200);
+    })();
+  </script>
+</body>
+</html>

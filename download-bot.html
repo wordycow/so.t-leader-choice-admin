@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 업비트 스마트 스캘핑 봇 v2.0 - 다운로드</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0e27 url('img/download-bot-background.png') center/cover no-repeat fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .header .emoji {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 18px;
+        }
+        
+        .features {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .features h2 {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .feature-item .icon {
+            font-size: 24px;
+        }
+        
+        .feature-item .text {
+            color: #555;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .download-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .download-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 50px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+        
+        .download-btn .size {
+            display: block;
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .info-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .info-box h3 {
+            color: #856404;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .info-box ol {
+            margin-left: 20px;
+            color: #856404;
+        }
+        
+        .info-box li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+        
+        .info-box code {
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #d63384;
+        }
+        
+        .warning-box {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .warning-box h3 {
+            color: #721c24;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .warning-box ul {
+            margin-left: 20px;
+            color: #721c24;
+        }
+        
+        .warning-box li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+        
+        .github-link {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .github-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .github-link a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .download-btn {
+                padding: 15px 30px;
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="emoji">🤖</div>
+            <h1>업비트 스마트 스캘핑 봇 v2.1</h1>
+            <p>🛡️ 안전 모드 + 상장폐지 코인 자동 차단</p>
+        </div>
+        
+        <div class="features">
+            <h2>✨ v2.1 핵심 기능</h2>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <span class="icon">🛡️</span>
+                    <span class="text">상장폐지 차단</span>
+                </div>
+                <div class="feature-item">
+                    <span class="icon">🚫</span>
+                    <span class="text">USDT/BTC 제외</span>
+                </div>
+                <div class="feature-item">
+                    <span class="icon">🎯</span>
+                    <span class="text">자동 코인 감지</span>
+                </div>
+                <div class="feature-item">
+                    <span class="icon">🧠</span>
+                    <span class="text">상세한 이유 설명</span>
+                </div>
+                <div class="feature-item">
+                    <span class="icon">🔒</span>
+                    <span class="text">로컬 전용 보안</span>
+                </div>
+                <div class="feature-item">
+                    <span class="icon">📊</span>
+                    <span class="text">전략 기반 매매</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="download-section">
+            <a href="upbit-smart-bot-v2.1-safe.tar.gz" class="download-btn" download>
+                📥 v2.1 안전 버전 다운로드
+                <span class="size">(12 KB)</span>
+            </a>
+        </div>
+        
+        <div class="info-box">
+            <h3>📋 설치 방법 (5분)</h3>
+            <ol>
+                <li>위 버튼으로 <strong>압축 파일 다운로드</strong></li>
+                <li>압축 해제: <code>tar -xzf upbit-smart-bot-v2.1-safe.tar.gz</code></li>
+                <li>폴더 이동: <code>cd upbit-smart-bot-v2.1-safe/</code></li>
+                <li>패키지 설치: <code>pip install pyupbit pandas numpy</code></li>
+                <li>API 키 설정: <code>cp api_keys.json.example api_keys.json</code></li>
+                <li><code>api_keys.json</code> 파일을 열어서 실제 API 키 입력</li>
+                <li>실행: <code>./start-smart-bot.sh</code> 또는 <code>python3 upbit-smart-bot.py</code></li>
+            </ol>
+        </div>
+        
+        <div class="warning-box">
+            <h3>⚠️ 주의사항</h3>
+            <ul>
+                <li><strong>시뮬레이션 모드</strong>가 기본입니다 (실제 거래 안 됨)</li>
+                <li>실전 모드는 코드에서 주석 해제 후 사용</li>
+                <li>소액(10-50만원)으로 먼저 테스트하세요</li>
+                <li>API 키에 <strong>출금 권한은 절대 부여 금지</strong></li>
+                <li><code>api_keys.json</code> 파일은 Git에 올리지 마세요</li>
+            </ul>
+        </div>
+        
+        <div style="background: #e7f3ff; border: 2px solid #2196F3; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+            <h3 style="color: #0d47a1; margin-bottom: 10px;">📚 포함된 문서</h3>
+            <ul style="margin-left: 20px; color: #0d47a1; line-height: 2;">
+                <li><strong>README-SMART-BOT.md</strong> - 전체 가이드</li>
+                <li><strong>SAFETY-FEATURES.md</strong> - 🆕 안전 기능 가이드</li>
+                <li><strong>API-KEYS-SETUP.md</strong> - API 키 설정</li>
+                <li><strong>SMART-BOT-GUIDE.md</strong> - 전략 상세 설명</li>
+                <li><strong>delisted_coins.json</strong> - 🆕 제외 코인 설정</li>
+                <li><strong>api_keys.json.example</strong> - API 키 템플릿</li>
+            </ul>
+        </div>
+        
+        <div style="background: #fff9e6; border: 2px solid #ff9800; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+            <h3 style="color: #e65100; margin-bottom: 10px;">🆕 v2.1 새로운 기능</h3>
+            <ul style="margin-left: 20px; color: #e65100; line-height: 2;">
+                <li><strong>상장폐지 코인 자동 차단</strong> - 8개 코인 기본 제외</li>
+                <li><strong>USDT 마켓 제외</strong> - 변동성 다른 시장 차단</li>
+                <li><strong>BTC 마켓 제외</strong> - 이중 리스크 방지</li>
+                <li><strong>설정 파일 지원</strong> - delisted_coins.json 편집 가능</li>
+                <li><strong>자동 감지 기능</strong> - 거래 중단 코인 자동 추가</li>
+            </ul>
+        </div>
+        
+        <div style="background: #d1f2eb; border: 2px solid #00c851; border-radius: 12px; padding: 20px;">
+            <h3 style="color: #00695c; margin-bottom: 10px;">🎯 전략 요약</h3>
+            <p style="color: #00695c; line-height: 1.8; margin-bottom: 10px;">
+                <strong>매수:</strong> RSI 과매도 + 볼린저 하단 + 피보나치 50% 이하<br>
+                <strong>매도:</strong> 목표 수익(+1.5%) 또는 손절(-3.0%)<br>
+                <strong>분할:</strong> 원화 20%씩 매수, 수량 20%씩 매도
+            </p>
+        </div>
+        
+        <div class="github-link">
+            <p style="color: #666; margin-bottom: 10px;">소스 코드 전체 보기</p>
+            <a href="https://github.com/wordycow/so.t-leader-choice" target="_blank">
+                📂 GitHub 저장소 바로가기
+            </a>
+        </div>
+    </div>
+</body>
+</html>

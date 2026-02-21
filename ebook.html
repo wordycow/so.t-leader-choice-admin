@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>The Unique 행동 매뉴얼 eBook</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- 폰트 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      background: #020617 url('img/ebook-background.png') center/cover no-repeat fixed;
+      color: #E5E7EB;
+    }
+
+    .scene-bg {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.45;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .page-wrap {
+      position: relative;
+      z-index: 5;
+      max-width: 960px;
+      margin: 48px auto 40px;
+      padding: 0 16px 40px;
+    }
+
+    .book-frame {
+      border-radius: 24px;
+      padding: 24px 22px 28px;
+      background: radial-gradient(circle at top, rgba(15,23,42,0.98), rgba(15,23,42,0.99));
+      border: 1px solid rgba(234,179,8,0.9);
+      box-shadow:
+        0 0 24px rgba(234,179,8,0.7),
+        0 32px 80px rgba(0,0,0,0.95);
+    }
+
+    .back-link {
+      font-size: 12px;
+      color: #FACC15;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+    .back-link:hover { text-decoration: underline; }
+
+    .book-header {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .book-cover {
+      width: 120px;
+      height: 160px;
+      border-radius: 12px;
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: 0 14px 30px rgba(0,0,0,0.9);
+    }
+
+    .book-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .book-title-group {
+      flex: 1;
+    }
+
+    .book-title-en {
+      font-family: "Cinzel","Times New Roman",serif;
+      font-size: 22px;
+      letter-spacing: 0.18em;
+      color: #FACC15;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .book-title-ko {
+      font-size: 18px;
+      font-weight: 700;
+      color: #F9FAFB;
+      margin-bottom: 4px;
+    }
+
+    .book-sub {
+      font-size: 13px;
+      color: #9CA3AF;
+    }
+
+    .book-audio {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .book-audio button {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(250,204,21,0.7);
+      background: linear-gradient(135deg,#0f172a,#020617);
+      color: #FACC15;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .book-audio button:hover {
+      border-color: rgba(248,250,252,0.9);
+      background: linear-gradient(135deg,#111827,#020617);
+    }
+
+    .chapter-list {
+      margin-top: 10px;
+      margin-bottom: 18px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: radial-gradient(circle at top, #020617, #020617);
+      border: 1px solid rgba(30,64,118,0.9);
+      font-size: 13px;
+    }
+
+    .chapter-list-title {
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #E5E7EB;
+    }
+
+    .chapter-list ol {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .chapter-list li {
+      margin: 2px 0;
+      cursor: pointer;
+    }
+    .chapter-list li:hover { color: #FACC15; }
+
+    .chapter {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(51,65,85,0.9);
+    }
+
+    .chapter h2 {
+      font-size: 18px;
+      margin: 0 0 10px;
+      color: #FDE68A;
+    }
+
+    .chapter h3 {
+      font-size: 15px;
+      margin: 14px 0 6px;
+      color: #FACC15;
+    }
+
+    .chapter p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: #E5E7EB;
+      margin: 4px 0;
+    }
+
+    .chapter em {
+      color: #FBBF24;
+      font-style: normal;
+      font-weight: 600;
+    }
+
+    .media-section {
+      margin-top: 18px;
+    }
+    .media-section video,
+    .media-section audio {
+      width: 100%;
+      max-width: 100%;
+      border-radius: 12px;
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- 필요하면 배경 이미지 넣기 -->
+  <!-- <img src="img/bg-unique-main.jpg" class="scene-bg" alt="" /> -->
+
+  <div class="page-wrap">
+    <div class="book-frame">
+      <a href="the-unique-main.html" class="back-link">
+        ← Member Hall로 돌아가기
+      </a>
+
+      <header class="book-header">
+        <div class="book-cover">
+          <img src="img/ebook-the-unique-system-book.jpg" alt="협력을 배우고 협력을 만들어낸다. 표지" />
+        </div>
+
+        <div class="book-title-group">
+          <div class="book-title-en">THE UNIQUE · Manual</div>
+          <div class="book-title-ko">협력을 배우고 협력을 만들어낸다.</div>
+          <div class="book-sub">THE UNIQUE 기본 매뉴얼</div>
+
+          <div class="book-audio">
+            <button type="button" id="btn-video" onclick="toggleVideo()">eBook 영상 보기</button>
+            <button type="button" id="btn-audio" onclick="toggleAudio()">오디오북 재생</button>
+          </div>
+        </div>
+      </header>
+
+      <!-- 목차 -->
+      <section class="chapter-list">
+        <div class="chapter-list-title">차례</div>
+        <ol>
+          <li onclick="scrollToChapter('ch-1')">1. THE UNIQUE 시스템이란 무엇인가</li>
+          <li onclick="scrollToChapter('ch-2')">2. 협력을 만드는 기본 규칙</li>
+          <li onclick="scrollToChapter('ch-3')">3. 행동 매뉴얼을 사용하는 법</li>
+          <li onclick="scrollToChapter('video-section')">eBook 영상</li>
+          <li onclick="scrollToChapter('audio-section')">오디오북</li>
+        </ol>
+      </section>
+
+      <!-- 본문: 필요하면 나중에 네가 기존 내용으로 교체해도 됨 -->
+      <section class="chapter" id="ch-1">
+        <h2>1. THE UNIQUE 시스템이란 무엇인가</h2>
+        <p>
+          THE UNIQUE 시스템은 “<em>운동과 공부는 버릴 게 없다</em>”는 문장을
+          실제 생활에 적용하기 위한 <em>행동 설계도</em>다.
+          감정이나 의욕이 아니라, 구조와 규칙으로 내가 움직이도록 만드는 장치다.
+        </p>
+        <p>
+          그래서 이 매뉴얼은 이론서가 아니라
+          <em>“오늘 무엇을 할지”를 바로 정할 수 있는 체크리스트</em>에 가깝다.
+          읽고 끝나는 책이 아니라, 매일 다시 펼쳐보는 작업 노트라고 생각하면 된다.
+        </p>
+      </section>
+
+      <section class="chapter" id="ch-2">
+        <h2>2. 협력을 만드는 기본 규칙</h2>
+        <h3>1) 혼자 잘하는 구조를 버린다</h3>
+        <p>
+          THE UNIQUE에서는 “나 혼자 영웅이 되는 구조”를 쓰지 않는다.
+          대신 <em>서로의 목표가 연결되는 판</em>을 먼저 깐 다음에 움직인다.
+        </p>
+
+        <h3>2) 기록이 없는 협력은 협력이 아니다</h3>
+        <p>
+          누가 무엇을 도왔는지, 어떤 결과가 나왔는지가
+          기록으로 남지 않으면 결국 기억 싸움이 된다.
+          이 매뉴얼은 <em>기록을 통해 협력을 증명하는 방법</em>을 알려준다.
+        </p>
+
+        <h3>3) 보상은 감정이 아니라 규칙으로</h3>
+        <p>
+          “기분 좋으니까 조금 더 챙겨줄게”가 아니라,
+          <em>“이만큼 했으니 규칙에 따라 이렇게 나눠 갖자”</em>가 원칙이다.
+          그래야 오래 가고, 새로운 사람이 들어와도 판이 유지된다.
+        </p>
+      </section>
+
+      <section class="chapter" id="ch-3">
+        <h2>3. 행동 매뉴얼을 사용하는 법</h2>
+        <h3>1) 한 번 정독, 이후에는 필요한 챕터만 반복</h3>
+        <p>
+          처음에는 전체를 천천히 읽되,
+          이후에는 그날의 상황에 맞는 챕터만 골라서 본다.
+          예를 들어, 사람을 초대해야 하는 날에는
+          “소개 / 초대” 관련 장만 꺼내 쓰는 식이다.
+        </p>
+
+        <h3>2) 읽으면서 바로 체크리스트에 옮겨 적기</h3>
+        <p>
+          “좋은 말이네”에서 끝나지 않게 하려면
+          <em>바로 내 언어로 체크리스트를 만든다</em>.
+          이 매뉴얼의 문장을 그대로 복사하지 말고,
+          내 톤으로 다시 쓰는 게 중요하다.
+        </p>
+
+        <h3>3) 디스코드 / so.t / 실제 모임에 연결하기</h3>
+        <p>
+          이 책은 혼자 보기 위한 책이 아니라
+          <em>디스코드 방 · so.t · 행동 모임</em>과 연결되는 책이다.
+          각 챕터의 핵심 문장들을, 실제 우리가 쓰는 채널과
+          문서에 붙여 넣어야 비로소 “시스템”이 완성된다.
+        </p>
+
+        <p>
+          이 매뉴얼의 목적은 단 하나다.
+          <em>“협력을 못 하던 사람이, 협력을 할 수 있는 사람으로 변하는 것.”</em>
+          나 혼자만 잘 되는 구조가 아니라, 같이 성장하는 구조를 몸으로 익히는 것이다.
+        </p>
+      </section>
+
+      <!-- eBook 영상 섹션 -->
+      <section class="chapter media-section" id="video-section">
+        <h2>eBook 영상</h2>
+        <video id="ebook-video-player" controls poster="img/ebook-the-unique-system-book.jpg">
+          <source src="img/the-unique-system.mp4" type="video/mp4" />
+          사용 중인 브라우저에서 비디오를 재생할 수 없습니다.
+        </video>
+      </section>
+
+      <!-- 오디오북 섹션 -->
+      <section class="chapter media-section" id="audio-section">
+        <h2>오디오북</h2>
+        <audio id="audio-player" controls>
+          <source src="audio/unique-ebook-ch1.mp3" type="audio/mpeg" />
+          사용 중인 브라우저에서 오디오를 재생할 수 없습니다.
+        </audio>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    function scrollToChapter(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const top = el.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top, behavior: "smooth" });
+    }
+
+    // eBook 영상 토글
+    function toggleVideo() {
+      const video = document.getElementById("ebook-video-player");
+      const audio = document.getElementById("audio-player");
+      const btnVideo = document.getElementById("btn-video");
+      const btnAudio = document.getElementById("btn-audio");
+      if (!video) return;
+
+      if (!video.paused && !video.ended) {
+        // 이미 재생 중이면 멈춤
+        video.pause();
+        btnVideo.textContent = "eBook 영상 보기";
+      } else {
+        // 오디오북이 재생 중이면 멈춤
+        if (audio && !audio.paused) {
+          audio.pause();
+          btnAudio.textContent = "오디오북 재생";
+        }
+        // 영상 위치로 스크롤 + 재생 시도
+        video.scrollIntoView({ behavior: "smooth", block: "center" });
+        setTimeout(() => {
+          video.play().catch(e => console.warn("비디오 자동 재생 실패:", e));
+        }, 400);
+        btnVideo.textContent = "영상 그만보기";
+      }
+    }
+
+    // 오디오북 토글
+    function toggleAudio() {
+      const video = document.getElementById("ebook-video-player");
+      const audio = document.getElementById("audio-player");
+      const btnVideo = document.getElementById("btn-video");
+      const btnAudio = document.getElementById("btn-audio");
+      if (!audio) return;
+
+      if (!audio.paused && !audio.ended) {
+        audio.pause();
+        btnAudio.textContent = "오디오북 재생";
+      } else {
+        if (video && !video.paused) {
+          video.pause();
+          btnVideo.textContent = "eBook 영상 보기";
+        }
+        audio.scrollIntoView({ behavior: "smooth", block: "center" });
+        setTimeout(() => {
+          audio.play().catch(e => console.warn("오디오 자동 재생 실패:", e));
+        }, 400);
+        btnAudio.textContent = "재생 멈춤";
+      }
+    }
+  </script>
+</body>
+</html>

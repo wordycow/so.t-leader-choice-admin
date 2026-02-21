@@ -1,0 +1,145 @@
+<!-- 🤖 타로 AI 분석 패널 - tarot.html에 삽입할 코드 -->
+<div id="ai-analysis-panel" style="display:none; margin-top:24px; padding:24px; background:linear-gradient(135deg, rgba(88,28,135,0.15), rgba(15,23,42,0.95)); border-radius:20px; border:1px solid rgba(168,85,247,0.4); box-shadow:0 0 30px rgba(168,85,247,0.3);">
+  <h3 style="color:#a855f7; font-size:22px; margin-bottom:16px; text-align:center;">
+    🔮 AI 딥 분석 결과
+  </h3>
+  
+  <!-- 에너지 분석 -->
+  <div id="energy-analysis" style="margin-bottom:20px; padding:16px; background:rgba(15,23,42,0.8); border-radius:12px;">
+    <h4 style="color:#fbbf24; font-size:16px; margin-bottom:10px;">⚡ 에너지 분석</h4>
+    <div id="energy-content" style="color:#e5e7eb; line-height:1.6;"></div>
+  </div>
+  
+  <!-- 시간대 분석 (3장일 때만) -->
+  <div id="timeline-analysis" style="display:none; margin-bottom:20px; padding:16px; background:rgba(15,23,42,0.8); border-radius:12px;">
+    <h4 style="color:#fbbf24; font-size:16px; margin-bottom:10px;">⏰ 과거-현재-미래 분석</h4>
+    <div id="timeline-content" style="color:#e5e7eb; line-height:1.6;"></div>
+  </div>
+  
+  <!-- 심층 통찰 -->
+  <div id="deep-insight" style="margin-bottom:20px; padding:16px; background:rgba(88,28,135,0.25); border-radius:12px; border:1px solid rgba(168,85,247,0.3);">
+    <h4 style="color:#c084fc; font-size:16px; margin-bottom:10px;">💎 심층 통찰</h4>
+    <div id="insight-content" style="color:#e5e7eb; line-height:1.7; font-size:15px;"></div>
+  </div>
+  
+  <!-- 액션 스텝 -->
+  <div id="action-steps" style="margin-bottom:20px; padding:16px; background:rgba(15,23,42,0.8); border-radius:12px;">
+    <h4 style="color:#fbbf24; font-size:16px; margin-bottom:10px;">🎯 실천 가이드</h4>
+    <ul id="action-list" style="color:#e5e7eb; line-height:1.8; padding-left:24px;"></ul>
+  </div>
+  
+  <!-- 긍정 확언 -->
+  <div id="affirmation" style="padding:20px; background:linear-gradient(135deg, rgba(168,85,247,0.2), rgba(236,72,153,0.2)); border-radius:12px; text-align:center; border:2px solid rgba(168,85,247,0.4);">
+    <h4 style="color:#e879f9; font-size:16px; margin-bottom:12px;">✨ 오늘의 확언</h4>
+    <div id="affirmation-text" style="color:#fce7f3; font-size:17px; font-weight:600; line-height:1.6; font-style:italic;"></div>
+  </div>
+</div>
+
+<script src="tarot-ai-enhancement.js"></script>
+<script>
+// AI 분석 버튼 생성 및 이벤트 연결
+function initAIAnalysis() {
+  // 결과 영역 뒤에 AI 분석 버튼 추가
+  const resultSection = document.getElementById('drawnCards').parentElement;
+  const aiButton = document.createElement('button');
+  aiButton.id = 'ai-analysis-btn';
+  aiButton.innerHTML = '🤖 AI 딥 분석 시작';
+  aiButton.style.cssText = `
+    width:100%; max-width:400px; margin:20px auto; display:block;
+    padding:16px 24px; font-size:18px; font-weight:700;
+    background:linear-gradient(135deg, #a855f7, #ec4899);
+    border:none; border-radius:999px; color:#fff;
+    cursor:pointer; box-shadow:0 10px 30px rgba(168,85,247,0.5);
+    transition:all 0.3s ease;
+  `;
+  aiButton.onmouseover = () => aiButton.style.transform = 'translateY(-2px)';
+  aiButton.onmouseout = () => aiButton.style.transform = 'translateY(0)';
+  aiButton.onclick = performAIAnalysis;
+  
+  resultSection.appendChild(aiButton);
+}
+
+function performAIAnalysis() {
+  const cards = selectedCards; // 전역 selectedCards 사용
+  if (!cards || cards.length === 0) {
+    alert('먼저 카드를 뽑아주세요!');
+    return;
+  }
+  
+  // AI 엔진 실행
+  const aiResult = TAROT_AI_ENGINE.generateAIReading(cards, selectedSpread);
+  
+  // 결과 표시
+  const panel = document.getElementById('ai-analysis-panel');
+  panel.style.display = 'block';
+  
+  // 에너지 분석
+  const energyDiv = document.getElementById('energy-content');
+  energyDiv.innerHTML = `
+    <p><strong>지배 에너지:</strong> ${translateSuit(aiResult.combination.dominantEnergy)}</p>
+    <p><strong>종합 레벨:</strong> ${translateLevel(aiResult.combination.synthesisLevel)}</p>
+    <div style="margin-top:10px; padding:10px; background:rgba(251,191,36,0.1); border-radius:8px;">
+      <small>에너지 분포: ${Object.entries(aiResult.combination.energyScore).map(([k,v]) => `${translateSuit(k)}(${v})`).join(' | ')}</small>
+    </div>
+  `;
+  
+  // 시간대 분석 (3장일 때만)
+  if (aiResult.timeline) {
+    const timelineDiv = document.getElementById('timeline-analysis');
+    const timelineContent = document.getElementById('timeline-content');
+    timelineDiv.style.display = 'block';
+    timelineContent.innerHTML = `
+      <div style="margin-bottom:12px;">
+        <strong style="color:#fbbf24;">📜 과거:</strong> ${aiResult.timeline.past.lesson}
+      </div>
+      <div style="margin-bottom:12px;">
+        <strong style="color:#fbbf24;">⚡ 현재:</strong> 도전 - ${aiResult.timeline.present.challenge}<br>
+        <span style="margin-left:20px;">기회 - ${aiResult.timeline.present.opportunity}</span>
+      </div>
+      <div style="margin-bottom:12px;">
+        <strong style="color:#fbbf24;">🌟 미래:</strong> ${aiResult.timeline.future.potential}<br>
+        <span style="margin-left:20px;">조언 - ${aiResult.timeline.future.advice}</span>
+      </div>
+      <div style="margin-top:16px; padding:12px; background:rgba(168,85,247,0.2); border-radius:8px;">
+        <strong>전체 흐름:</strong> ${aiResult.timeline.overallFlow}
+      </div>
+    `;
+  }
+  
+  // 심층 통찰
+  document.getElementById('insight-content').textContent = aiResult.deepInsight;
+  
+  // 액션 스텝
+  const actionList = document.getElementById('action-list');
+  actionList.innerHTML = aiResult.actionSteps.map(step => `<li>${step}</li>`).join('');
+  
+  // 긍정 확언
+  document.getElementById('affirmation-text').textContent = aiResult.affirmation;
+  
+  // 스크롤
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function translateSuit(suit) {
+  const names = {
+    major: '메이저 아르카나', cups: '컵(감정)', swords: '소드(정신)',
+    pentacles: '펜타클(물질)', wands: '완드(창조)', emotional: '감정',
+    mental: '정신', material: '물질', creative: '창조', universal: '우주'
+  };
+  return names[suit] || suit;
+}
+
+function translateLevel(level) {
+  const levels = {
+    highly_positive: '매우 긍정 ⭐⭐⭐⭐⭐',
+    positive: '긍정 ⭐⭐⭐⭐',
+    balanced: '균형 ⚖️',
+    challenging: '도전 💪',
+    transformative: '변화 🔥'
+  };
+  return levels[level] || level;
+}
+
+// 카드 뽑기 완료 후 자동 초기화
+document.addEventListener('DOMContentLoaded', initAIAnalysis);
+</script>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>구글 OTP 인증 오류 안내.</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      /* 🔥 배경 이미지 + 풀스크린 */
+      background:
+        #0a0e27 url('img/notice-v2-background.png') center/cover no-repeat fixed;
+      color: #111827;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px 40px;
+    }
+
+    .wrap {
+      max-width: 720px;
+      width: 100%;
+      margin: 0 auto;
+
+      /* 카드 배경을 살짝 반투명하게 */
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 12px;
+      padding: 20px 22px 26px;
+      box-shadow:
+        0 10px 30px rgba(0,0,0,0.35),
+        0 0 0 1px rgba(209,213,219,0.7);
+    }
+
+    h1 {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+    .meta {
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 16px;
+    }
+
+    .body p {
+      font-size: 13px;
+      line-height: 1.7;
+      margin: 6px 0;
+    }
+
+    .close-btn {
+      margin-top: 16px;
+      font-size: 11px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .close-btn:hover {
+      background: #f3f4f6;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>구글 OTP 인증 오류 안내.</h1>
+    <div class="meta">작성자: 관리자 · 등록일: 2025-12-01 오후 6:57:45</div>
+
+    <div class="body">
+      <p>안녕하세요.</p>
+      <p>현재 모바일 환경에서 회원 구글 OTP 등록 과정 중 버튼이 반응하지 않는 문제가 확인되어 개발팀에서 즉시 개선 작업을 진행하고 있습니다.</p>
+      <p>PC 웹에서는 정상적으로 이용 가능하오니, 불편하시더라도 당분간 PC 환경을 활용해주시기 바랍니다.</p>
+      <p>해당 이슈는 최우선으로 조치하여 빠르게 해결될 수 있도록 하겠습니다.</p>
+      <p>이용에 불편을 드려 죄송합니다.</p>
+    </div>
+
+    <button class="close-btn" onclick="window.close()">창 닫기 ✕</button>
+  </div>
+</body>
+</html>

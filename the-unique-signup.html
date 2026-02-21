@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>The Unique – Membership Registration</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      color: #f9fafb;
+      background: #0a0e27 url('img/signup-v2-background.png') center/cover no-repeat fixed;
+    }
+    .scene { position: fixed; inset: 0; overflow: hidden; }
+    .scene-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .page-wrap {
+      position: absolute; inset: 0; display: flex;
+      justify-content: center; align-items: center;
+      padding: 24px 12px; z-index: 10;
+    }
+    .gate-card {
+      position: relative; border-radius: 26px;
+      padding: 28px 26px 22px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(250, 204, 21, 0.95);
+      box-shadow: 0 0 14px rgba(250, 204, 21, 0.45), 0 26px 70px rgba(0,0,0,0.5);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      overflow: visible;
+    }
+    .gate-inner { position: relative; z-index: 1; }
+    .gate-title-wrap { text-align: center; margin-bottom: 22px; }
+    .gate-title {
+      font-family: "Cinzel", "Times New Roman", serif;
+      font-weight: 700; font-size: 40px;
+      letter-spacing: 0.24em; text-transform: uppercase;
+      margin-bottom: 8px;
+      background: linear-gradient(180deg, #fffaf0 0%, #facc6b 45%, #d97706 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      text-shadow: 0 0 10px rgba(250, 204, 21, 0.9), 0 4px 18px rgba(0,0,0,1);
+    }
+    .gate-subtitle-en {
+      font-size: 11px; color: #f9fafb; opacity: 0.9;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.9), 0 0 6px rgba(0,0,0,0.6);
+    }
+    .form-body { max-width: 360px; margin: 0 auto; }
+    .gate-input-wrap { margin-bottom: 10px; }
+
+    .gate-input {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(55,65,81,0.9);
+      background: radial-gradient(circle at top, rgba(15,23,42,0.90), rgba(3,7,18,0.96));
+      color: #f9fafb;
+      font-size: 13px;
+      outline: none;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.75) inset, 0 0 0 1px rgba(0,0,0,0.55);
+    }
+    .gate-input::placeholder { color: #6b7280; }
+    .gate-input:focus {
+      border-color: rgba(248,181,84,0.95);
+      box-shadow: 0 0 0 1px rgba(248,181,84,0.6), 0 6px 22px rgba(0,0,0,0.9) inset;
+    }
+
+    select.gate-input { appearance: none; -webkit-appearance:none; -moz-appearance:none; cursor:pointer; }
+    select.gate-input option { background:#020617; color:#f9fafb; }
+
+    .btn-row {
+      display: flex; flex-direction: column;
+      gap: 10px; margin-top: 14px; margin-bottom: 6px;
+    }
+    .btn {
+      width: 100%; padding: 10px 10px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-size: 13px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center;
+      text-decoration: none;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+    }
+    .btn-primary {
+      background: radial-gradient(circle at top, #f97316, #7f1d1d);
+      border-color: rgba(248,181,84,0.95);
+      color: #fef2f2;
+      box-shadow: 0 10px 26px rgba(0,0,0,1), 0 0 0 1px rgba(0,0,0,0.5) inset;
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 16px 38px rgba(0,0,0,1), 0 0 0 1px rgba(0,0,0,0.5) inset; }
+    .btn-primary:disabled { opacity: .65; cursor: not-allowed; transform:none; }
+
+    .btn-ghost {
+      background: radial-gradient(circle at top, rgba(15,23,42,0.95), rgba(15,23,42,0.98));
+      border-color: rgba(55,65,81,1);
+      color: #e5e7eb;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.9);
+    }
+    .btn-ghost:hover { background: rgba(15,23,42,1); border-color: rgba(148,163,184,0.9); }
+
+    .status {
+      min-height: 18px;
+      font-size: 11px;
+      text-align: center;
+      margin-top: 6px;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+    }
+    .status-error { color: #fecaca; }
+    .status-ok { color: #bbf7d0; }
+
+    @media (max-width: 768px) {
+      .gate-card { padding: 24px 20px 18px; border-radius: 22px; }
+      .gate-title { font-size: 32px; letter-spacing: 0.22em; }
+      .form-body { max-width: 100%; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="scene">
+    <img src="img/bg-unique-signup.jpg" class="scene-bg" alt="The Unique signup background">
+  </div>
+
+  <div class="page-wrap">
+    <main class="gate-card">
+      <div class="gate-inner">
+        <div class="gate-title-wrap">
+          <div class="gate-title">THE UNIQUE</div>
+          <div class="gate-subtitle-en">Membership registration for action takers</div>
+        </div>
+
+        <form id="uniqueSignupForm" class="form-body">
+          <div class="gate-input-wrap">
+            <input id="signup-id" type="text" class="gate-input" placeholder="아이디" autocomplete="off" required />
+          </div>
+
+          <div class="gate-input-wrap">
+            <input id="signup-name" type="text" class="gate-input" placeholder="이름" autocomplete="off" required />
+          </div>
+
+          <div class="gate-input-wrap">
+            <input id="signup-phone" type="text" class="gate-input" placeholder="전화번호 (예: 01012345678)" autocomplete="off" required />
+          </div>
+
+          <div class="gate-input-wrap">
+            <select id="signup-team" class="gate-input" required>
+              <option value="">소속을 선택하세요</option>
+              <option value="이두연">이두연</option>
+              <option value="임정애">임정애</option>
+              <option value="윤지민">윤지민</option>
+              <option value="이민율">이민율</option>
+              <option value="이유송">이유송</option>
+              <option value="이필예">이필예</option>
+              <option value="김은정">김은정</option>
+            </select>
+          </div>
+
+          <div class="btn-row">
+            <button id="btn-submit" type="submit" class="btn btn-primary">가입 신청</button>
+            <!-- ✅ gate로 정확히 복귀 -->
+            <button id="btn-back" type="button" class="btn btn-ghost">뒤로가기</button>
+          </div>
+
+          <div id="status" class="status"></div>
+        </form>
+      </div>
+    </main>
+  </div>
+
+<script>
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxtdOVoV2PtB_UbCLu2OzZHo6JjNks-0gk4s2fci52HjuuBNy3uwuf7DP7ePTK7S6VI/exec";
+  const WORKER_BASE_URL   = "https://the-unique-vault-api.wordycow0001.workers.dev";
+
+  function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+  // ✅ return 기본값: 게이트
+  function getReturnUrl(){
+    const qs = new URLSearchParams(location.search);
+    const ret = (qs.get("return") || "").trim();
+    return ret || "the-unique-gate.html";
+  }
+
+  // ===== legacy JSONP =====
+  function apiOnceJSONP(action, params = {}, timeoutMs = 25000) {
+    return new Promise((resolve, reject) => {
+      const cb = "cb_" + Date.now() + "_" + Math.random().toString(16).slice(2);
+
+      params.action = action;
+      params.callback = cb;
+      params._t = Date.now();
+
+      const qs = new URLSearchParams(params).toString();
+      const s = document.createElement("script");
+      const joiner = GOOGLE_SCRIPT_URL.includes("?") ? "&" : "?";
+      s.src = GOOGLE_SCRIPT_URL + joiner + qs;
+
+      const t = setTimeout(() => { cleanup(); reject(new Error("API timeout")); }, timeoutMs);
+
+      window[cb] = (data) => { cleanup(); resolve(data); };
+      s.onerror = () => { cleanup(); reject(new Error("API load failed")); };
+
+      function cleanup() {
+        clearTimeout(t);
+        try { delete window[cb]; } catch(e){}
+        try { s.remove(); } catch(e){}
+      }
+      document.body.appendChild(s);
+    });
+  }
+
+  async function apiJSONP(action, params = {}) {
+    let lastErr = null;
+    for (let i = 1; i <= 3; i++){
+      try{
+        const timeoutMs = (i === 1) ? 20000 : 30000;
+        return await apiOnceJSONP(action, params, timeoutMs);
+      }catch(e){
+        lastErr = e;
+        await sleep(450 * i);
+      }
+    }
+    throw lastErr || new Error("API failed");
+  }
+
+  // ===== worker =====
+  async function apiWorker(action, params = {}, timeoutMs = 12000){
+    const controller = new AbortController();
+    const t = setTimeout(() => controller.abort(), timeoutMs);
+
+    try{
+      const r = await fetch(`${WORKER_BASE_URL}/api/${encodeURIComponent(action)}`, {
+        method: "POST",
+        headers: { "content-type":"application/json" },
+        body: JSON.stringify(params || {}),
+        signal: controller.signal,
+        cache: "no-store",
+        credentials: "omit"
+      });
+      const js = await r.json().catch(()=>null);
+      if (!js) throw new Error("worker_bad_json");
+      return js;
+    } finally {
+      clearTimeout(t);
+    }
+  }
+
+  // ===== unified: worker first, fallback jsonp =====
+  async function api(action, params = {}) {
+    const force = new URLSearchParams(location.search).get("api");
+    if (force === "legacy") return apiJSONP(action, params);
+    if (force === "worker") return apiWorker(action, params, 20000);
+
+    try{
+      return await apiWorker(action, params, 9000);
+    } catch(e){
+      console.warn("Worker failed, fallback to JSONP:", e);
+      return await apiJSONP(action, params);
+    }
+  }
+
+  function setStatus(msg, type) {
+    const el = document.getElementById("status");
+    if (!el) return;
+    el.textContent = msg || "";
+    el.className = "status";
+    if (type === "error") el.classList.add("status-error");
+    if (type === "ok") el.classList.add("status-ok");
+  }
+
+  // ✅ 응답 형태가 달라도 ok 판정
+  function isOk(resp){
+    if (!resp) return false;
+    if (resp.ok === true) return true;
+    if (resp.success === true) return true;
+    if (String(resp.status || "").toLowerCase() === "ok") return true;
+    if (String(resp.result || "").toLowerCase() === "ok") return true;
+    if (resp.found === true || resp.exists === true) return true;
+    return false;
+  }
+
+  function extractUser(resp){
+    if (!resp) return null;
+    if (resp.user) return resp.user;
+    if (resp.data) return resp.data;
+    if (resp.row)  return resp.row;
+    if (resp.result && resp.result.user) return resp.result.user;
+
+    const hasAny = (resp.id || resp.ID || resp.아이디 || resp.name || resp.이름 || resp.phone || resp.전화번호);
+    return hasAny ? resp : null;
+  }
+
+  function normalizePhone(v){ return String(v || "").replace(/[^\d]/g, ""); }
+
+  // ✅ 아이디 대소문자 섞여도 중복 가입 방지 (raw/lower/UPPER로 3번 체크)
+  async function existsUserId(rawId){
+    const base = String(rawId || "").trim();
+    if (!base) return false;
+
+    const candidates = [];
+    for (const v of [base, base.toLowerCase(), base.toUpperCase()]){
+      if (v && !candidates.includes(v)) candidates.push(v);
+    }
+
+    for (const idTry of candidates){
+      const r = await api("getUser", { id: idTry });
+      const u = extractUser(r);
+      if (isOk(r) && u) return true;
+    }
+    return false;
+  }
+
+  const form = document.getElementById("uniqueSignupForm");
+  const btnSubmit = document.getElementById("btn-submit");
+  const btnBack = document.getElementById("btn-back");
+
+  btnBack.addEventListener("click", () => {
+    // ✅ 무조건 gate로 복귀(뒤로가기 꼬임 방지)
+    const ret = getReturnUrl();
+    window.location.href = ret;
+  });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    setStatus("");
+
+    const idRaw = (document.getElementById("signup-id").value || "").trim(); // ✅ 입력 그대로 보존
+    const name  = (document.getElementById("signup-name").value || "").trim();
+    const phone = normalizePhone(document.getElementById("signup-phone").value);
+    const team  = (document.getElementById("signup-team").value || "").trim();
+
+    if (!idRaw || !name || !phone || !team) {
+      setStatus("모든 항목을 입력/선택해 주세요.", "error");
+      return;
+    }
+    if (phone.length < 9) {
+      setStatus("전화번호를 확인해 주세요. (숫자만)", "error");
+      return;
+    }
+
+    setStatus("가입 처리 중...");
+    btnSubmit.disabled = true;
+
+    try {
+      // ✅ 중복 체크 (대소문자 포함)
+      const already = await existsUserId(idRaw);
+      if (already) {
+        setStatus("이미 등록된 아이디입니다. 게이트에서 로그인해 주세요.", "error");
+        btnSubmit.disabled = false;
+        return;
+      }
+
+      // ✅ 가입: signup (성공하면 gate에서 로그인하도록 돌려보냄)
+      const r = await api("signup", { id: idRaw, name, phone, team });
+
+      // ✅ signup 응답이 user를 안줘도 ok면 성공 처리 (시트 기록이 목적)
+      if (!isOk(r)) {
+        setStatus("가입 실패: " + (r?.error || "unknown"), "error");
+        btnSubmit.disabled = false;
+        return;
+      }
+
+      setStatus("가입 완료! 게이트로 돌아갑니다.", "ok");
+
+      const ret = getReturnUrl();
+      const joiner = ret.includes("?") ? "&" : "?";
+      const nextUrl = `${ret}${joiner}signup=1&id=${encodeURIComponent(idRaw)}`;
+
+      // ✅ 바로 튀면 status가 안 보이니까 400ms만 딜레이
+      setTimeout(() => {
+        window.location.href = nextUrl;
+      }, 400);
+
+    } catch (err) {
+      console.error(err);
+      const msg = String(err && err.message ? err.message : err);
+
+      if (msg.includes("timeout") || msg.includes("abort")) {
+        setStatus("네트워크 지연으로 가입이 지연되었습니다. 다시 시도해 주세요.", "error");
+      } else if (msg.includes("load failed")) {
+        setStatus("script.google.com 연결이 차단됐을 수 있습니다. (광고차단/보안DNS/인앱브라우저 확인)", "error");
+      } else {
+        setStatus("가입 처리 중 오류가 발생했습니다.", "error");
+      }
+
+      btnSubmit.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>

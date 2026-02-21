@@ -1,0 +1,78 @@
+# API 키 및 민감한 정보
+.env
+*.key
+*.pem
+config.json
+api_keys.json
+
+# 로그 파일
+bot.log
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.sublime-*
+
+# 백업 파일
+*.bak
+*.backup
+*.backup-*
+v9/runtime/backup/
+templates/*.backup*
+templates/*-backup-*
+
+# 배치 스크립트 (LeeMay_*.vbs/bat 제외)
+*시작.bat
+*종료.bat
+Cloudflare_*.bat
+전체_*.bat
+BATCH_SCRIPTS_GUIDE.md
+
+# Trading 로그
+imei_os/TRADING_LOG.csv
+upbit_bot.db*
+
+# 이미지 파일 (용량 큼, GitHub 제외)
+leemay/images/
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.ico
+*.svg
+
+# 데이터베이스 파일
+*.db
+*.sqlite
+*.db-shm
+*.db-wal
+
+# 데이터 폴더
+data/cache/
+data/pids.json
+data/*.json
+
+# 배치 파일 로그
+*.bat.log
+nohup.out
+api.log

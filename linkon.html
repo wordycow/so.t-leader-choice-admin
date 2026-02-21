@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Linkon 공식 가이드</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", Arial, sans-serif;
+      background: #0a0e27 url('img/linkon-background.png') center/cover no-repeat fixed; /* 다크 네이비 배경 */
+      color: #e5e7eb;
+      line-height: 1.6;
+      word-break: keep-all;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px;
+      background: rgba(15,23,42, 0.98);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(5px);
+    }
+
+    .top-bar h1 {
+      font-size: 16px;
+      margin: 0;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .top-bar .btn-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .top-bar button {
+      background: #1e293b;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #e5e7eb;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: background 0.2s;
+    }
+
+    .top-bar button:active {
+      background: #334155;
+    }
+
+    .wrap {
+      max-width: 600px; /* 모바일 최적화 너비 */
+      margin: 0 auto;
+      padding: 20px 18px 80px;
+    }
+
+    .section {
+      background: #0f172a;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 24px 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    }
+
+    .section h2 {
+      margin-top: 0;
+      font-size: 19px;
+      margin-bottom: 16px;
+      font-weight: 700;
+      color: #60a5fa; /* 타이틀 포인트 컬러 */
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* 유튜브 반응형 컨테이너 */
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 비율 */
+      height: 0;
+      overflow: hidden;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 16px;
+      background: #000;
+    }
+
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .content-box {
+      background: #1e293b;
+      padding: 16px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .content-title {
+      font-size: 14px;
+      color: #94a3b8;
+      margin-bottom: 8px;
+      font-weight: 600;
+      display: block;
+    }
+
+    .content-text {
+      white-space: pre-line;
+      font-size: 15px;
+      color: #f1f5f9;
+    }
+
+    /* 주의사항 전용 스타일 */
+    .warn-box {
+      background: rgba(127, 29, 29, 0.2); /* 붉은 배경 */
+      border: 1px solid rgba(248, 113, 113, 0.3);
+      padding: 16px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+    }
+    
+    .warn-title {
+      color: #fca5a5;
+      font-weight: 700;
+      font-size: 15px;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .warn-text {
+      color: #e2e8f0;
+      font-size: 14px;
+      white-space: pre-line;
+    }
+
+    .copy-btn {
+      width: 100%;
+      margin-top: 10px;
+      background: #3b82f6; /* 밝은 파랑 */
+      border: none;
+      color: #ffffff;
+      padding: 12px 0;
+      font-size: 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: transform 0.1s;
+    }
+
+    .copy-btn:active {
+      transform: scale(0.98);
+      background: #2563eb;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 40px;
+      padding-bottom: 20px;
+    }
+  </style>
+
+  <script>
+    function copyText(id) {
+      const text = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.querySelector(`button[onclick="copyText('${id}')"]`);
+        const originalText = btn.innerText;
+        btn.innerText = "✅ 복사 완료!";
+        btn.style.background = "#10b981"; 
+        
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.style.background = "#3b82f6";
+        }, 1500);
+      }).catch(err => {
+        alert("복사에 실패했습니다.");
+      });
+    }
+
+    function goBack() {
+      history.back();
+    }
+
+    function closePage() {
+      window.open('', '_self');
+      window.close();
+    }
+  </script>
+</head>
+
+<body>
+
+  <div class="top-bar">
+    <h1>Linkon Guide</h1>
+    <div class="btn-group">
+      <button onclick="goBack()">뒤로</button>
+      <button onclick="closePage()">닫기</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <div class="section">
+      <h2>📺 공식 소개 영상</h2>
+      <p style="font-size:13px; color:#94a3b8; margin-bottom:12px;">
+        아래 영상을 먼저 시청하시면 구조를 이해하는 데 큰 도움이 됩니다.
+      </p>
+      <div class="video-container">
+        <iframe src="https://www.youtube.com/embed/2NtS9V6nSXo" title="Linkon Guide Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>📌 공식 전달 멘트 (설명회·미팅)</h2>
+      <div class="content-box">
+        <div class="content-text" id="officialText">
+링콘(Linkon)은 ‘링크(Link) + 쿠폰(Coupon)’의 합성어로, 소비를 연결하는 구조에서 출발한 서비스입니다.
+
+지금 고물가·고환율로 모두가 어렵지만, 생활 소비는 멈추지 않는다는 점에 주목했습니다.
+
+링콘은 어려운 투자 상품이 아닙니다. 누구나 이미 쓰고 있는 기프티콘과 생활 소비를 단순 지출로 끝내지 않고, ‘돌려받는 소비 구조’로 설계했습니다.
+
+패키지를 구매한 회원은 하루 두 번 5 UT씩 쿠폰 포인트로 캐시백을 받게 되며, 이는 카페·외식·생활 등 일상에서 즉시 사용 가능합니다.
+
+추천이나 사업 활동은 100% 선택 사항이며, 소개를 하지 않아도 내 소비에 대한 캐시백 구조는 동일하게 적용됩니다.
+
+즉, 고정 수익을 보장하는 금융 상품이 아니라, 생활비를 절감하는 '스마트한 소비 모델' 위에 사업 기회를 선택적으로 얹을 수 있는 시스템입니다.
+        </div>
+      </div>
+      <button class="copy-btn" onclick="copyText('officialText')">📋 공식 멘트 복사하기</button>
+    </div>
+
+    <div class="section">
+      <h2>📲 상황별 티업(T-up) 멘트</h2>
+      
+      <div class="content-box">
+        <span class="content-title">🅰️ 가벼운 접근 (지인/친구)</span>
+        <div class="content-text" id="teupA">
+요즘 물가도 비싼데 생활비 쓰는 거 조금이라도 아끼는 방법 있어서 공유해.
+투자나 코인 같은 거 아니고, 어차피 쓰는 돈을 포인트로 돌려받는 방식이야.
+부담 없이 영상 한번 보고 너한테 맞으면 쓰고, 아니면 그냥 넘겨도 돼.
+        </div>
+        <button class="copy-btn" onclick="copyText('teupA')">복사하기</button>
+      </div>
+
+      <div class="content-box">
+        <span class="content-title">🅱️ 혜택 강조 (알뜰족/주부)</span>
+        <div class="content-text" id="teupB">
+커피 마시고 장보는 생활비, 그냥 쓰면 없어지는데 이건 다시 돌려받는 구조라 쏠쏠해요.
+누구 소개 안 해도 나 혼자 써도 이득이라 저도 시작했어요.
+하루 두 번 5 UT씩 쌓이는 구조인데, 설명 한번 들어보세요. 손해 볼 거 없으니까요.
+        </div>
+        <button class="copy-btn" onclick="copyText('teupB')">복사하기</button>
+      </div>
+
+      <div class="content-box">
+        <span class="content-title">🆎 신뢰 우선 (조심스러운 분)</span>
+        <div class="content-text" id="teupC">
+형님(사장님), 요즘 이상한 정보 많아서 조심스러운 거 알아요.
+그래서 저도 꼼꼼히 봤는데, 이건 투자금 넣고 기다리는 게 아니라 소비 패턴 바꾸는 거라 리스크가 없더라고요.
+영상 한번 보시고 객관적으로 판단만 해보세요. 강요 절대 안 합니다.
+        </div>
+        <button class="copy-btn" onclick="copyText('teupC')">복사하기</button>
+      </div>
+
+    </div>
+
+    <div class="section">
+      <h2>🚫 절대 사용 금지 (신뢰 하락)</h2>
+      <p style="font-size:13px; color:#94a3b8; margin-bottom:15px;">
+        아래 멘트는 상대방에게 '사기' 혹은 '다단계'라는 인식을 심어줍니다. 절대 사용하지 마세요.
+      </p>
+
+      <div class="warn-box">
+        <span class="warn-title">❌ 투자/수익률 강조 금지</span>
+        <div class="warn-text">
+"이거 수익률 엄청 좋아요"
+"원금 몇 달이면 회수해요"
+"지금 안 하면 기회 놓쳐요"
+👉 링콘은 금융 상품이 아닙니다.
+        </div>
+      </div>
+
+      <div class="warn-box">
+        <span class="warn-title">❌ '사람 장사' 느낌 금지</span>
+        <div class="warn-text">
+"사람만 데려오면 돈 돼요"
+"라인만 잘 타면 끝납니다"
+👉 사업 구조보다 '사기 구조'로 오해받습니다.
+        </div>
+      </div>
+
+      <div class="warn-box">
+        <span class="warn-title">❌ 무조건/확정 표현 금지</span>
+        <div class="warn-text">
+"무조건 남아요, 실패 없어요"
+"다들 돈 벌고 있어요"
+👉 과장은 즉시 불신을 만듭니다. '선택권'을 주세요.
+        </div>
+      </div>
+      
+    </div>
+
+    <footer>
+      Linkon Official Guide Page<br>
+      © 2025 All rights reserved.
+    </footer>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upbit Smart Bot v6.0 - Professional Trading Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0B0E11;
+            --bg-secondary: #161A1E;
+            --bg-tertiary: #1E2329;
+            --accent-primary: #F0B90B;
+            --accent-secondary: #FCD535;
+            --text-primary: #EAECEF;
+            --text-secondary: #848E9C;
+            --success: #0ECB81;
+            --danger: #F6465D;
+            --border: #2B3139;
+            --shadow: rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .logo-text h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .logo-text p {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .header-status {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--bg-tertiary);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.active { background: var(--success); }
+        .status-dot.inactive { background: var(--text-secondary); }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* License Section */
+        .license-section {
+            background: linear-gradient(135deg, #1E2329 0%, #2B3139 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 20px 0;
+        }
+
+        .license-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .license-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .license-badge {
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .license-badge.active {
+            background: rgba(14, 203, 129, 0.15);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .license-badge.inactive {
+            background: rgba(246, 70, 93, 0.15);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .license-days {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn-primary {
+            padding: 10px 24px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(240, 185, 11, 0.3);
+        }
+
+        /* Mode Switcher */
+        .mode-switcher {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .mode-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-right: 8px;
+            font-weight: 600;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 12px 24px;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .mode-btn:hover::before {
+            left: 100%;
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(135deg, rgba(14, 203, 129, 0.15), rgba(14, 203, 129, 0.05));
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .mode-btn.practice.active {
+            background: linear-gradient(135deg, rgba(14, 203, 129, 0.15), rgba(14, 203, 129, 0.05));
+            border-color: var(--success);
+        }
+
+        .mode-btn.live.active {
+            background: linear-gradient(135deg, rgba(240, 185, 11, 0.15), rgba(252, 213, 53, 0.05));
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .mode-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* Controls */
+        .controls {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 0;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, var(--success), #0BB87B);
+            color: #fff;
+        }
+
+        .btn-start:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(14, 203, 129, 0.3);
+        }
+
+        .btn-stop {
+            background: linear-gradient(135deg, var(--danger), #E84562);
+            color: #fff;
+        }
+
+        .btn-stop:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(246, 70, 93, 0.3);
+        }
+
+        .btn-config {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-config:hover {
+            background: var(--bg-primary);
+            border-color: var(--accent-primary);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-primary);
+            box-shadow: 0 12px 24px var(--shadow);
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .stat-change {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .stat-change.positive { color: var(--success); }
+        .stat-change.negative { color: var(--danger); }
+
+        /* Tables */
+        .table-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .table-header h3 {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .table-icon {
+            font-size: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--bg-tertiary);
+        }
+
+        th {
+            padding: 16px 24px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        tr:hover td {
+            background: var(--bg-tertiary);
+        }
+
+        .coin-name {
+            font-weight: 700;
+        }
+
+        .profit-positive { color: var(--success); font-weight: 700; }
+        .profit-negative { color: var(--danger); font-weight: 700; }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: 'Inter', monospace;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(240, 185, 11, 0.1);
+        }
+
+        .wallet-box {
+            background: var(--bg-primary);
+            padding: 16px;
+            border-radius: 8px;
+            border: 2px dashed var(--accent-primary);
+            font-family: monospace;
+            font-size: 13px;
+            word-break: break-all;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .qr-container {
+            text-align: center;
+            margin: 24px 0;
+        }
+
+        .qr-container img {
+            border: 3px solid var(--accent-primary);
+            border-radius: 12px;
+            padding: 12px;
+            background: white;
+        }
+
+        .alert {
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .alert-info {
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #93C5FD;
+        }
+
+        .alert-warning {
+            background: rgba(251, 191, 36, 0.15);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            color: #FCD34D;
+        }
+
+        .modal-footer {
+            padding: 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-secondary {
+            flex: 1;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-primary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--text-secondary);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--border);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .mode-switcher {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">🤖</div>
+                    <div class="logo-text">
+                        <h1>Upbit Smart Bot</h1>
+                        <p>Professional Trading System v6.0</p>
+                    </div>
+                </div>
+                <div class="header-status">
+                    <div class="status-badge" id="botStatusBadge">
+                        <div class="status-dot inactive"></div>
+                        <span>OFFLINE</span>
+                    </div>
+                    <div class="status-badge" id="lastUpdateBadge">
+                        <span>⏱ Waiting...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- License Section -->
+        <div class="license-section">
+            <div class="license-header">
+                <div class="license-info">
+                    <span class="license-badge inactive" id="licenseBadge">NO LICENSE</span>
+                    <div id="daysLeftContainer" style="display:none;">
+                        <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">DAYS REMAINING</div>
+                        <div class="license-days" id="daysLeft">0</div>
+                    </div>
+                </div>
+                <button class="btn-primary" onclick="openLicenseModal()">🔑 ACTIVATE LICENSE</button>
+            </div>
+            
+            <div class="mode-switcher">
+                <span class="mode-label">TRADING MODE:</span>
+                <button class="mode-btn practice active" id="practiceBtn" onclick="switchMode('practice')">
+                    🟢 PRACTICE MODE<br>
+                    <small style="opacity: 0.7;">Free • Unlimited • No Real Trading</small>
+                </button>
+                <button class="mode-btn live" id="liveBtn" onclick="switchMode('live')" disabled>
+                    🔴 LIVE MODE<br>
+                    <small style="opacity: 0.7;">License Required • Real Trading</small>
+                </button>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button class="btn btn-start" onclick="startBot()">▶ START TRADING</button>
+            <button class="btn btn-stop" onclick="stopBot()">⏸ STOP BOT</button>
+            <button class="btn btn-config" onclick="openApiModal()">⚙ API SETTINGS</button>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">💵 KRW BALANCE</div>
+                <div class="stat-value" id="currentKRW">0</div>
+                <div class="stat-change">원</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">🌱 INITIAL SEED</div>
+                <div class="stat-value" id="initialSeed">0</div>
+                <div class="stat-change">원</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">💎 TOTAL PROFIT</div>
+                <div class="stat-value" id="totalProfit">0</div>
+                <div class="stat-change" id="profitPercent">0%</div>
+            </div>
+        </div>
+
+        <!-- Holdings Table -->
+        <div class="table-container">
+            <div class="table-header">
+                <span class="table-icon">🪙</span>
+                <h3>HOLDINGS</h3>
+            </div>
+            <table id="holdingsTable">
+                <thead>
+                    <tr>
+                        <th>COIN</th>
+                        <th>AMOUNT</th>
+                        <th>VALUE</th>
+                        <th>PROFIT</th>
+                    </tr>
+                </thead>
+                <tbody id="holdingsBody">
+                    <tr><td colspan="4" class="empty-state">No holdings yet</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Profit Investments Table -->
+        <div class="table-container">
+            <div class="table-header">
+                <span class="table-icon">💎</span>
+                <h3>PROFIT REINVESTMENTS</h3>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>TIME</th>
+                        <th>COIN</th>
+                        <th>AMOUNT</th>
+                    </tr>
+                </thead>
+                <tbody id="profitBody">
+                    <tr><td colspan="3" class="empty-state">No reinvestments yet</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Trade History Table -->
+        <div class="table-container">
+            <div class="table-header">
+                <span class="table-icon">📜</span>
+                <h3>TRADE HISTORY</h3>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>TIME</th>
+                        <th>TYPE</th>
+                        <th>COIN</th>
+                        <th>DETAILS</th>
+                    </tr>
+                </thead>
+                <tbody id="tradeBody">
+                    <tr><td colspan="4" class="empty-state">No trades yet</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- API Settings Modal -->
+    <div class="modal" id="apiModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚙ API KEY SETTINGS</h2>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    <strong>⚠️ SECURITY NOTICE:</strong><br>
+                    • Keys stored locally only<br>
+                    • Never enable withdrawal permission<br>
+                    • Never share your keys
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Access Key</label>
+                    <input type="text" class="form-input" id="accessKey" placeholder="Enter Upbit Access Key">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Secret Key</label>
+                    <input type="text" class="form-input" id="secretKey" placeholder="Enter Upbit Secret Key">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" style="flex:1;" onclick="saveApiKeys()">SAVE KEYS</button>
+                <button class="btn-secondary" onclick="closeApiModal()">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- License Activation Modal -->
+    <div class="modal" id="licenseModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🔑 LICENSE ACTIVATION</h2>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <strong>💰 PRICING:</strong> 1 USDT = 1 Day (Min. 10 USDT)<br>
+                    <strong>📊 EXAMPLES:</strong> 10 USDT → 10 days | 12.4 USDT → 12 days | 20 USDT → 20 days<br>
+                    <strong>🌐 NETWORK:</strong> TRC-20 (Tron)
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">USDT DEPOSIT ADDRESS (TRC-20)</label>
+                    <div class="wallet-box">TLb5D3uDQjPQt6CzATM21t21etxGsSvtbt</div>
+                    <button class="btn-primary" style="width:100%;" onclick="copyAddress()">📋 COPY ADDRESS</button>
+                </div>
+
+                <div class="qr-container">
+                    <div style="color: var(--text-secondary); margin-bottom: 12px; font-size: 13px;">SCAN QR CODE</div>
+                    <img id="qrCode" src="" alt="QR Code" style="max-width: 200px;">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">TRANSACTION ID (TXID)</label>
+                    <textarea class="form-input" id="txidInput" rows="3" placeholder="Paste TXID here after sending USDT&#10;Example: 0x1234...abcd"></textarea>
+                </div>
+
+                <div class="alert alert-warning">
+                    <strong>⚠️ VERIFICATION PROCESS:</strong><br>
+                    1. Send desired amount of USDT (TRC-20) to above address (Min. 10 USDT)<br>
+                    2. Copy TXID after transaction completes<br>
+                    3. Paste TXID below<br>
+                    4. Click verify → Auto-calculated (1 USDT = 1 day)
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" style="flex:1;" onclick="verifyLicense()">🔍 VERIFY & ACTIVATE</button>
+                <button class="btn-secondary" onclick="closeLicenseModal()">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Simulation Seed Setup Modal -->
+    <div class="modal" id="seedModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🎮 SIMULATION SEED SETUP</h2>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <strong>💡 PRACTICE MODE:</strong><br>
+                    • Set virtual starting balance<br>
+                    • Test strategies risk-free<br>
+                    • Track simulated profit/loss
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">STARTING BALANCE</label>
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                        <span style="color: var(--text-secondary); font-size: 13px;">₩200,000</span>
+                        <input type="range" id="seedSlider" min="200000" max="10000000" step="100000" value="1000000" 
+                               style="flex: 1;" oninput="updateSeedDisplay()">
+                        <span style="color: var(--text-secondary); font-size: 13px;">₩10,000,000</span>
+                    </div>
+                    <div style="text-align: center; margin-bottom: 25px;">
+                        <div style="font-size: 32px; font-weight: 700; color: var(--accent-primary);" id="seedDisplay">
+                            ₩1,000,000
+                        </div>
+                        <div style="font-size: 12px; color: var(--text-secondary); margin-top: 5px;">
+                            Use slider or enter manually below
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">OR ENTER MANUALLY</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="number" class="form-input" id="seedInput" 
+                               placeholder="200000 ~ 10000000" 
+                               min="200000" max="10000000" step="10000"
+                               oninput="updateSeedSlider()">
+                        <span style="align-self: center; color: var(--text-secondary);">원</span>
+                    </div>
+                    <div style="font-size: 11px; color: var(--text-secondary); margin-top: 8px;">
+                        Min: ₩200,000 | Max: ₩10,000,000 | Default: ₩1,000,000
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" style="flex:1;" onclick="saveSimulationSeed()">✅ START SIMULATION</button>
+                <button class="btn-secondary" onclick="closeSeedModal()">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // QR Code
+        const walletAddr = 'TLb5D3uDQjPQt6CzATM21t21etxGsSvtbt';
+        document.getElementById('qrCode').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${walletAddr}`;
+
+        let currentMode = 'practice';
+
+        // Update status
+        async function updateStatus() {
+            try {
+                const response = await fetch('/api/status');
+                const data = await response.json();
+
+                // Bot status
+                const statusBadge = document.getElementById('botStatusBadge');
+                const statusDot = statusBadge.querySelector('.status-dot');
+                const statusText = statusBadge.querySelector('span');
+                
+                if (data.running) {
+                    statusDot.className = 'status-dot active';
+                    statusText.textContent = 'ONLINE';
+                } else {
+                    statusDot.className = 'status-dot inactive';
+                    statusText.textContent = 'OFFLINE';
+                }
+
+                // Mode
+                currentMode = data.mode || 'practice';
+                updateModeButtons();
+
+                // 연습 모드인 경우 시뮬레이션 상태 가져오기
+                if (currentMode === 'practice' && data.running) {
+                    await updateSimulationStatus();
+                } else {
+                    // 실전 모드 또는 봇 정지 상태
+                    document.getElementById('currentKRW').textContent = data.current_krw.toLocaleString();
+                    document.getElementById('initialSeed').textContent = data.initial_seed.toLocaleString();
+                    document.getElementById('totalProfit').textContent = data.total_profit.toLocaleString();
+                    
+                    const profitPercent = data.initial_seed > 0 ? ((data.total_profit / data.initial_seed) * 100).toFixed(2) : 0;
+                    const profitPercentEl = document.getElementById('profitPercent');
+                    profitPercentEl.textContent = profitPercent + '%';
+                    profitPercentEl.className = 'stat-change ' + (data.total_profit >= 0 ? 'positive' : 'negative');
+                }
+
+                // License
+                updateLicenseInfo(data.license);
+
+                // Tables
+                updateHoldings(data.holdings);
+                updateProfitInvestments(data.profit_investments);
+                updateTradeHistory(data.trade_history);
+
+                // Last update
+                if (data.last_update) {
+                    document.getElementById('lastUpdateBadge').querySelector('span').textContent = 
+                        '⏱ ' + new Date(data.last_update).toLocaleTimeString();
+                }
+            } catch (error) {
+                console.error('Status update failed:', error);
+            }
+        }
+
+        async function updateSimulationStatus() {
+            try {
+                const response = await fetch('/api/simulation/status');
+                const data = await response.json();
+                
+                if (data.success && data.simulation) {
+                    const sim = data.simulation;
+                    
+                    // 잔고 표시
+                    document.getElementById('currentKRW').textContent = sim.current_krw.toLocaleString();
+                    document.getElementById('initialSeed').textContent = sim.start_seed.toLocaleString();
+                    document.getElementById('totalProfit').textContent = sim.total_profit.toLocaleString();
+                    
+                    // 수익률
+                    const profitPercentEl = document.getElementById('profitPercent');
+                    profitPercentEl.textContent = sim.profit_rate.toFixed(2) + '%';
+                    profitPercentEl.className = 'stat-change ' + (sim.total_profit >= 0 ? 'positive' : 'negative');
+                }
+            } catch (error) {
+                console.error('Simulation status update failed:', error);
+            }
+        }
+
+        function updateLicenseInfo(license) {
+            const badge = document.getElementById('licenseBadge');
+            const daysContainer = document.getElementById('daysLeftContainer');
+            const daysLeft = document.getElementById('daysLeft');
+            const liveBtn = document.getElementById('liveBtn');
+
+            if (license.status === 'active') {
+                badge.textContent = '✅ ACTIVE';
+                badge.className = 'license-badge active';
+                daysContainer.style.display = 'block';
+                daysLeft.textContent = license.days_left;
+                liveBtn.disabled = false;
+            } else if (license.status === 'expired') {
+                badge.textContent = '⚠️ EXPIRED';
+                badge.className = 'license-badge inactive';
+                daysContainer.style.display = 'none';
+                liveBtn.disabled = true;
+            } else {
+                badge.textContent = '❌ NO LICENSE';
+                badge.className = 'license-badge inactive';
+                daysContainer.style.display = 'none';
+                liveBtn.disabled = true;
+            }
+        }
+
+        function updateModeButtons() {
+            const practiceBtn = document.getElementById('practiceBtn');
+            const liveBtn = document.getElementById('liveBtn');
+
+            practiceBtn.classList.toggle('active', currentMode === 'practice');
+            liveBtn.classList.toggle('active', currentMode === 'live');
+        }
+
+        function updateHoldings(holdings) {
+            const tbody = document.getElementById('holdingsBody');
+            if (!holdings || holdings.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No holdings yet</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = holdings.map(h => `
+                <tr>
+                    <td class="coin-name">${h.ticker.replace('KRW-', '')}</td>
+                    <td>${h.amount.toFixed(4)}</td>
+                    <td>${h.value.toLocaleString()} 원</td>
+                    <td class="${h.profit_rate >= 0 ? 'profit-positive' : 'profit-negative'}">
+                        ${h.profit_rate >= 0 ? '+' : ''}${h.profit_rate.toFixed(2)}%
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateProfitInvestments(investments) {
+            const tbody = document.getElementById('profitBody');
+            if (!investments || investments.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" class="empty-state">No reinvestments yet</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = investments.map(inv => `
+                <tr>
+                    <td>${new Date(inv.timestamp).toLocaleString()}</td>
+                    <td class="coin-name">${inv.ticker.replace('KRW-', '')}</td>
+                    <td>${inv.amount.toLocaleString()} 원</td>
+                </tr>
+            `).join('');
+        }
+
+        function updateTradeHistory(trades) {
+            const tbody = document.getElementById('tradeBody');
+            if (!trades || trades.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No trades yet</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = trades.reverse().map(trade => {
+                let typeText = '';
+                if (trade.type === 'BUY') typeText = '<span style="color: var(--success)">🔵 BUY</span>';
+                else if (trade.type === 'SELL') typeText = '<span style="color: var(--danger)">🔴 SELL</span>';
+                else typeText = '<span style="color: var(--accent-primary)">💎 REINVEST</span>';
+
+                return `
+                    <tr>
+                        <td>${new Date(trade.timestamp).toLocaleTimeString()}</td>
+                        <td>${typeText}</td>
+                        <td class="coin-name">${trade.ticker.replace('KRW-', '')}</td>
+                        <td>${trade.stage ? 'Stage ' + trade.stage : ''} ${trade.amount ? trade.amount.toLocaleString() + '원' : ''}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Mode switch
+        async function switchMode(mode) {
+            if (mode === 'live') {
+                if (!confirm('⚠️ WARNING!\n\nSwitch to LIVE MODE?\n\nReal trading will be executed.\nProfits and losses will occur.\nLicense period will be consumed.')) {
+                    return;
+                }
+            }
+
+            try {
+                const response = await fetch('/api/mode/switch', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({mode})
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    alert(data.message);
+                    currentMode = mode;
+                    updateModeButtons();
+                } else {
+                    alert('Mode switch failed: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // Bot control
+        async function startBot() {
+            try {
+                // 연습 모드인 경우 시드 설정 확인
+                if (currentMode === 'practice') {
+                    // 시드 모달 열기
+                    openSeedModal();
+                    return;
+                }
+                
+                // 실전 모드인 경우 바로 시작
+                const response = await fetch('/api/start', {method: 'POST'});
+                const data = await response.json();
+                alert(data.message || (data.success ? 'Bot started!' : 'Start failed'));
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function stopBot() {
+            try {
+                const response = await fetch('/api/stop', {method: 'POST'});
+                const data = await response.json();
+                alert(data.message || (data.success ? 'Bot stopped!' : 'Stop failed'));
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // API settings
+        function openApiModal() {
+            document.getElementById('apiModal').classList.add('active');
+        }
+
+        function closeApiModal() {
+            document.getElementById('apiModal').classList.remove('active');
+        }
+
+        async function saveApiKeys() {
+            const accessKey = document.getElementById('accessKey').value.trim();
+            const secretKey = document.getElementById('secretKey').value.trim();
+
+            if (!accessKey || !secretKey) {
+                alert('Please enter both Access Key and Secret Key');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/config', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({access_key: accessKey, secret_key: secretKey})
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('API Keys saved successfully!');
+                    closeApiModal();
+                } else {
+                    alert('Save failed: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // License
+        function openLicenseModal() {
+            document.getElementById('licenseModal').classList.add('active');
+        }
+
+        function closeLicenseModal() {
+            document.getElementById('licenseModal').classList.remove('active');
+        }
+
+        // Simulation Seed Setup
+        function openSeedModal() {
+            document.getElementById('seedModal').classList.add('active');
+            // 기본값 설정
+            document.getElementById('seedSlider').value = 1000000;
+            document.getElementById('seedInput').value = '';
+            updateSeedDisplay();
+        }
+
+        function closeSeedModal() {
+            document.getElementById('seedModal').classList.remove('active');
+        }
+
+        function updateSeedDisplay() {
+            const slider = document.getElementById('seedSlider');
+            const display = document.getElementById('seedDisplay');
+            const value = parseInt(slider.value);
+            display.textContent = '₩' + value.toLocaleString();
+            // 입력창도 동기화
+            document.getElementById('seedInput').value = value;
+        }
+
+        function updateSeedSlider() {
+            const input = document.getElementById('seedInput');
+            const slider = document.getElementById('seedSlider');
+            let value = parseInt(input.value) || 1000000;
+            
+            // 범위 체크
+            if (value < 200000) value = 200000;
+            if (value > 10000000) value = 10000000;
+            
+            slider.value = value;
+            updateSeedDisplay();
+        }
+
+        async function saveSimulationSeed() {
+            const seedInput = document.getElementById('seedInput');
+            let seed = parseInt(seedInput.value);
+            
+            // 슬라이더 값 사용 (입력이 없으면)
+            if (!seed) {
+                seed = parseInt(document.getElementById('seedSlider').value);
+            }
+            
+            // 범위 체크
+            if (seed < 200000 || seed > 10000000) {
+                alert('⚠️ 시드는 20만원에서 1,000만원 사이여야 합니다');
+                return;
+            }
+            
+            try {
+                // 시드 설정 API 호출
+                const response = await fetch('/api/simulation/set-seed', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({seed})
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    closeSeedModal();
+                    
+                    // 봇 시작
+                    const startResponse = await fetch('/api/start', {method: 'POST'});
+                    const startData = await startResponse.json();
+                    
+                    if (startData.success) {
+                        alert('✅ 시뮬레이션 시작!\n\n' +
+                              `시작 시드: ₩${seed.toLocaleString()}\n` +
+                              '가상 거래가 시작되었습니다.');
+                    } else {
+                        alert('❌ 봇 시작 실패: ' + startData.message);
+                    }
+                    
+                    updateStatus();
+                } else {
+                    alert('❌ 시드 설정 실패\n\n' + data.message);
+                }
+            } catch (error) {
+                alert('오류 발생: ' + error.message);
+            }
+        }
+
+        function copyAddress() {
+            const addr = 'TLb5D3uDQjPQt6CzATM21t21etxGsSvtbt';
+            navigator.clipboard.writeText(addr);
+            alert('Address copied!\n' + addr);
+        }
+
+        async function verifyLicense() {
+            const txid = document.getElementById('txidInput').value.trim();
+
+            if (!txid) {
+                alert('Please enter TXID');
+                return;
+            }
+
+            if (!confirm('Verify this TXID?\n\nVerification takes about 10 seconds.')) {
+                return;
+            }
+
+            try {
+                const btn = event.target;
+                btn.disabled = true;
+                btn.textContent = '⏳ VERIFYING...';
+
+                const response = await fetch('/api/license/verify', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({txid})
+                });
+                const data = await response.json();
+
+                btn.disabled = false;
+                btn.textContent = '🔍 VERIFY & ACTIVATE';
+
+                if (data.success) {
+                    alert('🎉 LICENSE ACTIVATED!\n\n' + data.message);
+                    closeLicenseModal();
+                    updateStatus();
+                } else {
+                    alert('❌ VERIFICATION FAILED\n\n' + data.error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // Modal close on outside click
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        }
+
+        // Init
+        updateStatus();
+        setInterval(updateStatus, 3000);
+    </script>
+</body>
+</html>

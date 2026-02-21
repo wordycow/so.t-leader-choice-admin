@@ -1,0 +1,842 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>so.t – 업코인 실시간 트레이딩</title>
+  <meta name="description" content="업비트 실시간 단타/스윙 트레이딩 시스템" />
+  <style>
+    /* ==================== 업비트 스타일 디자인 시스템 ==================== */
+    :root {
+      /* 배경 */
+      --bg-primary: #181a20;
+      --bg-secondary: #1e2329;
+      --bg-card: #2b3139;
+      --bg-hover: #32383e;
+      
+      /* 텍스트 */
+      --text-primary: #eaecef;
+      --text-secondary: #848e9c;
+      --text-muted: #5e6673;
+      
+      /* 업비트 색상 */
+      --up-red: #f6465d;
+      --down-blue: #0ecb81;
+      --neutral: #848e9c;
+      --gold: #f0b90b;
+      
+      /* 기능 색상 */
+      --success: #0ecb81;
+      --danger: #f6465d;
+      --warning: #f0b90b;
+      --info: #3772ff;
+      
+      /* 테두리 */
+      --border: #2b3139;
+      --border-light: #474d57;
+      
+      /* 그림자 */
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+      --shadow-lg: 0 8px 24px rgba(0,0,0,0.5);
+      
+      /* 라운드 */
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+      background: #0a0e27 url('img/up-coin-enhanced-background.png') center/cover no-repeat fixed;
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+    
+    /* ==================== 레이아웃 ==================== */
+    .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+    
+    /* ==================== 헤더 ==================== */
+    .header {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .logo {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    
+    .logo h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: -0.5px;
+    }
+    
+    .logo .subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    
+    .header-controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    
+    /* ==================== 버튼 스타일 ==================== */
+    .btn {
+      padding: 10px 20px;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      background: var(--bg-card);
+      color: var(--text-primary);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    
+    .btn:hover {
+      background: var(--bg-hover);
+      border-color: var(--border-light);
+    }
+    
+    .btn-primary {
+      background: var(--info);
+      border-color: var(--info);
+      color: #fff;
+    }
+    
+    .btn-primary:hover {
+      background: #2f5fd1;
+      border-color: #2f5fd1;
+    }
+    
+    .btn-success {
+      background: var(--success);
+      border-color: var(--success);
+      color: #fff;
+    }
+    
+    .btn-success:hover {
+      background: #0db373;
+      border-color: #0db373;
+    }
+    
+    .btn-danger {
+      background: var(--danger);
+      border-color: var(--danger);
+      color: #fff;
+    }
+    
+    .btn-warning {
+      background: var(--warning);
+      border-color: var(--warning);
+      color: #000;
+      font-weight: 700;
+    }
+    
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+    
+    /* ==================== Select ==================== */
+    .select {
+      padding: 10px 16px;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      background: var(--bg-card);
+      color: var(--text-primary);
+      font-size: 14px;
+      cursor: pointer;
+      outline: none;
+      min-width: 140px;
+    }
+    
+    .select:hover {
+      border-color: var(--info);
+    }
+    
+    /* ==================== 상태 배너 ==================== */
+    .status-banner {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    
+    .status-info {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    
+    .status-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .status-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    
+    .status-badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    
+    /* ==================== 배지 ==================== */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    
+    .badge-success {
+      background: rgba(14, 203, 129, 0.1);
+      color: var(--success);
+      border: 1px solid rgba(14, 203, 129, 0.2);
+    }
+    
+    .badge-danger {
+      background: rgba(246, 70, 93, 0.1);
+      color: var(--danger);
+      border: 1px solid rgba(246, 70, 93, 0.2);
+    }
+    
+    .badge-warning {
+      background: rgba(240, 185, 11, 0.1);
+      color: var(--warning);
+      border: 1px solid rgba(240, 185, 11, 0.2);
+    }
+    
+    .badge-info {
+      background: rgba(55, 114, 255, 0.1);
+      color: var(--info);
+      border: 1px solid rgba(55, 114, 255, 0.2);
+    }
+    
+    .badge-neutral {
+      background: rgba(132, 142, 156, 0.1);
+      color: var(--neutral);
+      border: 1px solid rgba(132, 142, 156, 0.2);
+    }
+    
+    /* ==================== 탭 ==================== */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .tab {
+      padding: 10px 20px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .tab:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+    }
+    
+    .tab.active {
+      background: var(--info);
+      border-color: var(--info);
+      color: #fff;
+    }
+    
+    /* ==================== 카드 그리드 ==================== */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+      gap: 16px;
+    }
+    
+    @media (max-width: 1100px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+    
+    /* ==================== 코인 카드 ==================== */
+    .coin-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      transition: all 0.2s;
+    }
+    
+    .coin-card:hover {
+      border-color: var(--border-light);
+      box-shadow: var(--shadow-md);
+    }
+    
+    /* 카드 헤더 */
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      gap: 12px;
+    }
+    
+    .coin-info h3 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    
+    .coin-info .market {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    
+    .card-badges {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    
+    /* 가격 정보 */
+    .price-section {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    
+    .price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+    }
+    
+    .price-row:not(:last-child) {
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .price-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    
+    .price-value {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .price-value.up { color: var(--up-red); }
+    .price-value.down { color: var(--down-blue); }
+    
+    /* 수익률 표시 */
+    .profit-bar {
+      margin: 16px 0;
+      padding: 12px;
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+    
+    .profit-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    
+    .profit-label .label { color: var(--text-secondary); }
+    .profit-label .value {
+      font-weight: 700;
+      font-size: 18px;
+    }
+    
+    .progress-bar {
+      height: 8px;
+      background: var(--bg-primary);
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--success), var(--warning));
+      transition: width 0.3s;
+    }
+    
+    /* 액션 버튼 */
+    .card-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    
+    .card-actions .btn {
+      flex: 1;
+    }
+    
+    /* 알림 박스 */
+    .alert {
+      padding: 12px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      margin-top: 12px;
+      border-left: 4px solid;
+    }
+    
+    .alert-success {
+      background: rgba(14, 203, 129, 0.1);
+      border-color: var(--success);
+      color: var(--success);
+    }
+    
+    .alert-danger {
+      background: rgba(246, 70, 93, 0.1);
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+    
+    .alert-warning {
+      background: rgba(240, 185, 11, 0.1);
+      border-color: var(--warning);
+      color: var(--warning);
+    }
+    
+    .alert-info {
+      background: rgba(55, 114, 255, 0.1);
+      border-color: var(--info);
+      color: var(--info);
+    }
+    
+    /* 로딩 */
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 40px;
+      color: var(--text-secondary);
+    }
+    
+    .spinner {
+      width: 24px;
+      height: 24px;
+      border: 3px solid var(--border);
+      border-top-color: var(--info);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* 반응형 */
+    @media (max-width: 768px) {
+      .header-content { flex-direction: column; align-items: flex-start; }
+      .header-controls { width: 100%; justify-content: flex-start; }
+      .select { width: 100%; }
+      .status-banner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 헤더 -->
+  <div class="header">
+    <div class="header-content">
+      <div class="logo">
+        <h1>🪙 so.t 업코인</h1>
+        <div class="subtitle" id="subtitle">실시간 트레이딩 시스템</div>
+      </div>
+      
+      <div class="header-controls">
+        <select class="select" id="timingMode">
+          <option value="AUTO">타이밍: 자동</option>
+          <option value="DAY">타이밍: 주간</option>
+          <option value="NIGHT">타이밍: 야간</option>
+          <option value="ALL">타이밍: 전체</option>
+        </select>
+        
+        <select class="select" id="viewMode">
+          <option value="ALL">전체</option>
+          <option value="NOW">NOW만</option>
+          <option value="HIDE_OUT">OUT 숨김</option>
+        </select>
+        
+        <select class="select" id="personSelect"></select>
+        
+        <button class="btn btn-primary" id="btnRefresh">🔄 새로고침</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 메인 컨테이너 -->
+  <div class="container">
+    <!-- 로딩 -->
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <div>데이터 로딩중...</div>
+    </div>
+    
+    <!-- 상태 배너 -->
+    <div class="status-banner" id="banner" style="display:none">
+      <div class="status-info">
+        <div class="status-title" id="bannerTitle">지금 진입 후보 (NOW)</div>
+        <div class="status-desc" id="bannerDesc">-</div>
+      </div>
+      <div class="status-badges" id="bannerBadges"></div>
+    </div>
+    
+    <!-- 탭 -->
+    <div class="tabs" id="tabs"></div>
+    
+    <!-- 카드 그리드 -->
+    <div class="grid" id="cards"></div>
+    
+    <!-- 경고 -->
+    <div class="alert alert-warning" style="margin-top:20px">
+      <b>⚠️ 투자 주의사항</b><br>
+      이 시스템은 정보 제공/학습 목적입니다. 수익을 보장하지 않으며, 손실 위험이 큽니다. 본인 책임 하에 투자하세요.
+    </div>
+  </div>
+
+  <script>
+    // ==================== API 설정 ====================
+    const API_BASE = "https://script.google.com/macros/s/AKfycbz6shTLVydPvqNk69Ug2NsvyyIGeUvcM1b04aOn_KT32Wil2DWSMXaD7GkMncfVlEkv/exec";
+    
+    // ==================== 상태 관리 ====================
+    const state = {
+      picks: null,
+      personId: null,
+      category: "DAYTRADE",
+      liveMap: new Map(),
+      liveSource: "none",
+      liveAsOf: "",
+      marketNameMap: new Map()
+    };
+    
+    // ==================== 유틸리티 ====================
+    const $ = (id) => document.getElementById(id);
+    
+    function fmtPrice(x) {
+      const n = Number(x || 0);
+      if (!isFinite(n)) return "-";
+      if (n < 1) return n.toFixed(4);
+      if (n < 10) return n.toFixed(3);
+      if (n < 100) return n.toFixed(2);
+      if (n < 1000) return n.toFixed(1);
+      return Math.round(n).toLocaleString("ko-KR");
+    }
+    
+    function fmtKRW(x) {
+      return Math.floor(Number(x || 0)).toLocaleString("ko-KR");
+    }
+    
+    function marketToTicker(m) {
+      const parts = String(m).split("-");
+      return parts.length === 2 ? parts[1] : m;
+    }
+    
+    function getKoreanName(m) {
+      return state.marketNameMap.get(String(m)) || "";
+    }
+    
+    function displayCoinName(m) {
+      const t = marketToTicker(m);
+      const ko = getKoreanName(m);
+      return ko ? `${t} (${ko})` : t;
+    }
+    
+    function upbitLink(m) {
+      return `https://upbit.com/exchange?code=CRIX.UPBIT.${encodeURIComponent(m)}`;
+    }
+    
+    // ==================== JSONP ====================
+    function jsonp(url, timeoutMs = 12000) {
+      return new Promise((resolve, reject) => {
+        const cbName = "__cb_" + Math.random().toString(36).slice(2);
+        const script = document.createElement("script");
+        const timer = setTimeout(() => { cleanup(); reject(new Error("timeout")); }, timeoutMs);
+        
+        function cleanup() {
+          clearTimeout(timer);
+          try { delete window[cbName]; } catch(e) {}
+          script.remove();
+        }
+        
+        window[cbName] = (data) => { cleanup(); resolve(data); };
+        const glue = url.includes("?") ? "&" : "?";
+        script.src = url + glue + "callback=" + cbName;
+        script.onerror = () => { cleanup(); reject(new Error("load error")); };
+        document.head.appendChild(script);
+      });
+    }
+    
+    async function apiGet(action, params = {}) {
+      const qs = new URLSearchParams({ action, ...params, _: Date.now() }).toString();
+      return await jsonp(API_BASE + "?" + qs);
+    }
+    
+    // ==================== 데이터 로딩 ====================
+    async function loadAll() {
+      $("loading").style.display = "flex";
+      
+      const [picks, status] = await Promise.all([
+        apiGet("picks"),
+        apiGet("status").catch(() => ({ ok: false }))
+      ]);
+      
+      if (!picks.ok) throw new Error("picks error");
+      
+      state.picks = picks;
+      
+      // 인원 목록
+      const people = [];
+      const pmap = new Map();
+      for (const it of picks.items || []) {
+        const pid = String(it.person_id || "");
+        const name = String(it.name || pid);
+        if (pid && !pmap.has(pid)) {
+          pmap.set(pid, { person_id: pid, name });
+          people.push({ person_id: pid, name });
+        }
+      }
+      
+      if (people.length && !state.personId) {
+        state.personId = people[0].person_id;
+      }
+      
+      renderPersonSelect(people);
+      renderAll();
+      
+      $("loading").style.display = "none";
+    }
+    
+    function renderPersonSelect(people) {
+      const sel = $("personSelect");
+      sel.innerHTML = "";
+      
+      if (!people.length) {
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "인원 없음";
+        sel.appendChild(opt);
+        return;
+      }
+      
+      for (const p of people) {
+        const opt = document.createElement("option");
+        opt.value = p.person_id;
+        opt.textContent = `${p.name} (${p.person_id})`;
+        if (p.person_id === state.personId) opt.selected = true;
+        sel.appendChild(opt);
+      }
+      
+      sel.onchange = () => {
+        state.personId = sel.value;
+        renderAll();
+      };
+    }
+    
+    // ==================== 렌더링 ====================
+    function renderAll() {
+      renderTabs();
+      renderCards();
+    }
+    
+    function renderTabs() {
+      const tabs = $("tabs");
+      const categories = ["ALL", "DAYTRADE", "SWING", "COLLECT"];
+      const labels = { ALL: "전체", DAYTRADE: "단타", SWING: "스윙", COLLECT: "모으기" };
+      
+      tabs.innerHTML = "";
+      
+      for (const c of categories) {
+        const el = document.createElement("div");
+        el.className = "tab" + (state.category === c ? " active" : "");
+        el.textContent = labels[c] || c;
+        el.onclick = () => {
+          state.category = c;
+          renderAll();
+        };
+        tabs.appendChild(el);
+      }
+    }
+    
+    function filterPicks() {
+      const items = state.picks?.items || [];
+      const viewMode = $("viewMode").value;
+      
+      let arr = items
+        .filter(it => String(it.person_id) === String(state.personId))
+        .filter(it => state.category === "ALL" || String(it.category) === state.category);
+      
+      return arr;
+    }
+    
+    function renderCards() {
+      const wrap = $("cards");
+      const items = filterPicks();
+      
+      wrap.innerHTML = "";
+      
+      if (!items.length) {
+        wrap.innerHTML = `
+          <div class="alert alert-info">
+            표시할 코인이 없습니다. 탭/필터를 변경해보세요.
+          </div>
+        `;
+        return;
+      }
+      
+      for (const it of items.slice(0, 20)) {
+        const card = renderCard(it);
+        wrap.appendChild(card);
+      }
+      
+      updateBanner(items);
+    }
+    
+    function renderCard(it) {
+      const market = String(it.market || "");
+      const price = Number(it.price || 0);
+      const stop = Number(it.stop_price || 0);
+      const tp1 = Number(it.tp1_price || 0);
+      const tp2 = Number(it.tp2_price || 0);
+      const category = String(it.category || "DAYTRADE");
+      
+      const card = document.createElement("div");
+      card.className = "coin-card";
+      
+      card.innerHTML = `
+        <div class="card-header">
+          <div class="coin-info">
+            <h3>${displayCoinName(market)}</h3>
+            <div class="market">${market}</div>
+          </div>
+          <div class="card-badges">
+            <span class="badge badge-info">${category}</span>
+            <span class="badge badge-success">NOW</span>
+          </div>
+        </div>
+        
+        <div class="price-section">
+          <div class="price-row">
+            <span class="price-label">현재가</span>
+            <span class="price-value up">${fmtPrice(price)} KRW</span>
+          </div>
+          <div class="price-row">
+            <span class="price-label">손절가</span>
+            <span class="price-value">${fmtPrice(stop)} KRW</span>
+          </div>
+          <div class="price-row">
+            <span class="price-label">익절 TP1/TP2</span>
+            <span class="price-value">${fmtPrice(tp1)} / ${fmtPrice(tp2)} KRW</span>
+          </div>
+        </div>
+        
+        <div class="profit-bar">
+          <div class="profit-label">
+            <span class="label">수익률</span>
+            <span class="value up">+0.0%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 50%"></div>
+          </div>
+        </div>
+        
+        <div class="card-actions">
+          <button class="btn btn-success btn-sm" onclick="window.open('${upbitLink(market)}', '_blank')">
+            📈 업비트 열기
+          </button>
+          <button class="btn btn-sm">📋 가이드 복사</button>
+        </div>
+      `;
+      
+      return card;
+    }
+    
+    function updateBanner(items) {
+      const banner = $("banner");
+      banner.style.display = "flex";
+      
+      $("bannerTitle").textContent = `지금 진입 후보 (NOW) ${items.length}개`;
+      $("bannerDesc").textContent = `실시간 업데이트 · 시드 100만원 기준 배분`;
+      
+      $("bannerBadges").innerHTML = `
+        <span class="badge badge-success">LIVE</span>
+        <span class="badge badge-info">${items.length}개 코인</span>
+        <span class="badge badge-warning">시드 1,000,000원</span>
+      `;
+    }
+    
+    // ==================== 초기화 ====================
+    $("btnRefresh").onclick = async () => {
+      try {
+        await loadAll();
+      } catch (e) {
+        alert("새로고침 실패: " + e.message);
+      }
+    };
+    
+    $("timingMode").onchange = () => renderAll();
+    $("viewMode").onchange = () => renderAll();
+    
+    (async function init() {
+      try {
+        await loadAll();
+      } catch (e) {
+        $("loading").style.display = "none";
+        alert("로드 실패: " + e.message);
+      }
+    })();
+  </script>
+</body>
+</html>

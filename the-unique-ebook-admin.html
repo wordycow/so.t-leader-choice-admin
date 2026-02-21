@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>The Unique – eBook 관리자</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "Pretendard", sans-serif;
+      background: #020617 url('img/ebook-admin-v2-background.png') center/cover no-repeat fixed;
+      color: #e5e7eb;
+    }
+
+    a { color: inherit; }
+
+    .page-wrap {
+      max-width: 1200px;
+      margin: 32px auto 40px;
+      padding: 0 16px 24px;
+    }
+
+    .header {
+      margin-bottom: 14px;
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #facc15;
+      text-shadow: 0 0 10px rgba(250,204,21,0.7);
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-top: 4px;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+      align-items: center;
+    }
+
+    .toolbar-btn {
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.8);
+      background: rgba(15,23,42,0.98);
+      color: #e5e7eb;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: background 0.15s ease, transform 0.08s ease, border-color 0.15s ease;
+      text-decoration: none;
+    }
+
+    .toolbar-btn.primary {
+      border-color: rgba(248,181,84,0.9);
+      background: radial-gradient(circle at top, #f97316, #7f1d1d);
+      color: #fef2f2;
+    }
+
+    .toolbar-btn:hover {
+      transform: translateY(-1px);
+      background: rgba(30,64,175,0.9);
+      border-color: rgba(191,219,254,0.9);
+    }
+
+    /* ✅ 로드 상태 표시 */
+    .status-pill{
+      margin-left: auto;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      border: 1px solid rgba(51,65,85,0.9);
+      background: rgba(15,23,42,0.98);
+      color: #9ca3af;
+      user-select: text;
+      white-space: nowrap;
+    }
+    .status-pill.ok{
+      border-color: rgba(34,197,94,0.7);
+      color: rgba(187,247,208,0.95);
+    }
+    .status-pill.err{
+      border-color: rgba(248,113,113,0.85);
+      color: rgba(254,226,226,0.95);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.1fr);
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .editor-panel,
+    .json-panel {
+      border-radius: 20px;
+      padding: 14px 14px 16px;
+      background: radial-gradient(circle at top, rgba(15,23,42,0.98), rgba(15,23,42,0.99));
+      box-shadow:
+        0 0 0 1px rgba(30,64,118,0.8),
+        0 18px 45px rgba(0,0,0,0.95);
+    }
+
+    .panel-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #e5e7eb;
+    }
+
+    .panel-sub {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-bottom: 10px;
+    }
+
+    .books-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .book-card {
+      border-radius: 18px;
+      padding: 12px 12px 12px;
+      background: radial-gradient(circle at top, #020617, #020617);
+      border: 1px solid rgba(51,65,85,0.9);
+      display: grid;
+      grid-template-columns: minmax(0, 120px) minmax(0, 1fr);
+      gap: 12px;
+    }
+
+    .book-cover-col {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .book-cover {
+      width: 100%;
+      max-width: 130px;
+      aspect-ratio: 1 / 1;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #020617;
+      box-shadow:
+        0 10px 24px rgba(0,0,0,0.9),
+        0 0 0 1px rgba(30,64,118,0.9);
+    }
+
+    .book-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .book-cover-filename {
+      font-size: 10px;
+      color: #9ca3af;
+      text-align: center;
+      word-break: break-all;
+    }
+
+    .visible-wrap {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: #e5e7eb;
+    }
+
+    .visible-wrap input[type="checkbox"] {
+      width: 12px;
+      height: 12px;
+    }
+
+    .book-fields {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      column-gap: 10px;
+      row-gap: 6px;
+      font-size: 12px;
+    }
+
+    .field-full {
+      grid-column: 1 / 3;
+    }
+
+    .field-label {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-bottom: 2px;
+    }
+
+    .field-input,
+    .field-textarea,
+    .field-select {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid rgba(51,65,85,0.9);
+      background: rgba(15,23,42,0.98);
+      color: #e5e7eb;
+      font-size: 12px;
+      padding: 6px 8px;
+      outline: none;
+    }
+
+    .field-textarea {
+      min-height: 52px;
+      resize: vertical;
+    }
+
+    .field-input:focus,
+    .field-textarea:focus,
+    .field-select:focus {
+      border-color: rgba(248,181,84,0.9);
+      box-shadow: 0 0 0 1px rgba(248,181,84,0.6);
+    }
+
+    .field-input.small {
+      max-width: 90px;
+    }
+
+    .range-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .range-wrap input[type="range"] {
+      flex: 1 1 auto;
+    }
+
+    .range-value {
+      font-size: 11px;
+      color: #cbd5f5;
+      min-width: 32px;
+      text-align: right;
+    }
+
+    .delete-btn {
+      align-self: flex-start;
+      margin-top: 4px;
+      padding: 4px 8px;
+      font-size: 11px;
+      border-radius: 999px;
+      border: 1px solid rgba(248,113,113,0.9);
+      background: rgba(127,29,29,0.9);
+      color: #fee2e2;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.08s ease, border-color 0.15s ease;
+    }
+
+    .delete-btn:hover {
+      transform: translateY(-1px);
+      background: rgba(185,28,28,0.95);
+      border-color: rgba(252,165,165,0.95);
+    }
+
+    .json-textarea {
+      width: 100%;
+      min-height: 260px;
+      border-radius: 12px;
+      border: 1px solid rgba(51,65,85,0.9);
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 11px;
+      padding: 8px 9px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        "Liberation Mono", "Courier New", monospace;
+      resize: vertical;
+      line-height: 1.55;
+    }
+
+    .json-textarea:focus {
+      outline: none;
+      border-color: rgba(248,181,84,0.9);
+      box-shadow: 0 0 0 1px rgba(248,181,84,0.6);
+    }
+
+    .hint {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-bottom: 6px;
+    }
+
+    .hint code {
+      font-size: 11px;
+      color: #e5e7eb;
+      background: rgba(15,23,42,0.95);
+      padding: 1px 4px;
+      border-radius: 4px;
+    }
+
+    .footer-note {
+      margin-top: 10px;
+      font-size: 11px;
+      color: #6b7280;
+      text-align: right;
+      opacity: 0.8;
+    }
+
+    @media (max-width: 960px) {
+      .layout {
+        grid-template-columns: minmax(0,1fr);
+      }
+      .status-pill { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrap">
+    <header class="header">
+      <div class="title">THE UNIQUE – eBook ADMIN</div>
+      <div class="subtitle">
+        eBook 카드 정보를 편집하고, <code>ebook-config.json</code> 내용을 관리하는 화면입니다.<br>
+        이제 개별 <code>ebookX.html</code> 파일을 만들 필요 없이,
+        <strong>공용 뷰어 <code>ebook-view.html?id=...</code></strong>만 사용합니다.
+      </div>
+    </header>
+
+    <div class="toolbar">
+      <button id="add-book-btn" class="toolbar-btn primary">+ 책 추가</button>
+      <button id="export-json-btn" class="toolbar-btn">JSON 내보내기</button>
+      <button id="import-json-btn" class="toolbar-btn">JSON 불러오기</button>
+      <button id="copy-json-btn" class="toolbar-btn">JSON 복사</button>
+      <a
+        id="open-config-btn"
+        class="toolbar-btn"
+        href="https://github.com/wordycow/so.t-leader-choice/blob/main/ebook-config.json"
+        target="_blank"
+        rel="noopener noreferrer"
+      >EBOOK-CONFIG.JSON 열기</a>
+
+      <!-- ✅ 로드 상태 표시 -->
+      <div id="status" class="status-pill">loading...</div>
+    </div>
+
+    <div class="layout">
+      <section class="editor-panel">
+        <div class="panel-title">eBook 카드 편집</div>
+        <div class="panel-sub">
+          각 항목의 <code>id</code> 값을 기준으로
+          <code>ebook-view.html?id=ID값</code> 으로 연결됩니다.
+          (예: <code>ebook-view.html?id=need smpl</code>)
+        </div>
+
+        <div id="books-list" class="books-list"></div>
+      </section>
+
+      <section class="json-panel">
+        <div class="panel-title">ebook-config.json 미리보기 / 편집</div>
+        <div class="hint">
+          ▸ <strong>[JSON 내보내기]</strong> 버튼을 누르면 아래 영역에 현재 eBook 설정이 JSON 형식으로 출력됩니다.<br>
+          ▸ 이 내용을 그대로 복사해서 <code>ebook-config.json</code> 파일에 붙여 넣으면 됩니다.<br>
+          ▸ 링크는 <code>"link": "ebook-view.html?id=ID값"</code> 형식으로 사용하는 것을 권장합니다.
+        </div>
+        <textarea id="json-textarea" class="json-textarea" spellcheck="false"></textarea>
+      </section>
+    </div>
+
+    <div class="footer-note">
+      THE UNIQUE – eBook Admin · so.t-leader-choice
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      let items = [];
+
+      const booksListEl = document.getElementById("books-list");
+      const jsonTextarea = document.getElementById("json-textarea");
+      const statusEl = document.getElementById("status");
+
+      const addBookBtn = document.getElementById("add-book-btn");
+      const exportJsonBtn = document.getElementById("export-json-btn");
+      const importJsonBtn = document.getElementById("import-json-btn");
+      const copyJsonBtn = document.getElementById("copy-json-btn");
+
+      function setStatus(text, type) {
+        if (!statusEl) return;
+        statusEl.textContent = text || "";
+        statusEl.classList.remove("ok", "err");
+        if (type === "ok") statusEl.classList.add("ok");
+        if (type === "err") statusEl.classList.add("err");
+      }
+
+      function createDefaultItem() {
+        return {
+          id: "",
+          title: "",
+          subtitle: "",
+          description: "",
+          cover: "",
+          video: "",
+          audio: "",
+          link: "ebook-view.html?id=",
+          visible: true,
+          rankMin: "",
+          rankMax: "",
+          order: (items.length + 1),
+          posY: 50
+        };
+      }
+
+      function updateJsonTextarea() {
+        const data = {
+          items: items.slice().sort((a, b) => (a.order || 0) - (b.order || 0))
+        };
+        jsonTextarea.value = JSON.stringify(data, null, 2);
+      }
+
+      function render() {
+        booksListEl.innerHTML = "";
+
+        const displayItems = items
+          .slice()
+          .sort((a, b) => (a.order || 0) - (b.order || 0));
+
+        displayItems.forEach((item) => {
+          const card = document.createElement("div");
+          card.className = "book-card";
+
+          // ------- 왼쪽: 커버 & 노출 -------
+          const coverCol = document.createElement("div");
+          coverCol.className = "book-cover-col";
+
+          const coverBox = document.createElement("div");
+          coverBox.className = "book-cover";
+          if (item.cover) {
+            const img = document.createElement("img");
+            img.src = item.cover;
+            img.alt = item.title || item.id || "cover";
+            coverBox.appendChild(img);
+          }
+          coverCol.appendChild(coverBox);
+
+          const coverFilename = document.createElement("div");
+          coverFilename.className = "book-cover-filename";
+          coverFilename.textContent = item.cover || "커버 이미지 경로 없음";
+          coverCol.appendChild(coverFilename);
+
+          const visibleWrap = document.createElement("label");
+          visibleWrap.className = "visible-wrap";
+          const visibleCheck = document.createElement("input");
+          visibleCheck.type = "checkbox";
+          visibleCheck.checked = item.visible !== false;
+          visibleCheck.addEventListener("change", () => {
+            item.visible = visibleCheck.checked;
+            updateJsonTextarea();
+          });
+          visibleWrap.appendChild(visibleCheck);
+          visibleWrap.appendChild(document.createTextNode("노출"));
+          coverCol.appendChild(visibleWrap);
+
+          card.appendChild(coverCol);
+
+          // ------- 오른쪽: 필드들 -------
+          const fieldsCol = document.createElement("div");
+          fieldsCol.className = "book-fields";
+
+          function addField(label, value, onChange, options = {}) {
+            const wrap = document.createElement("div");
+            if (options.full) wrap.classList.add("field-full");
+
+            const lab = document.createElement("div");
+            lab.className = "field-label";
+            lab.textContent = label;
+            wrap.appendChild(lab);
+
+            let inputEl;
+            if (options.textarea) {
+              inputEl = document.createElement("textarea");
+              inputEl.className = "field-textarea";
+            } else {
+              inputEl = document.createElement("input");
+              inputEl.type = options.type || "text";
+              inputEl.className = "field-input";
+              if (options.small) inputEl.classList.add("small");
+            }
+
+            inputEl.value = (value ?? "");
+
+            inputEl.addEventListener("input", () => {
+              onChange(inputEl.value);
+              updateJsonTextarea();
+            });
+
+            wrap.appendChild(inputEl);
+            fieldsCol.appendChild(wrap);
+            return inputEl;
+          }
+
+          addField("ID (영문 키)", item.id, v => item.id = v, { full: true });
+          addField("제목", item.title, v => item.title = v);
+          addField("부제", item.subtitle, v => item.subtitle = v);
+          addField("설명 (description)", item.description, v => item.description = v, { full: true, textarea: true });
+
+          addField("커버 이미지 경로(cover)", item.cover, v => item.cover = v, { full: true });
+          addField("영상 파일(mp4) 경로(video)", item.video, v => item.video = v, { full: true });
+          addField("음성 파일(mp3) 경로(audio)", item.audio, v => item.audio = v, { full: true });
+
+          addField("클릭 시 이동할 링크(link)", item.link, v => item.link = v, { full: true });
+
+          addField("최소 직급(rankMin)", item.rankMin ?? "", v => item.rankMin = v);
+          addField("최대 직급(rankMax)", item.rankMax ?? "", v => item.rankMax = v);
+
+          addField("순서(order)", item.order != null ? item.order : "", v => {
+            const num = parseInt(v, 10);
+            item.order = isNaN(num) ? 0 : num;
+          }, { type: "number", small: true });
+
+          // posY
+          const rangeWrap = document.createElement("div");
+          rangeWrap.className = "field-full";
+
+          const rangeLabel = document.createElement("div");
+          rangeLabel.className = "field-label";
+          rangeLabel.textContent = "이미지 세로 위치(posY)";
+          rangeWrap.appendChild(rangeLabel);
+
+          const rangeInner = document.createElement("div");
+          rangeInner.className = "range-wrap";
+          const rangeInput = document.createElement("input");
+          rangeInput.type = "range";
+          rangeInput.min = "0";
+          rangeInput.max = "100";
+          rangeInput.value = item.posY != null ? item.posY : 50;
+
+          const rangeValue = document.createElement("div");
+          rangeValue.className = "range-value";
+          rangeValue.textContent = rangeInput.value + "%";
+
+          rangeInput.addEventListener("input", () => {
+            item.posY = parseInt(rangeInput.value, 10);
+            rangeValue.textContent = rangeInput.value + "%";
+            updateJsonTextarea();
+          });
+
+          rangeInner.appendChild(rangeInput);
+          rangeInner.appendChild(rangeValue);
+          rangeWrap.appendChild(rangeInner);
+          fieldsCol.appendChild(rangeWrap);
+
+          // ✅ 삭제(정렬된 index로 splice하면 잘못 삭제될 수 있어서 실제 index로 삭제)
+          const delBtn = document.createElement("button");
+          delBtn.type = "button";
+          delBtn.className = "delete-btn";
+          delBtn.textContent = "삭제";
+          delBtn.addEventListener("click", () => {
+            if (!confirm("이 eBook 항목을 삭제할까요?")) return;
+            const realIdx = items.indexOf(item);
+            if (realIdx >= 0) items.splice(realIdx, 1);
+            render();
+            updateJsonTextarea();
+          });
+          fieldsCol.appendChild(delBtn);
+
+          card.appendChild(fieldsCol);
+          booksListEl.appendChild(card);
+        });
+      }
+
+      // 버튼 이벤트
+      addBookBtn.addEventListener("click", () => {
+        items.push(createDefaultItem());
+        render();
+        updateJsonTextarea();
+      });
+
+      exportJsonBtn.addEventListener("click", () => {
+        updateJsonTextarea();
+        alert("현재 eBook 설정이 JSON 형식으로 아래에 출력되었습니다.");
+      });
+
+      importJsonBtn.addEventListener("click", () => {
+        if (!jsonTextarea.value.trim()) {
+          alert("불러올 JSON이 없습니다. 먼저 JSON을 붙여넣어 주세요.");
+          return;
+        }
+        try {
+          const parsed = JSON.parse(jsonTextarea.value);
+          const arr = parsed.items || (Array.isArray(parsed) ? parsed : null);
+          if (!Array.isArray(arr)) throw new Error("items 배열이 없습니다.");
+          items = arr;
+          render();
+          updateJsonTextarea();
+          alert("JSON에서 eBook 목록을 불러왔습니다.");
+        } catch (e) {
+          console.error(e);
+          alert("JSON 파싱에 실패했습니다. 형식을 다시 확인해 주세요.");
+        }
+      });
+
+      copyJsonBtn.addEventListener("click", async () => {
+        if (!jsonTextarea.value.trim()) updateJsonTextarea();
+
+        const text = jsonTextarea.value;
+
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(text);
+            alert("JSON이 클립보드에 복사되었습니다. ebook-config.json에 붙여 넣으세요.");
+            return;
+          }
+        } catch (e) {}
+
+        // fallback
+        jsonTextarea.focus();
+        jsonTextarea.select();
+        jsonTextarea.setSelectionRange(0, jsonTextarea.value.length);
+        try {
+          const ok = document.execCommand("copy");
+          if (ok) alert("JSON이 클립보드에 복사되었습니다. ebook-config.json에 붙여 넣으세요.");
+          else alert("복사에 실패했습니다. 텍스트를 직접 드래그해서 복사해 주세요.");
+        } catch (e) {
+          alert("복사에 실패했습니다. 텍스트를 직접 드래그해서 복사해 주세요.");
+        }
+      });
+
+      // ✅ 안전한 로더 (BOM/404/캐시 대응)
+      async function loadConfig() {
+        setStatus("ebook-config.json 로딩중...", "");
+        try {
+          const res = await fetch("ebook-config.json", { cache: "no-store" });
+          if (!res.ok) throw new Error("HTTP " + res.status);
+
+          const text = (await res.text()).replace(/^\uFEFF/, ""); // BOM 제거
+          const data = JSON.parse(text);
+
+          const arr = data.items || (Array.isArray(data) ? data : []);
+          if (!Array.isArray(arr)) throw new Error("items 배열이 아닙니다.");
+
+          items = arr;
+          render();
+          updateJsonTextarea();
+          setStatus("로드 완료 ✅", "ok");
+        } catch (err) {
+          console.error("ebook-config.json 로드 오류:", err);
+          items = [];
+          render();
+          updateJsonTextarea();
+          setStatus("로드 실패 ❌ (ebook-config.json 확인)", "err");
+          alert("ebook-config.json 로드/파싱 실패입니다.\n(파일명/경로/JSON 형식/캐시를 확인하세요)");
+        }
+      }
+
+      loadConfig();
+    })();
+  </script>
+</body>
+</html>

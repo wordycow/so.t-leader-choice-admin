@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>THE UNIQUE – eBook Viewer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- 폰트 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    body {
+      font-family: "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #020617 url('img/ebook-view-background.png') center/cover no-repeat fixed;
+      color: #e5e7eb;
+    }
+
+    .page-wrap {
+      max-width: 960px;
+      margin: 32px auto 40px;
+      padding: 0 16px 24px;
+    }
+
+    /* 상단 타이틀 */
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .title-en {
+      font-family: "Cinzel", "Times New Roman", serif;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #facc15;
+      text-shadow: 0 0 12px rgba(250, 204, 21, 0.8);
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #9ca3af;
+    }
+
+    .back-link {
+      font-size: 11px;
+      margin-top: 4px;
+    }
+
+    .back-link a {
+      color: #9ca3af;
+      text-decoration: none;
+    }
+
+    .back-link a:hover {
+      text-decoration: underline;
+      color: #facc15;
+    }
+
+    /* 메인 카드 (커버 + 정보) */
+
+    .main-card {
+      border-radius: 24px;
+      padding: 18px 18px 20px;
+      background: radial-gradient(circle at top, rgba(15,23,42,0.96), rgba(15,23,42,0.99));
+      border: 1px solid rgba(148,163,184,0.6);
+      box-shadow:
+        0 0 0 1px rgba(15,23,42,1),
+        0 20px 55px rgba(0,0,0,0.95);
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 2.2fr);
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .cover-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .cover {
+      width: 100%;
+      max-width: 260px;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow:
+        0 10px 28px rgba(0,0,0,0.95),
+        0 0 0 1px rgba(30,64,118,0.8);
+      background: #020617;
+    }
+
+    .cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .tag {
+      font-size: 11px;
+      color: #facc15;
+      border-radius: 999px;
+      padding: 4px 10px;
+      border: 1px solid rgba(250,204,21,0.9);
+      background: rgba(15,23,42,0.95);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .info {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .info-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #f9fafb;
+    }
+
+    .info-sub {
+      font-size: 13px;
+      color: #cbd5f5;
+    }
+
+    .info-desc {
+      font-size: 13px;
+      color: #e5e7eb;
+      line-height: 1.7;
+      white-space: pre-line;
+    }
+
+    /* 영상/음원 섹션 */
+
+    .media-section {
+      border-radius: 18px;
+      padding: 16px 18px 14px;
+      background: radial-gradient(circle at top, rgba(15,23,42,0.96), rgba(15,23,42,0.99));
+      border: 1px solid rgba(30,64,118,0.9);
+      box-shadow: 0 14px 32px rgba(0,0,0,0.95);
+      margin-bottom: 16px;
+    }
+
+    .media-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #e5e7eb;
+      margin-bottom: 6px;
+    }
+
+    .media-sub {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-bottom: 8px;
+    }
+
+    video, audio {
+      width: 100%;
+      max-width: 100%;
+      border-radius: 12px;
+      outline: none;
+    }
+
+    video {
+      margin-bottom: 10px;
+      background: #020617;
+      box-shadow: 0 12px 26px rgba(0,0,0,0.9);
+    }
+
+    audio {
+      background: #020617;
+    }
+
+    .empty-media {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    /* 오류 메시지 */
+
+    .error-box {
+      margin-top: 24px;
+      border-radius: 16px;
+      padding: 14px 16px;
+      background: rgba(127,29,29,0.95);
+      border: 1px solid rgba(248,113,113,0.9);
+      color: #fee2e2;
+      font-size: 13px;
+    }
+
+    .footer-note {
+      margin-top: 10px;
+      font-size: 11px;
+      color: #9ca3af;
+      text-align: right;
+      opacity: 0.8;
+    }
+
+    @media (max-width: 768px) {
+      .main-card {
+        grid-template-columns: minmax(0,1fr);
+      }
+      .page-wrap {
+        margin-top: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrap">
+    <header class="header">
+      <div class="title-en">THE UNIQUE – eBook</div>
+      <div class="subtitle">개별 eBook 상세 보기</div>
+      <div class="back-link">
+        <a href="the-unique-main.html">← 메인으로 돌아가기</a>
+      </div>
+    </header>
+
+    <div id="content"></div>
+
+    <div class="footer-note">
+      THE UNIQUE – eBook viewer · dynamic by ebook-config.json
+    </div>
+  </div>
+
+ <script>
+  function getQueryId() {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+    return id ? id.trim() : "";
+  }
+
+  function renderError(msg) {
+    const content = document.getElementById("content");
+    content.innerHTML =
+      '<div class="error-box">' +
+      (msg || "요청하신 eBook 정보를 찾을 수 없습니다.") +
+      "</div>";
+  }
+
+  function renderEbook(item) {
+    const content = document.getElementById("content");
+    if (!item) return renderError();
+
+    const title = item.title || "제목 없음";
+    const subtitle = item.subtitle || "";
+    const desc = item.description || "";
+    const cover = item.cover || "";
+    const video = item.video || "";
+    const audio = item.audio || "";
+    const idTag = item.id || "";
+
+    let html = "";
+    html += '<section class="main-card">';
+    html += '  <div class="cover-wrap">';
+    html += '    <div class="cover">';
+    if (cover) html += '      <img src="' + cover + '" alt="' + title + ' 커버 이미지" />';
+    html += "    </div>";
+    if (idTag) html += '    <div class="tag">' + idTag + "</div>";
+    html += "  </div>";
+
+    html += '  <div class="info">';
+    html += '    <div class="info-title">' + title + "</div>";
+    if (subtitle) html += '    <div class="info-sub">' + subtitle + "</div>";
+    if (desc) html += '    <div class="info-desc">' + desc + "</div>";
+    html += "  </div>";
+    html += "</section>";
+
+    html += '<section class="media-section">';
+    html += '  <div class="media-title">영상 · 음성</div>';
+    html += '  <div class="media-sub">eBook에 연결된 영상/음원 자료를 재생할 수 있습니다.</div>';
+
+    if (video) {
+      html +=
+        '  <video controls playsinline poster="' + (cover || "") + '">' +
+        '    <source src="' + video + '" type="video/mp4" />' +
+        "    브라우저에서 동영상을 재생할 수 없습니다." +
+        "  </video>";
+    }
+    if (audio) {
+      html +=
+        '  <audio controls>' +
+        '    <source src="' + audio + '" type="audio/mpeg" />' +
+        "    브라우저에서 오디오를 재생할 수 없습니다." +
+        "  </audio>";
+    }
+    if (!video && !audio) {
+      html +=
+        '  <div class="empty-media">' +
+        "등록된 영상/음원 파일이 없습니다. 커버 이미지만 제공되는 eBook입니다." +
+        "</div>";
+    }
+
+    html += "</section>";
+    content.innerHTML = html;
+  }
+
+  (async function init() {
+    const id = getQueryId();
+    if (!id) return renderError("eBook ID가 지정되지 않았습니다. (예: ebook-view.html?id=3-line)");
+
+    try {
+      const res = await fetch("ebook-config.json", { cache: "no-store" });
+
+      if (!res.ok) {
+        return renderError("ebook-config.json을 찾을 수 없습니다. (HTTP " + res.status + ")");
+      }
+
+      const text = (await res.text()).replace(/^\uFEFF/, ""); // BOM 제거
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        console.error("JSON parse error:", e, text.slice(0, 200));
+        return renderError("ebook-config.json JSON 형식이 깨져있습니다. (마지막 쉼표/주석/따옴표 확인)");
+      }
+
+      const items = (data && data.items) ? data.items : (Array.isArray(data) ? data : []);
+      const target = items.find(it => (it.id || "").trim() === id);
+
+      if (!target) return renderError("ID가 '" + id + "' 인 eBook 항목을 찾을 수 없습니다.");
+      renderEbook(target);
+    } catch (err) {
+      console.error(err);
+      renderError("ebook-config.json을 불러오는 중 오류가 발생했습니다.");
+    }
+  })();
+</script>
+</body>
+</html>

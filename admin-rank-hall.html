@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>The Unique – Rank Hall 관리자</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin:0; padding:0; height:100%; }
+    body{
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI","Pretendard", sans-serif;
+      background: #0a0e27 url('img/admin-rank-background.png') center/cover no-repeat fixed;
+      color:#e5e7eb;
+    }
+    a{ color:inherit; text-decoration:none; }
+
+    .page-wrap{ max-width:1200px; margin:28px auto 38px; padding:0 14px 22px; }
+    .header{ margin-bottom:10px; }
+    .title{
+      font-size:22px; font-weight:800; letter-spacing:0.16em; text-transform:uppercase;
+      color:#facc15; text-shadow:0 0 10px rgba(250,204,21,0.65);
+    }
+    .subtitle{ font-size:12px; color:#9ca3af; margin-top:6px; line-height:1.55; }
+
+    /* toolbar */
+    .toolbar{ display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; align-items:center; }
+    .btn{
+      padding:7px 12px; border-radius:999px;
+      border:1px solid rgba(148,163,184,0.75);
+      background: rgba(15,23,42,0.98);
+      color:#e5e7eb; font-size:11px; font-weight:800;
+      letter-spacing:0.08em; text-transform:uppercase;
+      cursor:pointer;
+      transition: background .15s ease, transform .08s ease, border-color .15s ease;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn.primary{
+      border-color: rgba(248,181,84,0.9);
+      background: radial-gradient(circle at top, #f97316, #7f1d1d);
+      color:#fff1f2;
+    }
+    .btn:hover{ transform: translateY(-1px); background: rgba(30,64,175,0.9); border-color: rgba(191,219,254,0.9); }
+
+    .pill{
+      display:inline-flex; align-items:center; justify-content:flex-start; gap:6px;
+      padding:6px 10px; border-radius:999px;
+      border:1px solid rgba(148,163,184,0.28);
+      background: rgba(2,6,23,0.55);
+      color:#cbd5e1;
+      font-size:11px;
+      user-select:none;
+      white-space:nowrap;
+      width:auto;
+    }
+    .pill input{ width:13px; height:13px; }
+
+    .input{
+      height:32px; padding:0 12px; border-radius:999px;
+      border:1px solid rgba(51,65,85,0.9);
+      background: rgba(15,23,42,0.98);
+      color:#e5e7eb; font-size:12px; outline:none;
+      min-width: 260px;
+    }
+    .input:focus{
+      border-color: rgba(248,181,84,0.9);
+      box-shadow: 0 0 0 1px rgba(248,181,84,0.55);
+    }
+
+    /* layout */
+    .layout{
+      display:grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.05fr);
+      gap:12px;
+      align-items:flex-start;
+      margin-top:10px;
+    }
+    .panel{
+      border-radius:18px;
+      padding:12px 12px 14px;
+      background: radial-gradient(circle at top, rgba(15,23,42,0.98), rgba(15,23,42,0.99));
+      box-shadow: 0 0 0 1px rgba(30,64,118,0.78), 0 18px 45px rgba(0,0,0,0.92);
+    }
+
+    .panel-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .panel-head-right{
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:8px;
+      flex-wrap:wrap;
+      max-width: 52%;
+    }
+    .panel-title{ font-size:13px; font-weight:800; margin:0; }
+    .panel-sub{ font-size:11px; color:#9ca3af; margin-top:6px; line-height:1.55; }
+
+    /* bulk paste */
+    .bulk-wrap{
+      display:grid;
+      grid-template-columns: minmax(0,1fr) 230px;
+      gap:10px;
+      align-items:stretch;
+    }
+    .ta{
+      width:100%;
+      border-radius:12px;
+      border:1px solid rgba(51,65,85,0.9);
+      background:#020617;
+      color:#e5e7eb;
+      font-size:12px;
+      padding:10px 10px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      resize: vertical;
+      line-height:1.55;
+      outline:none;
+      min-height:140px;
+    }
+    .ta:focus{
+      border-color: rgba(248,181,84,0.9);
+      box-shadow: 0 0 0 1px rgba(248,181,84,0.55);
+    }
+    .bulk-actions{ display:flex; flex-direction:column; gap:8px; }
+
+    /* compact list */
+    .list{ display:flex; flex-direction:column; gap:8px; }
+    .mrow{
+      border:1px solid rgba(51,65,85,0.9);
+      background: rgba(2,6,23,0.70);
+      border-radius:14px;
+      padding:8px;
+      display:grid;
+      grid-template-columns: 70px 170px 1fr 120px 78px 104px;
+      gap:8px;
+      align-items:center;
+    }
+    .minput{
+      height:28px;
+      width:100%;
+      border-radius:10px;
+      border:1px solid rgba(51,65,85,0.9);
+      background: rgba(15,23,42,0.98);
+      color:#e5e7eb;
+      font-size:12px;
+      padding:0 8px;
+      outline:none;
+    }
+    .minput:focus{
+      border-color: rgba(248,181,84,0.9);
+      box-shadow: 0 0 0 1px rgba(248,181,84,0.55);
+    }
+    .minput:disabled{
+      opacity:.65;
+      cursor:not-allowed;
+    }
+    .mnum{ text-align:center; padding:0 6px; }
+
+    .mvis{
+      display:flex; align-items:center; justify-content:center; gap:6px;
+      font-size:11px; color:#cbd5e1;
+      user-select:none;
+    }
+    .mvis input{ width:14px; height:14px; }
+
+    .mactions{ display:flex; justify-content:flex-end; gap:6px; align-items:center; }
+    .mini{
+      height:28px;
+      padding:0 10px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.55);
+      background: rgba(15,23,42,0.98);
+      color:#e5e7eb;
+      font-size:11px;
+      font-weight:800;
+      cursor:pointer;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .mini:hover{ transform: translateY(-1px); }
+    .mini.danger{
+      border-color: rgba(248,113,113,0.9);
+      background: rgba(127,29,29,0.9);
+      color:#fee2e2;
+    }
+
+    /* note (기본 숨김) */
+    .mmeta{
+      display:none;
+      margin-top:6px;
+      padding:0 2px 2px;
+    }
+    .note-ta{
+      width:100%;
+      min-height:46px;
+      padding:8px 9px;
+      border-radius:12px;
+      border:1px solid rgba(51,65,85,0.9);
+      background: rgba(15,23,42,0.98);
+      color:#e5e7eb;
+      font-size:12px;
+      outline:none;
+      resize: vertical;
+    }
+    .note-ta:focus{
+      border-color: rgba(248,181,84,0.9);
+      box-shadow: 0 0 0 1px rgba(248,181,84,0.55);
+    }
+
+    /* json textarea */
+    .json{
+      width:100%;
+      min-height:360px;
+      border-radius:12px;
+      border:1px solid rgba(51,65,85,0.9);
+      background:#020617;
+      color:#e5e7eb;
+      font-size:11px;
+      padding:8px 9px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      resize: vertical;
+      line-height:1.55;
+      outline:none;
+    }
+    .json:focus{
+      border-color: rgba(248,181,84,0.9);
+      box-shadow: 0 0 0 1px rgba(248,181,84,0.55);
+    }
+
+    .footer-note{ margin-top:10px; font-size:11px; color:#6b7280; text-align:right; opacity:.85; }
+
+    @media (max-width: 960px){
+      .layout{ grid-template-columns: 1fr; }
+      .bulk-wrap{ grid-template-columns: 1fr; }
+      .bulk-actions{ flex-direction:row; flex-wrap:wrap; }
+      .bulk-actions .btn{ width:auto; flex:1; }
+      .panel-head-right{ max-width:100%; }
+      .mrow{ grid-template-columns: 72px 1fr 1fr; }
+      .mrow > :nth-child(4),
+      .mrow > :nth-child(5),
+      .mrow > :nth-child(6){ grid-column: 1 / -1; }
+      .mactions{ justify-content:flex-start; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page-wrap">
+    <header class="header">
+      <div class="title">THE UNIQUE – RANK HALL ADMIN</div>
+      <div class="subtitle">
+        ✅ <strong>배치 순서(order)</strong>대로 직급의 전당(<code>rank-hall.html</code>)에 표시됩니다.<br>
+        ✅ <strong>id</strong>는 동명이인 구분용(표시 X), <strong>name/rank/note</strong>는 표시용입니다.<br>
+        ✅ <strong>이두연</strong>은 기본 포함(자동 유지)됩니다. (표시/삭제/전체교체로 누락되지 않음)
+      </div>
+    </header>
+
+    <div class="toolbar">
+      <button id="add-btn" class="btn primary">+ 멤버 추가</button>
+      <button id="export-btn" class="btn">JSON 내보내기</button>
+      <button id="import-btn" class="btn">JSON 불러오기</button>
+      <button id="copy-btn" class="btn">JSON 복사</button>
+
+      <a class="btn" target="_blank" rel="noopener noreferrer"
+         href="https://github.com/wordycow/so.t-leader-choice/blob/main/rank-hall.json">
+        rank-hall.json 열기
+      </a>
+    </div>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">텍스트 붙여넣기 → 멤버 자동 반영 (노트 포함)</div>
+          <div class="panel-sub">
+            한 줄 1명. 형식: <code>[L]KR-10076355 / 심승철 / 스타I / 노트</code><br>
+            - <code>[L]</code> 같은 태그는 무시 · 직급 비면 <strong>MEMBER</strong><br>
+            - <code>스타I/스타Ⅱ/STAR II</code> → 자동으로 <strong>STAR1/STAR2</strong> 등으로 정리
+          </div>
+        </div>
+
+        <div class="panel-head-right">
+          <input id="search" class="input" placeholder="검색 (id / 이름 / 직급 / 노트)" />
+        </div>
+      </div>
+
+      <div class="bulk-wrap">
+        <textarea id="bulk" class="ta" spellcheck="false"
+          placeholder="[L]KR-10076355 / 심승철 / 스타I / 첫 등록&#10;KR-10070001 / 홍길동 / PRO2 / 이번 주 달성&#10;KR-10070002 / 김철수 / / 노트만 있음(직급 없으면 MEMBER)"></textarea>
+
+        <div class="bulk-actions">
+          <button id="bulk-apply-btn" class="btn primary">텍스트 적용</button>
+          <button id="bulk-replace-btn" class="btn" style="border-color:rgba(248,113,113,0.8);">목록 전체 교체</button>
+          <button id="bulk-clear-btn" class="btn">입력 지우기</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="layout">
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-title">직급자 편집 (초소형)</div>
+            <div class="panel-sub">
+              필요한 것만: <strong>order / id / name / rank / visible</strong><br>
+              노트/삭제는 기본 숨김(오른쪽 토글로 필요할 때만 켜기)
+            </div>
+          </div>
+
+          <div class="panel-head-right">
+            <label class="pill" title="노트 입력칸 보이기/숨기기">
+              <input id="toggle-note" type="checkbox" />
+              노트 필드 표시
+            </label>
+
+            <label class="pill" title="실수 방지: 기본은 삭제 숨김 (이두연은 삭제 불가)">
+              <input id="toggle-delete" type="checkbox" />
+              삭제 버튼 표시
+            </label>
+          </div>
+        </div>
+
+        <div id="list" class="list"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-title">rank-hall.json 미리보기 / 편집</div>
+        <div class="panel-sub">
+          ▸ [JSON 내보내기] → 아래 JSON을 그대로 <code>rank-hall.json</code>에 붙여넣기<br>
+          ▸ Import: 아래 textarea에 JSON 붙여넣고 [JSON 불러오기]
+        </div>
+        <textarea id="json" class="json" spellcheck="false"></textarea>
+      </section>
+    </div>
+
+    <div class="footer-note">THE UNIQUE – Rank Hall Admin · so.t-leader-choice</div>
+  </div>
+
+  <script>
+    (function(){
+      let members = [];
+
+      const listEl = document.getElementById("list");
+      const jsonEl = document.getElementById("json");
+      const searchEl = document.getElementById("search");
+
+      const addBtn = document.getElementById("add-btn");
+      const exportBtn = document.getElementById("export-btn");
+      const importBtn = document.getElementById("import-btn");
+      const copyBtn = document.getElementById("copy-btn");
+
+      const bulkEl = document.getElementById("bulk");
+      const bulkApplyBtn = document.getElementById("bulk-apply-btn");
+      const bulkReplaceBtn = document.getElementById("bulk-replace-btn");
+      const bulkClearBtn = document.getElementById("bulk-clear-btn");
+
+      const toggleDeleteEl = document.getElementById("toggle-delete");
+      const toggleNoteEl = document.getElementById("toggle-note");
+
+      function nowIso(){ return new Date().toISOString(); }
+      function normId(v){ return (v || "").toString().trim().toLowerCase(); }
+
+      // ✅ 이두연 기본 포함(자동 유지). (표기/라벨 없음)
+      // 필요하면 id만 나중에 바꿔도 됨(표시엔 영향 없음)
+      const PINNED_PERSON = {
+        id: "idooyeon-fixed",
+        name: "이두연",
+        defaultRank: "PRO2",
+        order: 0
+      };
+
+      function ensurePinnedPerson(){
+        const idx = members.findIndex(m =>
+          normId(m.id) === PINNED_PERSON.id ||
+          ((m.name || "").toString().trim() === PINNED_PERSON.name)
+        );
+
+        if (idx >= 0){
+          const m = members[idx];
+          m.id = PINNED_PERSON.id;
+          m.name = PINNED_PERSON.name;
+          // ✅ rank는 덮어쓰지 않음(비어있을 때만 기본값)
+          if (!String(m.rank || "").trim()) m.rank = PINNED_PERSON.defaultRank;
+          m.visible = true; // 항상 노출
+          if (!Number.isFinite(+m.order)) m.order = PINNED_PERSON.order;
+          m.updatedAt = m.updatedAt || nowIso();
+        } else {
+          members.unshift({
+            id: PINNED_PERSON.id,
+            name: PINNED_PERSON.name,
+            rank: PINNED_PERSON.defaultRank,
+            note: "",
+            visible: true,
+            order: PINNED_PERSON.order,
+            updatedAt: nowIso()
+          });
+        }
+      }
+
+      function romanToInt(roman){
+        if (!roman) return NaN;
+        const s = roman.toUpperCase();
+        const map = {I:1, V:5, X:10, L:50, C:100, D:500, M:1000};
+        let total = 0;
+        for (let i=0; i<s.length; i++){
+          const v = map[s[i]] || 0;
+          const next = map[s[i+1]] || 0;
+          total += (v < next) ? -v : v;
+        }
+        return total;
+      }
+
+      function normalizeRank(v){
+        let t = (v || "").toString().trim();
+        if (!t) return "MEMBER";
+
+        const uMap = {"Ⅰ":"I","Ⅱ":"II","Ⅲ":"III","Ⅳ":"IV","Ⅴ":"V","Ⅵ":"VI","Ⅶ":"VII","Ⅷ":"VIII","Ⅸ":"IX","Ⅹ":"X"};
+        t = t.replace(/[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]/g, ch => uMap[ch] || ch);
+
+        const compact = t.replace(/\s+/g, "");
+        const upper = compact.toUpperCase();
+
+        if (upper === "MEMBER" || upper === "멤버" || upper === "회원" || upper === "일반" || upper === "MEM") return "MEMBER";
+        if (upper === "STAFF" || upper === "스태프") return "STAFF";
+
+        function normalizeTier(prefixEng, rest){
+          if (!rest) return prefixEng;
+          rest = rest.replace(/^[\-\_]+/, "");
+          if (/^\d+$/.test(rest)) return prefixEng + parseInt(rest, 10);
+          const n = romanToInt(rest);
+          if (Number.isFinite(n) && n > 0) return prefixEng + n;
+          return prefixEng + rest;
+        }
+
+        if (upper.startsWith("STAR")) return normalizeTier("STAR", upper.slice(4));
+        if (upper.startsWith("스타")) return normalizeTier("STAR", upper.slice(2));
+        if (upper.startsWith("PRO")) return normalizeTier("PRO", upper.slice(3));
+        if (upper.startsWith("프로")) return normalizeTier("PRO", upper.slice(2));
+
+        return upper;
+      }
+
+      function createDefault(){
+        const maxOrder = members.reduce((acc, m) => Math.max(acc, (+m.order||0)), 0);
+        return {
+          id: "",
+          name: "",
+          rank: "MEMBER",
+          note: "",
+          visible: true,
+          order: maxOrder + 1,
+          updatedAt: nowIso()
+        };
+      }
+
+      function exportData(){
+        ensurePinnedPerson();
+        const out = members
+          .slice()
+          .sort((a,b) => (+a.order||0) - (+b.order||0))
+          .map(m => ({
+            id: normId(m.id),
+            name: (m.name || "").toString().trim(),
+            rank: normalizeRank(m.rank),
+            note: (m.note || "").toString(),
+            visible: m.visible !== false,
+            order: Number.isFinite(+m.order) ? +m.order : 0,
+            updatedAt: (m.updatedAt || nowIso())
+          }));
+        return { members: out };
+      }
+
+      function updateJsonTextarea(){
+        jsonEl.value = JSON.stringify(exportData(), null, 2);
+      }
+
+      function parseBulkText(text){
+        const lines = (text || "").split(/\r?\n/);
+        const out = [];
+        const skipped = [];
+
+        lines.forEach((line) => {
+          const original = line;
+          let s = (line || "").trim();
+          if (!s) return;
+
+          s = s.replace(/^[•\-\–\—\*\+]+\s*/, "");
+          s = s.replace(/^\s*(\[[^\]]*\]\s*)+/, ""); // [L] 같은 태그 제거
+          if (!s) return;
+
+          const parts = s.split("/").map(p => p.trim());
+          const id = normId(parts[0] || "");
+          const name = (parts[1] || "").toString().trim();
+          const rank = normalizeRank(parts[2] || "");
+          const note = parts.slice(3).join(" / ").trim();
+
+          if (!id){ skipped.push({ line: original, reason: "id 없음" }); return; }
+          if (!name){ skipped.push({ line: original, reason: "이름 없음" }); return; }
+
+          out.push({ id, name, rank, note });
+        });
+
+        return { out, skipped };
+      }
+
+      function applyBulk(replace){
+        const text = (bulkEl.value || "").trim();
+        if (!text) { alert("붙여넣을 텍스트가 없습니다."); return; }
+
+        const res = parseBulkText(text);
+        if (!res.out.length) {
+          alert("인식된 데이터가 없습니다.\n예) [L]KR-10076355 / 심승철 / 스타I / 노트");
+          return;
+        }
+
+        if (replace){
+          members = [];
+          ensurePinnedPerson(); // ✅ 전체 교체해도 이두연은 항상 남김
+        }
+
+        let added = 0, updated = 0;
+        res.out.forEach((p) => {
+          const existing = members.find(m =>
+            normId(m.id) === p.id || ((m.name||"").toString().trim() === p.name)
+          );
+
+          if (existing){
+            // ✅ 이두연이면 id를 고정 id로 흡수
+            if (p.name === PINNED_PERSON.name) existing.id = PINNED_PERSON.id;
+            else existing.id = normId(p.id);
+
+            existing.name = p.name;
+            existing.rank = p.rank || "MEMBER";
+            if (p.note !== "") existing.note = p.note;
+            existing.visible = existing.visible !== false;
+            existing.updatedAt = nowIso();
+            updated++;
+          } else {
+            const maxOrder = members.reduce((acc, m) => Math.max(acc, (+m.order||0)), 0);
+            members.push({
+              id: normId(p.id),
+              name: p.name,
+              rank: p.rank || "MEMBER",
+              note: p.note || "",
+              visible: true,
+              order: maxOrder + 1,
+              updatedAt: nowIso()
+            });
+            added++;
+          }
+        });
+
+        ensurePinnedPerson();
+        render();
+        updateJsonTextarea();
+
+        let msg = `텍스트 적용 완료!\n추가: ${added}명\n업데이트: ${updated}명`;
+        if (res.skipped.length){
+          msg += `\n스킵: ${res.skipped.length}줄`;
+          const preview = res.skipped.slice(0, 5).map(s => `- ${s.reason}: ${s.line}`).join("\n");
+          msg += `\n\n스킵 예시(최대 5줄):\n${preview}`;
+        }
+        alert(msg);
+      }
+
+      function moveByOrder(id, dir){
+        const sorted = members.slice().sort((a,b) => (+a.order||0) - (+b.order||0));
+        const idx = sorted.findIndex(m => normId(m.id) === id);
+        const j = idx + dir;
+        if (idx < 0 || j < 0 || j >= sorted.length) return;
+
+        const a = sorted[idx], b = sorted[j];
+        const oa = (+a.order||0), ob = (+b.order||0);
+        a.order = ob; b.order = oa;
+        a.updatedAt = nowIso(); b.updatedAt = nowIso();
+
+        render();
+        updateJsonTextarea();
+      }
+
+      function render(){
+        ensurePinnedPerson();
+
+        const q = (searchEl.value || "").toLowerCase().trim();
+        const showDelete = toggleDeleteEl.checked;
+        const showNote = toggleNoteEl.checked;
+
+        listEl.innerHTML = "";
+
+        members
+          .slice()
+          .sort((a,b) => (+a.order||0) - (+b.order||0))
+          .forEach((m) => {
+            const isPinned = normId(m.id) === PINNED_PERSON.id;
+            if (isPinned) m.visible = true;
+
+            const hay = `${m.id} ${m.name} ${m.rank} ${m.note||""}`.toLowerCase();
+            if (q && !hay.includes(q)) return;
+
+            const row = document.createElement("div");
+            row.className = "mrow";
+
+            const order = document.createElement("input");
+            order.type = "number";
+            order.className = "minput mnum";
+            order.value = Number.isFinite(+m.order) ? +m.order : 0;
+            order.addEventListener("change", () => {
+              const n = parseInt(order.value, 10);
+              m.order = isNaN(n) ? 0 : n;
+              m.updatedAt = nowIso();
+              render();
+              updateJsonTextarea();
+            });
+
+            const id = document.createElement("input");
+            id.type = "text";
+            id.className = "minput";
+            id.placeholder = "id";
+            id.value = m.id ?? "";
+            id.addEventListener("input", () => {
+              if (isPinned) return;
+              m.id = normId(id.value);
+              m.updatedAt = nowIso();
+              updateJsonTextarea();
+            });
+
+            const name = document.createElement("input");
+            name.type = "text";
+            name.className = "minput";
+            name.placeholder = "이름";
+            name.value = m.name ?? "";
+            name.addEventListener("input", () => {
+              if (isPinned) return;
+              m.name = name.value;
+              m.updatedAt = nowIso();
+              updateJsonTextarea();
+            });
+
+            const rank = document.createElement("input");
+            rank.type = "text";
+            rank.className = "minput";
+            rank.placeholder = "직급 (STAR1/PRO2/STAFF/MEMBER)";
+            rank.value = m.rank ?? "";
+            // ✅ 이두연도 rank는 수정 가능
+            rank.addEventListener("input", () => {
+              m.rank = rank.value;
+              m.updatedAt = nowIso();
+              updateJsonTextarea();
+            });
+
+            // ✅ 이두연: id/name만 잠그고 rank는 열어둠
+            if (isPinned){
+              id.disabled = true;
+              name.disabled = true;
+            }
+
+            const visWrap = document.createElement("label");
+            visWrap.className = "mvis";
+            const vis = document.createElement("input");
+            vis.type = "checkbox";
+            vis.checked = m.visible !== false;
+            vis.addEventListener("change", () => {
+              if (isPinned){
+                vis.checked = true;
+                m.visible = true;
+                return;
+              }
+              m.visible = vis.checked;
+              m.updatedAt = nowIso();
+              updateJsonTextarea();
+            });
+            if (isPinned){
+              vis.disabled = true;
+              vis.checked = true;
+            }
+            visWrap.appendChild(vis);
+            visWrap.appendChild(document.createTextNode("노출"));
+
+            const actions = document.createElement("div");
+            actions.className = "mactions";
+
+            const up = document.createElement("button");
+            up.type = "button";
+            up.className = "mini";
+            up.textContent = "▲";
+            up.title = "위로";
+            up.addEventListener("click", () => moveByOrder(normId(m.id), -1));
+
+            const down = document.createElement("button");
+            down.type = "button";
+            down.className = "mini";
+            down.textContent = "▼";
+            down.title = "아래로";
+            down.addEventListener("click", () => moveByOrder(normId(m.id), +1));
+
+            actions.appendChild(up);
+            actions.appendChild(down);
+
+            if (showDelete && !isPinned){
+              const del = document.createElement("button");
+              del.type = "button";
+              del.className = "mini danger";
+              del.textContent = "삭제";
+              del.addEventListener("click", () => {
+                if (!confirm("이 멤버를 삭제할까요?")) return;
+                members.splice(members.indexOf(m), 1);
+                ensurePinnedPerson();
+                render();
+                updateJsonTextarea();
+              });
+              actions.appendChild(del);
+            }
+
+            row.appendChild(order);
+            row.appendChild(id);
+            row.appendChild(name);
+            row.appendChild(rank);
+            row.appendChild(visWrap);
+            row.appendChild(actions);
+
+            listEl.appendChild(row);
+
+            if (showNote){
+              const meta = document.createElement("div");
+              meta.className = "mmeta";
+              meta.style.display = "block";
+
+              const note = document.createElement("textarea");
+              note.className = "note-ta";
+              note.placeholder = "노트(note) – rank-hall에 표시될 문구";
+              note.value = (m.note ?? "");
+              note.addEventListener("input", () => {
+                m.note = note.value;
+                m.updatedAt = nowIso();
+                updateJsonTextarea();
+              });
+
+              meta.appendChild(note);
+              listEl.appendChild(meta);
+            }
+          });
+      }
+
+      addBtn.addEventListener("click", () => {
+        members.push(createDefault());
+        ensurePinnedPerson();
+        render();
+        updateJsonTextarea();
+      });
+
+      exportBtn.addEventListener("click", () => {
+        updateJsonTextarea();
+        alert("현재 목록이 JSON으로 출력되었습니다. 그대로 rank-hall.json에 붙여 넣으면 됩니다.");
+      });
+
+      importBtn.addEventListener("click", () => {
+        const text = (jsonEl.value || "").trim();
+        if (!text) { alert("불러올 JSON이 없습니다. 먼저 JSON을 붙여 넣어 주세요."); return; }
+        try {
+          const parsed = JSON.parse(text);
+          const arr = parsed.members || parsed.items || (Array.isArray(parsed) ? parsed : []);
+          if (!Array.isArray(arr)) throw new Error("members/items 배열이 없습니다.");
+
+          members = arr.map((m, i) => ({
+            id: normId(m.id || ""),
+            name: (m.name || "").toString(),
+            rank: (m.rank || m.level || m.title || "").toString(),
+            note: (m.note || m.memo || m.tagline || "").toString(),
+            visible: m.visible !== false,
+            order: Number.isFinite(+m.order) ? +m.order : (i+1),
+            updatedAt: (m.updatedAt || nowIso())
+          }));
+
+          ensurePinnedPerson();
+          render();
+          updateJsonTextarea();
+          alert("JSON에서 목록을 불러왔습니다.");
+        } catch(e){
+          console.error(e);
+          alert("JSON 파싱 실패. 형식을 확인해 주세요.");
+        }
+      });
+
+      copyBtn.addEventListener("click", async () => {
+        if (!jsonEl.value.trim()) updateJsonTextarea();
+        const text = jsonEl.value;
+
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText){
+            await navigator.clipboard.writeText(text);
+            alert("JSON이 클립보드에 복사되었습니다.");
+          } else {
+            jsonEl.select();
+            jsonEl.setSelectionRange(0, jsonEl.value.length);
+            const ok = document.execCommand("copy");
+            alert(ok ? "JSON이 클립보드에 복사되었습니다." : "복사 실패. 직접 드래그해서 복사해 주세요.");
+          }
+        } catch {
+          alert("복사 실패. 직접 드래그해서 복사해 주세요.");
+        }
+      });
+
+      bulkApplyBtn.addEventListener("click", () => applyBulk(false));
+      bulkReplaceBtn.addEventListener("click", () => {
+        if (!confirm("현재 목록을 모두 지우고, 붙여넣은 텍스트로 전체를 교체할까요?\n(이두연은 자동으로 유지됩니다)")) return;
+        applyBulk(true);
+      });
+      bulkClearBtn.addEventListener("click", () => { bulkEl.value = ""; });
+
+      toggleDeleteEl.addEventListener("change", () => render());
+      toggleNoteEl.addEventListener("change", () => render());
+      searchEl.addEventListener("input", () => render());
+
+      fetch("rank-hall.json?v=" + Date.now(), { cache:"no-store" })
+        .then(r => r.ok ? r.json() : Promise.reject(r.status))
+        .then(data => {
+          const arr = data.members || data.items || (Array.isArray(data) ? data : []);
+          members = Array.isArray(arr) ? arr.map((m,i) => ({
+            id: normId(m.id || ""),
+            name: (m.name || "").toString(),
+            rank: (m.rank || m.level || m.title || "").toString(),
+            note: (m.note || m.memo || m.tagline || "").toString(),
+            visible: m.visible !== false,
+            order: Number.isFinite(+m.order) ? +m.order : (i+1),
+            updatedAt: (m.updatedAt || nowIso())
+          })) : [];
+
+          ensurePinnedPerson();
+          render();
+          updateJsonTextarea();
+        })
+        .catch(err => {
+          console.warn("rank-hall.json 로드 실패(없어도 OK):", err);
+          members = [];
+          ensurePinnedPerson();
+          render();
+          updateJsonTextarea();
+        });
+    })();
+  </script>
+</body>
+</html>

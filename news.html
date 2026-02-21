@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>오늘의 최신뉴스 - THE UNIQUE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- ✨ THE UNIQUE LEGENDARY DESIGN SYSTEM v4.0 -->
+  <link rel="stylesheet" href="css/the-unique-core.css">
+  
+  <style>
+    :root {
+      --bg-primary: #fafafa;
+      --bg-secondary: #ffffff;
+      --text-primary: #1a1a1a;
+      --text-secondary: #6b7280;
+      --text-muted: #9ca3af;
+      --border-light: #e5e7eb;
+      --border-medium: #d1d5db;
+      --accent: #2563eb;
+      --accent-light: #dbeafe;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(to bottom, #f8f9fa 0%, #e9ecef 100%);
+      min-height: 100vh;
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* 헤더 */
+    .header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-light);
+      padding: 20px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: var(--bg-primary);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-back:hover {
+      color: var(--text-primary);
+      border-color: var(--border-medium);
+      background: var(--bg-secondary);
+    }
+
+    .header-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+
+    .header-time {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* 컨테이너 */
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    /* 카테고리 탭 */
+    .category-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 32px;
+      padding-bottom: 8px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .category-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .category-tab {
+      flex-shrink: 0;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .category-tab:hover {
+      color: var(--text-primary);
+      border-color: var(--accent);
+    }
+
+    .category-tab.active {
+      color: #fff;
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* 뉴스 그리드 */
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+
+    .news-card {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+    }
+
+    .news-card:hover {
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+      border-color: rgba(102, 126, 234, 0.3);
+    }
+
+    .news-thumbnail {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 64px;
+    }
+
+    .news-content {
+      padding: 20px;
+    }
+
+    .news-category {
+      display: inline-block;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      background: var(--accent-light);
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+
+    .news-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .news-summary {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 16px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .news-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .news-source {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .news-time {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* 로딩 */
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border-light);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* 빈 상태 */
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .empty-text {
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    /* 반응형 */
+    @media (max-width: 768px) {
+      .header-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .header-title {
+        font-size: 20px;
+      }
+
+      .news-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .category-tabs {
+        padding-bottom: 16px;
+      }
+    }
+
+    /* 애니메이션 */
+    .fade-in {
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 헤더 -->
+  <header class="header">
+    <div class="header-container">
+      <div class="header-left">
+        <a href="the-unique-main.html" class="btn-back">
+          <span>←</span>
+          <span>돌아가기</span>
+        </a>
+        <h1 class="header-title">📰 오늘의 뉴스</h1>
+      </div>
+      <div class="header-time" id="currentTime"></div>
+    </div>
+  </header>
+
+  <!-- 메인 컨테이너 -->
+  <div class="container">
+    <!-- 카테고리 탭 -->
+    <div class="category-tabs">
+      <button class="category-tab active" data-category="all">전체</button>
+      <button class="category-tab" data-category="politics">정치</button>
+      <button class="category-tab" data-category="economy">경제</button>
+      <button class="category-tab" data-category="society">사회</button>
+      <button class="category-tab" data-category="culture">문화</button>
+      <button class="category-tab" data-category="world">국제</button>
+      <button class="category-tab" data-category="tech">IT/과학</button>
+      <button class="category-tab" data-category="sports">스포츠</button>
+    </div>
+
+    <!-- 뉴스 그리드 -->
+    <div class="news-grid" id="newsGrid">
+      <!-- 로딩 상태 -->
+      <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <p>뉴스를 불러오는 중...</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ============================================
+    // 현재 시간 업데이트
+    // ============================================
+    function updateCurrentTime() {
+      const now = new Date();
+      const options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        weekday: 'short',
+        hour: '2-digit',
+        minute: '2-digit'
+      };
+      const timeString = now.toLocaleDateString('ko-KR', options);
+      document.getElementById('currentTime').textContent = timeString;
+    }
+
+    updateCurrentTime();
+    setInterval(updateCurrentTime, 60000); // 1분마다 업데이트
+
+    // ============================================
+    // 샘플 뉴스 데이터
+    // ============================================
+    const newsData = {
+      all: [
+        {
+          id: 1,
+          category: '정치',
+          title: '2026년 주요 정책 방향 발표',
+          summary: '정부가 새해를 맞아 주요 정책 방향을 발표했습니다. 경제 활성화와 복지 확대에 중점을 둘 예정입니다.',
+          source: 'THE UNIQUE 뉴스',
+          time: '1시간 전',
+          icon: '🏛️'
+        },
+        {
+          id: 2,
+          category: '경제',
+          title: '글로벌 시장 동향 분석',
+          summary: '주요 증시가 상승세를 보이며 투자자들의 관심이 집중되고 있습니다. 전문가들은 긍정적 전망을 내놓고 있습니다.',
+          source: 'THE UNIQUE 경제',
+          time: '2시간 전',
+          icon: '💹'
+        },
+        {
+          id: 3,
+          category: 'IT/과학',
+          title: 'AI 기술 혁신이 가져올 미래',
+          summary: '인공지능 기술이 빠르게 발전하면서 산업 전반에 큰 변화가 예상됩니다. 새로운 일자리 창출과 함께 업무 방식도 변화할 전망입니다.',
+          source: 'THE UNIQUE 테크',
+          time: '3시간 전',
+          icon: '🤖'
+        },
+        {
+          id: 4,
+          category: '문화',
+          title: 'K-콘텐츠의 글로벌 인기',
+          summary: 'K-드라마와 K-팝이 전 세계적으로 큰 인기를 끌면서 한국 문화에 대한 관심이 높아지고 있습니다.',
+          source: 'THE UNIQUE 문화',
+          time: '4시간 전',
+          icon: '🎬'
+        },
+        {
+          id: 5,
+          category: '사회',
+          title: '지역 사회 발전 프로젝트 시작',
+          summary: '지역 주민들의 삶의 질 향상을 위한 다양한 프로젝트가 시작되었습니다. 주거 환경 개선과 복지 시설 확충이 주요 내용입니다.',
+          source: 'THE UNIQUE 사회',
+          time: '5시간 전',
+          icon: '🏘️'
+        },
+        {
+          id: 6,
+          category: '국제',
+          title: '글로벌 기후 변화 대응 회의',
+          summary: '주요 국가들이 기후 변화 대응을 위한 국제 회의를 개최했습니다. 탄소 중립 달성을 위한 구체적인 방안이 논의되었습니다.',
+          source: 'THE UNIQUE 국제',
+          time: '6시간 전',
+          icon: '🌍'
+        },
+        {
+          id: 7,
+          category: '스포츠',
+          title: '올림픽 메달 획득 소식',
+          summary: '국가대표 선수들이 국제 대회에서 우수한 성적을 거두며 국민들에게 기쁨을 안겨주었습니다.',
+          source: 'THE UNIQUE 스포츠',
+          time: '7시간 전',
+          icon: '🏅'
+        },
+        {
+          id: 8,
+          category: '경제',
+          title: '부동산 시장 안정화 조짐',
+          summary: '부동산 시장이 안정세를 보이며 거래량이 증가하고 있습니다. 전문가들은 시장의 점진적 회복을 예상하고 있습니다.',
+          source: 'THE UNIQUE 경제',
+          time: '8시간 전',
+          icon: '🏢'
+        },
+        {
+          id: 9,
+          category: 'IT/과학',
+          title: '신재생 에너지 기술 발전',
+          summary: '태양광과 풍력 등 신재생 에너지 기술이 빠르게 발전하면서 친환경 에너지 시대가 가까워지고 있습니다.',
+          source: 'THE UNIQUE 과학',
+          time: '9시간 전',
+          icon: '⚡'
+        }
+      ],
+      politics: [
+        { id: 1, category: '정치', title: '2026년 주요 정책 방향 발표', summary: '정부가 새해를 맞아 주요 정책 방향을 발표했습니다.', source: 'THE UNIQUE 뉴스', time: '1시간 전', icon: '🏛️' }
+      ],
+      economy: [
+        { id: 2, category: '경제', title: '글로벌 시장 동향 분석', summary: '주요 증시가 상승세를 보이며 투자자들의 관심이 집중되고 있습니다.', source: 'THE UNIQUE 경제', time: '2시간 전', icon: '💹' },
+        { id: 8, category: '경제', title: '부동산 시장 안정화 조짐', summary: '부동산 시장이 안정세를 보이며 거래량이 증가하고 있습니다.', source: 'THE UNIQUE 경제', time: '8시간 전', icon: '🏢' }
+      ],
+      society: [
+        { id: 5, category: '사회', title: '지역 사회 발전 프로젝트 시작', summary: '지역 주민들의 삶의 질 향상을 위한 다양한 프로젝트가 시작되었습니다.', source: 'THE UNIQUE 사회', time: '5시간 전', icon: '🏘️' }
+      ],
+      culture: [
+        { id: 4, category: '문화', title: 'K-콘텐츠의 글로벌 인기', summary: 'K-드라마와 K-팝이 전 세계적으로 큰 인기를 끌고 있습니다.', source: 'THE UNIQUE 문화', time: '4시간 전', icon: '🎬' }
+      ],
+      world: [
+        { id: 6, category: '국제', title: '글로벌 기후 변화 대응 회의', summary: '주요 국가들이 기후 변화 대응을 위한 국제 회의를 개최했습니다.', source: 'THE UNIQUE 국제', time: '6시간 전', icon: '🌍' }
+      ],
+      tech: [
+        { id: 3, category: 'IT/과학', title: 'AI 기술 혁신이 가져올 미래', summary: '인공지능 기술이 빠르게 발전하면서 산업 전반에 큰 변화가 예상됩니다.', source: 'THE UNIQUE 테크', time: '3시간 전', icon: '🤖' },
+        { id: 9, category: 'IT/과학', title: '신재생 에너지 기술 발전', summary: '태양광과 풍력 등 신재생 에너지 기술이 빠르게 발전하고 있습니다.', source: 'THE UNIQUE 과학', time: '9시간 전', icon: '⚡' }
+      ],
+      sports: [
+        { id: 7, category: '스포츠', title: '올림픽 메달 획득 소식', summary: '국가대표 선수들이 국제 대회에서 우수한 성적을 거두었습니다.', source: 'THE UNIQUE 스포츠', time: '7시간 전', icon: '🏅' }
+      ]
+    };
+
+    // ============================================
+    // 뉴스 렌더링
+    // ============================================
+    function renderNews(category = 'all') {
+      const newsGrid = document.getElementById('newsGrid');
+      const loading = document.getElementById('loading');
+      const news = newsData[category] || [];
+
+      // 로딩 표시
+      newsGrid.innerHTML = '<div class="loading" id="loading"><div class="loading-spinner"></div><p>뉴스를 불러오는 중...</p></div>';
+
+      // 로딩 시뮬레이션
+      setTimeout(() => {
+        if (news.length === 0) {
+          newsGrid.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon">📭</div>
+              <div class="empty-text">아직 등록된 뉴스가 없습니다.</div>
+            </div>
+          `;
+          return;
+        }
+
+        newsGrid.innerHTML = news.map(item => `
+          <div class="news-card fade-in" onclick="openNews(${item.id})">
+            <div class="news-thumbnail">${item.icon}</div>
+            <div class="news-content">
+              <span class="news-category">${item.category}</span>
+              <h3 class="news-title">${item.title}</h3>
+              <p class="news-summary">${item.summary}</p>
+              <div class="news-meta">
+                <span class="news-source">${item.source}</span>
+                <span class="news-time">${item.time}</span>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }, 300);
+    }
+
+    // ============================================
+    // 카테고리 탭 이벤트
+    // ============================================
+    document.querySelectorAll('.category-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        // 모든 탭 비활성화
+        document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+        
+        // 클릭한 탭 활성화
+        this.classList.add('active');
+        
+        // 뉴스 렌더링
+        const category = this.dataset.category;
+        renderNews(category);
+      });
+    });
+
+    // ============================================
+    // 뉴스 열기
+    // ============================================
+    function openNews(id) {
+      alert(`뉴스 ID ${id}를 열었습니다.\n\n실제 서비스에서는 상세 페이지로 이동합니다.`);
+    }
+
+    // ============================================
+    // 초기 로드
+    // ============================================
+    renderNews('all');
+  </script>
+
+  <!-- ✨ THE UNIQUE LEGENDARY CORE FRAMEWORK v4.0 -->
+  <script src="js/the-unique-core.js"></script>
+</body>
+</html>

@@ -1,0 +1,398 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>THE UNIQUE – SNAKE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#020617;
+      --panel: rgba(15,23,42,0.80);
+      --border: rgba(255,255,255,0.10);
+      --gold:#fbbf24;
+      --text:#e5e7eb;
+      --muted:#94a3b8;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #020617 55%, #000 100%);
+      color:var(--text);
+      font-family:"Noto Sans KR",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:flex-start;
+      padding:18px;
+    }
+    .wrap{
+      width:min(920px,100%);
+      display:grid;
+      grid-template-columns: 1fr 320px;
+      gap:14px;
+    }
+    @media (max-width: 860px){
+      .wrap{ grid-template-columns:1fr; }
+    }
+    .card{
+      background: var(--panel);
+      border:1px solid rgba(251,191,36,0.25);
+      border-radius:18px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.55);
+      overflow:hidden;
+    }
+    .top{
+      padding:14px 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      border-bottom:1px solid rgba(255,255,255,0.08);
+    }
+    .title{
+      font-family:"Cinzel",serif;
+      letter-spacing:.18em;
+      font-weight:700;
+      text-transform:uppercase;
+      color:var(--gold);
+    }
+    .btn{
+      border:1px solid var(--border);
+      background: rgba(2,6,23,0.35);
+      color: var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:900;
+      letter-spacing:.06em;
+      transition: transform .12s ease, filter .12s ease, border-color .12s ease;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      white-space:nowrap;
+    }
+    .btn:hover{ transform:translateY(-1px); filter:brightness(1.06); border-color:rgba(251,191,36,0.35); }
+    .btn.primary{ background:var(--gold); border-color:var(--gold); color:#0b1120; }
+
+    .stage{
+      padding:14px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
+    canvas{
+      width:100%;
+      max-width: 560px;
+      aspect-ratio: 1/1;
+      background:#000;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,0.10);
+      image-rendering: pixelated;
+    }
+
+    .side{ padding:14px; display:flex; flex-direction:column; gap:12px; }
+    .stat{
+      border:1px solid rgba(255,255,255,0.10);
+      background: rgba(2,6,23,0.30);
+      border-radius:16px;
+      padding:12px;
+    }
+    .stat .k{ color:var(--muted); font-size:12px; font-weight:800; }
+    .stat .v{ font-size:22px; font-weight:900; margin-top:4px; color:#fff; }
+    .hint{
+      font-size:12px;
+      color:#cbd5e1;
+      line-height:1.6;
+    }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; }
+    .row .btn{ flex:1; }
+
+    .touchpad{
+      margin-top:6px;
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap:8px;
+    }
+    .touchpad button{
+      padding:12px 10px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.10);
+      background: rgba(30,41,59,0.45);
+      color:#e5e7eb;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .touchpad button:active{ transform:scale(0.98); }
+    .touchpad .mid{ grid-column:2; }
+    .touchpad .left{ grid-column:1; grid-row:2; }
+    .touchpad .right{ grid-column:3; grid-row:2; }
+    .touchpad .down{ grid-column:2; grid-row:3; }
+
+    .footerNote{
+      font-size:11px;
+      color:#94a3b8;
+      text-align:center;
+      padding:10px 0 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="top">
+        <div class="title">SNAKE</div>
+        <div class="row">
+          <a class="btn" href="../game.html">GAME LIST</a>
+          <a class="btn" href="../the-unique-main.html">MAIN</a>
+        </div>
+      </div>
+      <div class="stage">
+        <canvas id="c" width="480" height="480"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="top">
+        <div class="title">CONTROL</div>
+        <button class="btn primary" id="btnRestart">RESTART</button>
+      </div>
+      <div class="side">
+        <div class="stat">
+          <div class="k">SCORE</div>
+          <div class="v" id="score">0</div>
+        </div>
+        <div class="stat">
+          <div class="k">BEST</div>
+          <div class="v" id="best">0</div>
+        </div>
+        <div class="stat">
+          <div class="k">STATUS</div>
+          <div class="v" id="status">PLAY</div>
+        </div>
+
+        <div class="hint">
+          ✅ PC: 방향키 / WASD<br>
+          ✅ 모바일: 아래 방향패드 또는 스와이프<br>
+          ⏸ SPACE: 일시정지
+        </div>
+
+        <div class="touchpad">
+          <div></div>
+          <button class="mid" data-dir="U">▲</button>
+          <div></div>
+          <button class="left" data-dir="L">◀</button>
+          <button data-dir="P">⏸</button>
+          <button class="right" data-dir="R">▶</button>
+          <div></div>
+          <button class="down" data-dir="D">▼</button>
+          <div></div>
+        </div>
+
+        <div class="footerNote">THE UNIQUE • Games</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const c = document.getElementById("c");
+    const ctx = c.getContext("2d");
+    const scoreEl = document.getElementById("score");
+    const bestEl = document.getElementById("best");
+    const statusEl = document.getElementById("status");
+    const btnRestart = document.getElementById("btnRestart");
+
+    const GRID = 24;
+    const CELL = 20; // 24*20=480
+    const SIZE = GRID;
+
+    let snake, dir, nextDir, food, score, best, running, paused, tickMs;
+
+    function randCell(){
+      return { x: Math.floor(Math.random()*SIZE), y: Math.floor(Math.random()*SIZE) };
+    }
+    function same(a,b){ return a.x===b.x && a.y===b.y; }
+
+    function placeFood(){
+      let p;
+      do{
+        p = randCell();
+      } while (snake.some(s => same(s,p)));
+      food = p;
+    }
+
+    function loadBest(){
+      try{ best = Number(localStorage.getItem("snake_best")||"0")||0; }catch(_){ best=0; }
+      bestEl.textContent = best;
+    }
+    function saveBest(){
+      try{ localStorage.setItem("snake_best", String(best)); }catch(_){}
+    }
+
+    function reset(){
+      snake = [{x:10,y:12},{x:9,y:12},{x:8,y:12}];
+      dir = "R";
+      nextDir = "R";
+      score = 0;
+      tickMs = 120;
+      running = true;
+      paused = false;
+      statusEl.textContent = "PLAY";
+      scoreEl.textContent = "0";
+      placeFood();
+      draw();
+    }
+
+    function setDir(d){
+      const opposite = {U:"D",D:"U",L:"R",R:"L"};
+      if (paused && d !== "P") return;
+      if (d === "P"){ paused = !paused; statusEl.textContent = paused ? "PAUSE" : "PLAY"; return; }
+      if (opposite[dir] === d) return;
+      nextDir = d;
+    }
+
+    function step(){
+      if (!running) return;
+      if (paused){ schedule(); return; }
+
+      dir = nextDir;
+
+      const head = snake[0];
+      const n = {x: head.x, y: head.y};
+      if (dir==="U") n.y--;
+      if (dir==="D") n.y++;
+      if (dir==="L") n.x--;
+      if (dir==="R") n.x++;
+
+      // wall hit
+      if (n.x<0 || n.y<0 || n.x>=SIZE || n.y>=SIZE){
+        gameOver();
+        return;
+      }
+      // self hit
+      if (snake.some(s => same(s,n))){
+        gameOver();
+        return;
+      }
+
+      snake.unshift(n);
+
+      // eat?
+      if (same(n, food)){
+        score += 1;
+        scoreEl.textContent = String(score);
+        if (score > best){ best = score; bestEl.textContent = String(best); saveBest(); }
+        // speed up
+        tickMs = Math.max(60, tickMs - 2);
+        placeFood();
+      } else {
+        snake.pop();
+      }
+
+      draw();
+      schedule();
+    }
+
+    function gameOver(){
+      running = false;
+      statusEl.textContent = "OVER";
+      draw(true);
+    }
+
+    function schedule(){
+      setTimeout(step, tickMs);
+    }
+
+    function draw(over=false){
+      ctx.clearRect(0,0,c.width,c.height);
+
+      // bg grid
+      ctx.fillStyle = "#050b18";
+      ctx.fillRect(0,0,c.width,c.height);
+
+      // subtle grid lines
+      ctx.strokeStyle = "rgba(255,255,255,0.03)";
+      for(let i=0;i<=SIZE;i++){
+        ctx.beginPath(); ctx.moveTo(i*CELL,0); ctx.lineTo(i*CELL,c.height); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0,i*CELL); ctx.lineTo(c.width,i*CELL); ctx.stroke();
+      }
+
+      // food
+      ctx.fillStyle = "#fbbf24";
+      ctx.fillRect(food.x*CELL+3, food.y*CELL+3, CELL-6, CELL-6);
+
+      // snake
+      for(let i=0;i<snake.length;i++){
+        const s = snake[i];
+        ctx.fillStyle = (i===0) ? "#22c55e" : "#16a34a";
+        ctx.fillRect(s.x*CELL+2, s.y*CELL+2, CELL-4, CELL-4);
+      }
+
+      if (over){
+        ctx.fillStyle = "rgba(0,0,0,0.55)";
+        ctx.fillRect(0,0,c.width,c.height);
+        ctx.fillStyle = "#fff";
+        ctx.font = "900 34px system-ui, sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("GAME OVER", c.width/2, c.height/2 - 6);
+        ctx.font = "700 14px system-ui, sans-serif";
+        ctx.fillStyle = "rgba(255,255,255,0.8)";
+        ctx.fillText("RESTART 버튼을 눌러 다시 시작", c.width/2, c.height/2 + 22);
+      }
+    }
+
+    // keyboard
+    window.addEventListener("keydown", (e)=>{
+      const k = e.key.toLowerCase();
+      if (k==="arrowup" || k==="w") setDir("U");
+      else if (k==="arrowdown" || k==="s") setDir("D");
+      else if (k==="arrowleft" || k==="a") setDir("L");
+      else if (k==="arrowright" || k==="d") setDir("R");
+      else if (k===" " ) setDir("P");
+      else if (k==="enter" && !running) reset(), schedule();
+    });
+
+    // touch swipe
+    let sx=0, sy=0;
+    c.addEventListener("touchstart", (e)=>{
+      const t = e.touches[0];
+      sx = t.clientX; sy = t.clientY;
+    }, {passive:true});
+
+    c.addEventListener("touchend", (e)=>{
+      const t = (e.changedTouches && e.changedTouches[0]) || null;
+      if (!t) return;
+      const dx = t.clientX - sx;
+      const dy = t.clientY - sy;
+      if (Math.abs(dx) < 18 && Math.abs(dy) < 18) return;
+
+      if (Math.abs(dx) > Math.abs(dy)){
+        setDir(dx>0 ? "R" : "L");
+      } else {
+        setDir(dy>0 ? "D" : "U");
+      }
+    }, {passive:true});
+
+    // touchpad buttons
+    document.querySelectorAll(".touchpad button").forEach(b=>{
+      b.addEventListener("click", ()=>{
+        const d = b.getAttribute("data-dir");
+        if (d==="P") setDir("P");
+        else setDir(d);
+      });
+    });
+
+    btnRestart.addEventListener("click", ()=>{
+      reset();
+      schedule();
+    });
+
+    loadBest();
+    reset();
+    schedule();
+  </script>
+</body>
+</html>

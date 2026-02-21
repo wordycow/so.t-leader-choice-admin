@@ -1,0 +1,403 @@
+/**
+ * THE UNIQUE - Medieval Magic Theme
+ * 중세 마법 세계 (딥블루 + 골드)
+ * 
+ * 컨셉: 
+ * - 기본: 중세 판타지 (90%)
+ * - 포인트: 시간을 초월한 현대 버튼 (10%)
+ * - 마녀와 마법의 세계
+ */
+
+:root {
+  /* ==================== 딥블루 (Deep Blue) - 신비로운 밤하늘 ==================== */
+  --deep-blue-abyss: #000814;        /* 심연 */
+  --deep-blue-night: #001233;        /* 자정의 파란 */
+  --deep-blue-midnight: #0a1128;     /* 깊은 밤 */
+  --deep-blue-dark: #0f172a;         /* 어두운 파란 */
+  --deep-blue-base: #1a2238;         /* 기본 파란 */
+  --deep-blue-medium: #1e293b;       /* 중간 파란 */
+  --deep-blue-light: #2d3b55;        /* 밝은 파란 */
+  --deep-blue-lighter: #334155;      /* 더 밝은 파란 */
+  
+  /* ==================== 골드 (Gold) - 마법의 빛, 황금 ==================== */
+  --gold-pure: #d4af37;              /* 순수 황금 */
+  --gold-bright: #fbbf24;            /* 밝은 골드 */
+  --gold-glow: #f59e0b;              /* 빛나는 골드 */
+  --gold-dark: #c5a028;              /* 어두운 골드 */
+  --gold-darker: #b8941f;            /* 더 어두운 골드 */
+  --gold-light: #f4d03f;             /* 밝은 황금 */
+  --gold-pale: #fcd34d;              /* 연한 황금 */
+  
+  /* ==================== 텍스트 컬러 ==================== */
+  --text-bright: #ffffff;            /* 순백 */
+  --text-gold: #fef3c7;              /* 황금빛 흰색 */
+  --text-light: #f9fafb;             /* 밝은 회색 */
+  --text-medium: #e5e7eb;            /* 중간 회색 */
+  --text-muted: #cbd5e1;             /* 흐린 회색 */
+  --text-dim: #94a3b8;               /* 어두운 회색 */
+  
+  /* ==================== 마법 효과 (Glow) ==================== */
+  --glow-gold-soft: 0 0 20px rgba(212, 175, 55, 0.4);
+  --glow-gold-medium: 0 0 30px rgba(212, 175, 55, 0.6);
+  --glow-gold-strong: 0 0 40px rgba(212, 175, 55, 0.8);
+  --glow-gold-intense: 0 0 50px rgba(251, 191, 36, 1);
+  
+  /* ==================== 그림자 (Medieval Shadows) ==================== */
+  --shadow-deep: 0 20px 60px rgba(0, 0, 0, 0.9);
+  --shadow-medium: 0 10px 40px rgba(0, 0, 0, 0.7);
+  --shadow-soft: 0 5px 20px rgba(0, 0, 0, 0.5);
+  --shadow-card: 0 15px 50px rgba(0, 0, 0, 0.85);
+  
+  /* ==================== 현대 버튼용 그라디언트 ==================== */
+  --modern-purple: linear-gradient(135deg, #667eea, #764ba2);
+  --modern-cyan: linear-gradient(135deg, #00d4ff, #0099cc);
+  --modern-pink: linear-gradient(135deg, #f857a6, #ff5858);
+  
+  /* ==================== 테두리 ==================== */
+  --border-gold: 2px solid var(--gold-pure);
+  --border-gold-thin: 1px solid var(--gold-bright);
+  --border-gold-glow: 1px solid var(--gold-light);
+  --border-blue: 1px solid var(--deep-blue-light);
+  
+  /* ==================== Border Radius ==================== */
+  --radius-medieval: 8px;            /* 중세풍 약간 둥근 */
+  --radius-modern: 12px;             /* 현대적 둥근 */
+  --radius-card: 20px;               /* 카드 */
+  --radius-round: 999px;             /* 완전 둥근 */
+}
+
+/* ==================== 전역 리셋 ==================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  color: var(--text-light);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ==================== 배경 - 중세 밤하늘 ==================== */
+.medieval-night-sky {
+  background: linear-gradient(
+    180deg,
+    var(--deep-blue-midnight) 0%,
+    var(--deep-blue-night) 50%,
+    var(--deep-blue-abyss) 100%
+  );
+}
+
+/* ==================== 메인 카드 - 중세 마법서 스타일 ==================== */
+.medieval-card {
+  background: linear-gradient(
+    180deg,
+    var(--deep-blue-base) 0%,
+    var(--deep-blue-dark) 100%
+  );
+  border: var(--border-gold);
+  border-radius: var(--radius-card);
+  box-shadow: 
+    var(--glow-gold-soft),
+    var(--shadow-card);
+  position: relative;
+  overflow: visible;
+}
+
+/* 카드 내부 빛나는 테두리 효과 */
+.medieval-card::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: var(--radius-card);
+  padding: 2px;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold-dark));
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* ==================== 골드 버튼 (중세 스타일) ==================== */
+.btn-medieval-gold {
+  background: linear-gradient(135deg, var(--gold-pure), var(--gold-dark));
+  color: var(--deep-blue-midnight);
+  border: var(--border-gold-glow);
+  border-radius: var(--radius-medieval);
+  padding: 12px 24px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 
+    var(--glow-gold-medium),
+    var(--shadow-soft);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.btn-medieval-gold:hover {
+  background: linear-gradient(135deg, var(--gold-light), var(--gold-pure));
+  box-shadow: 
+    var(--glow-gold-strong),
+    var(--shadow-medium);
+  transform: translateY(-2px);
+}
+
+.btn-medieval-gold:active {
+  transform: translateY(0);
+  box-shadow: 
+    var(--glow-gold-soft),
+    var(--shadow-soft);
+}
+
+/* ==================== 딥블루 버튼 (중세 스타일) ==================== */
+.btn-medieval-blue {
+  background: linear-gradient(135deg, var(--deep-blue-medium), var(--deep-blue-dark));
+  color: var(--text-gold);
+  border: var(--border-gold-thin);
+  border-radius: var(--radius-medieval);
+  padding: 10px 20px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 
+    0 0 15px rgba(251, 191, 36, 0.3),
+    var(--shadow-soft);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-medieval-blue:hover {
+  background: linear-gradient(135deg, var(--deep-blue-light), var(--deep-blue-medium));
+  border-color: var(--gold-bright);
+  box-shadow: 
+    var(--glow-gold-medium),
+    var(--shadow-medium);
+  transform: translateY(-2px);
+}
+
+/* ==================== 현대 버튼 (시간 초월) ==================== */
+.btn-modern-timeless {
+  background: var(--modern-purple);
+  color: var(--text-bright);
+  border: var(--border-gold-thin);  /* 골드 테두리로 세계관 연결 */
+  border-radius: var(--radius-modern);
+  padding: 12px 24px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 
+    0 0 20px rgba(102, 126, 234, 0.4),
+    var(--shadow-soft);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 현대 버튼 빛나는 효과 */
+.btn-modern-timeless::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transform: rotate(45deg);
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+.btn-modern-timeless:hover {
+  box-shadow: 
+    0 0 30px rgba(102, 126, 234, 0.6),
+    var(--glow-gold-soft),
+    var(--shadow-medium);
+  transform: translateY(-2px) scale(1.02);
+}
+
+/* ==================== 골드 액자 (리더 카드용) ==================== */
+.golden-frame {
+  padding: 6px;
+  border-radius: var(--radius-medieval);
+  background: linear-gradient(135deg, var(--gold-light), var(--gold-dark));
+  box-shadow: 
+    var(--glow-gold-medium),
+    0 8px 18px rgba(0, 0, 0, 0.6);
+  position: relative;
+}
+
+.golden-frame::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 6px;
+  border: 2px solid var(--gold-pale);
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* ==================== 텍스트 스타일 ==================== */
+.text-gold-glow {
+  color: var(--text-gold);
+  text-shadow: 
+    0 0 10px rgba(251, 191, 36, 0.6),
+    0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.text-medieval-title {
+  font-family: "Cinzel", "Times New Roman", serif;
+  color: var(--gold-bright);
+  text-shadow: var(--glow-gold-soft);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* ==================== 반투명 완전 제거 ==================== */
+.no-glass {
+  background: var(--deep-blue-base) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* 기존 glass-morphism 무효화 */
+.glass-panel,
+.glass-card,
+[style*="backdrop-filter"],
+[style*="rgba"] {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* ==================== 입력 필드 (중세 스타일) ==================== */
+.medieval-input {
+  background: var(--deep-blue-dark);
+  border: 1px solid var(--deep-blue-lighter);
+  color: var(--text-light);
+  padding: 12px 16px;
+  border-radius: var(--radius-medieval);
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.medieval-input:focus {
+  outline: none;
+  border-color: var(--gold-bright);
+  box-shadow: 
+    0 0 0 2px rgba(251, 191, 36, 0.2),
+    var(--glow-gold-soft);
+}
+
+/* ==================== 구분선 (골드) ==================== */
+.medieval-divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--gold-pure),
+    transparent
+  );
+  margin: 20px 0;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}
+
+/* ==================== 호버 효과 강화 ==================== */
+.hover-lift {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-medium);
+}
+
+/* ==================== 스크롤바 (골드 테마) ==================== */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--deep-blue-dark);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--gold-pure), var(--gold-dark));
+  border-radius: 5px;
+  border: 2px solid var(--deep-blue-dark);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--gold-light), var(--gold-pure));
+  box-shadow: var(--glow-gold-soft);
+}
+
+/* ==================== 선택 영역 ==================== */
+::selection {
+  background-color: var(--gold-bright);
+  color: var(--deep-blue-midnight);
+}
+
+::-moz-selection {
+  background-color: var(--gold-bright);
+  color: var(--deep-blue-midnight);
+}
+
+/* ==================== 접근성 (Focus) ==================== */
+*:focus-visible {
+  outline: 2px solid var(--gold-bright);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.2);
+}
+
+/* ==================== 마법 효과 애니메이션 ==================== */
+@keyframes magicGlow {
+  0%, 100% {
+    box-shadow: 
+      0 0 20px rgba(212, 175, 55, 0.4),
+      0 0 40px rgba(212, 175, 55, 0.2);
+  }
+  50% {
+    box-shadow: 
+      0 0 30px rgba(212, 175, 55, 0.6),
+      0 0 60px rgba(212, 175, 55, 0.3);
+  }
+}
+
+.magic-glow {
+  animation: magicGlow 3s ease-in-out infinite;
+}
+
+/* ==================== 반응형 ==================== */
+@media (max-width: 768px) {
+  .medieval-card {
+    border-width: 1px;
+  }
+  
+  .btn-medieval-gold,
+  .btn-medieval-blue,
+  .btn-modern-timeless {
+    padding: 10px 18px;
+    font-size: 14px;
+  }
+}
+
+/* ==================== 성능 최적화 ==================== */
+.gpu-accelerate {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
