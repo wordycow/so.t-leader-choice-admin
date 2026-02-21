@@ -1,0 +1,1611 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>정통 타로 리딩 - THE UNIQUE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Noto+Serif+KR:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- ✨ THE UNIQUE LEGENDARY DESIGN SYSTEM v4.0 -->
+  <link rel="stylesheet" href="css/the-unique-core.css">
+  
+  <!-- 🎯 HOVER VISIBILITY ENHANCEMENT v4.1 - 가독성 최우선 CSS 전용 -->
+  <link rel="stylesheet" href="css/hover-visibility-enhanced.css">
+  
+  <style>
+    :root {
+      --bg-dark: #0a0515;
+      --bg-purple: #1a0f2e;
+      --purple: #9333ea;
+      --purple-light: #c084fc;
+      --purple-dark: #581c87;
+      --gold: #fbbf24;
+      --gold-light: #fde68a;
+      --text-light: #f3f4f6;
+      --text-muted: #d1d5db;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif KR', serif;
+      background: 
+        linear-gradient(135deg, 
+          rgba(10,5,21,0.85) 0%, 
+          rgba(26,15,46,0.80) 25%,
+          rgba(88,28,135,0.75) 50%,
+          rgba(147,51,234,0.70) 75%,
+          rgba(192,132,252,0.65) 100%
+        ),
+        radial-gradient(circle at 20% 30%, rgba(251,191,36,0.15) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(192,132,252,0.20) 0%, transparent 40%),
+        url('img/tarot-background.png') no-repeat center center;
+      background-size: cover;
+      background-attachment: fixed;
+      min-height: 100vh;
+      color: var(--text-light);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 20%, rgba(251,191,36,0.15) 0%, transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(147,51,234,0.20) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(192,132,252,0.10) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+      animation: floatGlow 10s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatGlow {
+      0% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.05); }
+      100% { opacity: 0.6; transform: scale(1); }
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.9; }
+    }
+    
+    @keyframes slideInRight {
+      from { transform: translateX(400px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideOutRight {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(400px); opacity: 0; }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 50px;
+      animation: fadeInDown 0.8s ease;
+    }
+
+    .header-title {
+      font-family: 'Cinzel', serif;
+      font-size: 64px;
+      font-weight: 900;
+      background: linear-gradient(135deg, 
+        #fbbf24 0%, 
+        #fde68a 20%,
+        #c084fc 40%, 
+        #9333ea 60%,
+        #c084fc 80%,
+        #fbbf24 100%
+      );
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 0.12em;
+      margin-bottom: 16px;
+      text-shadow: 0 0 60px rgba(251,191,36,0.6);
+      animation: titleShine 5s linear infinite, titleFloat 3s ease-in-out infinite;
+      filter: drop-shadow(0 0 20px rgba(251,191,36,0.4)) drop-shadow(0 0 40px rgba(147,51,234,0.3));
+    }
+
+    @keyframes titleShine {
+      0% { background-position: 0% center; }
+      100% { background-position: 200% center; }
+    }
+
+    @keyframes titleFloat {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-5px) scale(1.02); }
+    }
+
+    .header-subtitle {
+      font-size: 18px;
+      color: var(--gold-light);
+      letter-spacing: 0.3em;
+      opacity: 0.9;
+    }
+
+    .main-card {
+      background: 
+        linear-gradient(135deg, 
+          rgba(26,15,46,0.85) 0%, 
+          rgba(10,5,21,0.90) 50%,
+          rgba(26,15,46,0.85) 100%
+        );
+      border: 3px solid transparent;
+      background-clip: padding-box;
+      border-radius: 32px;
+      padding: 50px 40px;
+      position: relative;
+      box-shadow: 
+        0 30px 80px rgba(0,0,0,0.9),
+        0 0 80px rgba(147,51,234,0.3),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      animation: fadeInUp 0.8s ease 0.2s both, cardFloat 6s ease-in-out infinite;
+    }
+
+    .main-card::before {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: -3px;
+      right: -3px;
+      bottom: -3px;
+      background: linear-gradient(45deg, 
+        #fbbf24 0%, 
+        #c084fc 25%, 
+        #9333ea 50%, 
+        #c084fc 75%, 
+        #fbbf24 100%
+      );
+      background-size: 200% 200%;
+      border-radius: 32px;
+      z-index: -1;
+      animation: gradientShift 4s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    @keyframes cardFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .section-title {
+      font-family: 'Cinzel', serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--gold);
+      text-align: center;
+      margin-bottom: 30px;
+      letter-spacing: 0.1em;
+    }
+
+    .spread-selection {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .spread-card {
+      background: linear-gradient(135deg, 
+        rgba(147,51,234,0.15) 0%,
+        rgba(192,132,252,0.10) 50%,
+        rgba(251,191,36,0.08) 100%
+      );
+      border: 2px solid transparent;
+      background-clip: padding-box;
+      border-radius: 20px;
+      padding: 25px 20px;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .spread-card::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, 
+        #9333ea 0%, 
+        #c084fc 25%, 
+        #fbbf24 50%, 
+        #c084fc 75%, 
+        #9333ea 100%
+      );
+      background-size: 300% 300%;
+      border-radius: 20px;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      animation: borderFlow 4s ease infinite;
+    }
+
+    @keyframes borderFlow {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .spread-card:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 
+        0 20px 40px rgba(147,51,234,0.4),
+        0 0 60px rgba(251,191,36,0.2),
+        inset 0 1px 0 rgba(255,255,255,0.2);
+    }
+
+    .spread-card:hover::before {
+      opacity: 1;
+    }
+
+    .spread-card.selected {
+      border-color: var(--gold);
+      background: linear-gradient(135deg, 
+        rgba(251,191,36,0.25) 0%,
+        rgba(147,51,234,0.15) 100%
+      );
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 
+        0 15px 50px rgba(251,191,36,0.5),
+        0 0 80px rgba(251,191,36,0.3),
+        inset 0 1px 0 rgba(255,255,255,0.3);
+    }
+
+    .spread-card.selected::before {
+      opacity: 1;
+      background: linear-gradient(45deg, 
+        #fbbf24 0%, 
+        #fde68a 50%, 
+        #fbbf24 100%
+      );
+    }
+
+    .spread-icon {
+      width: 120px;
+      height: 120px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, 
+        rgba(147,51,234,0.2) 0%,
+        rgba(88,28,135,0.3) 100%
+      );
+      box-shadow: 
+        0 10px 30px rgba(147,51,234,0.3),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+      transition: all 0.3s ease;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .spread-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 15px;
+      filter: brightness(1.1) saturate(1.2);
+      transition: all 0.3s ease;
+    }
+
+    .spread-card:hover .spread-icon img {
+      transform: scale(1.1);
+      filter: brightness(1.3) saturate(1.4);
+    }
+
+    @keyframes iconPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.9; }
+    }
+
+    .spread-name {
+      font-size: 22px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #fbbf24 0%, #fde68a 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 10px;
+      filter: drop-shadow(0 2px 8px rgba(251,191,36,0.4));
+    }
+
+    .spread-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .question-input {
+      margin: 30px 0;
+    }
+
+    .input-label {
+      display: block;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--gold-light);
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .input-field {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      display: block;
+      padding: 16px 20px;
+      background: rgba(147,51,234,0.1);
+      border: 2px solid rgba(147,51,234,0.3);
+      border-radius: 12px;
+      color: var(--text-light);
+      font-size: 16px;
+      font-family: 'Noto Serif KR', serif;
+      transition: all 0.3s ease;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 20px rgba(251,191,36,0.2);
+    }
+
+    .btn-draw {
+      display: block;
+      width: 100%;
+      max-width: 400px;
+      margin: 30px auto;
+      padding: 18px;
+      background: linear-gradient(135deg, var(--purple) 0%, var(--purple-dark) 100%);
+      border: 2px solid var(--gold);
+      border-radius: 12px;
+      color: white;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-draw:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 40px rgba(147,51,234,0.5);
+    }
+
+    .cards-deck {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 12px;
+      margin: 40px 0;
+      max-height: 400px;
+      overflow-y: auto;
+      padding: 20px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 12px;
+    }
+
+    .card-back {
+      aspect-ratio: 2/3;
+      background: linear-gradient(135deg, #4c1d95 0%, #6b21a8 100%);
+      border: 2px solid var(--gold);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .card-back:hover {
+      transform: scale(1.05) rotate(5deg);
+      box-shadow: 0 8px 20px rgba(147,51,234,0.5);
+    }
+
+    .card-back.selected {
+      background: linear-gradient(135deg, var(--gold) 0%, #f59e0b 100%);
+      transform: scale(1.1);
+    }
+
+    .reading-result {
+      display: none;
+      animation: fadeIn 0.8s ease;
+    }
+
+    .reading-result.active {
+      display: block;
+    }
+
+    .drawn-cards {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 40px 0;
+      flex-wrap: wrap;
+    }
+
+    .drawn-card {
+      width: 200px;
+      background: linear-gradient(135deg, rgba(76,29,149,0.9) 0%, rgba(107,33,168,0.9) 100%);
+      border: 3px solid var(--gold);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      animation: cardFlip 0.6s ease;
+    }
+
+    .card-position {
+      font-size: 14px;
+      color: var(--gold-light);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .card-name {
+      font-family: 'Cinzel', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    .card-direction {
+      font-size: 13px;
+      color: var(--purple-light);
+      margin-bottom: 16px;
+    }
+
+    .card-image {
+      font-size: 60px;
+      margin: 20px 0;
+    }
+
+    .interpretation-section {
+      background: rgba(76,29,149,0.2);
+      border: 2px solid rgba(147,51,234,0.3);
+      border-radius: 16px;
+      padding: 30px;
+      margin: 30px 0;
+    }
+
+    .interp-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .interp-content {
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--text-light);
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes cardFlip {
+      0% {
+        transform: rotateY(90deg);
+        opacity: 0;
+      }
+      100% {
+        transform: rotateY(0);
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px 15px;
+      }
+
+      .main-card {
+        padding: 30px 20px;
+      }
+
+      .header-title {
+        font-size: 36px;
+      }
+
+      .spread-selection {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+      }
+
+      .spread-icon {
+        width: 100px;
+        height: 100px;
+      }
+
+      .drawn-cards {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .drawn-card {
+        width: 100%;
+        max-width: 280px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1 class="header-title">TAROT READING</h1>
+      <p class="header-subtitle">정통 78장 타로 리딩</p>
+      
+      <!-- UT 잔액 표시 -->
+      <div class="ut-balance-display" style="margin-top: 20px; padding: 12px 24px; background: linear-gradient(135deg, rgba(147,51,234,0.15), rgba(147,51,234,0.25)); border: 2px solid rgba(192,132,252,0.5); border-radius: 50px; display: inline-block; animation: pulse 2s ease-in-out infinite;">
+        <span style="color: #c084fc; font-size: 14px; font-weight: 600; letter-spacing: 0.05em;">🔮 보유 UT: </span>
+        <span id="tarot-ut-balance" style="color: #fff; font-size: 18px; font-weight: 900; text-shadow: 0 0 10px rgba(147,51,234,0.8);">0</span>
+        <span style="color: #c084fc; font-size: 14px; font-weight: 600;"> UT</span>
+      </div>
+      
+      <!-- 타로 리딩 비용 안내 -->
+      <div style="margin-top: 12px; color: #c084fc; font-size: 13px; opacity: 0.9;">
+        🎴 타로 리딩 비용: <strong style="color: #fff;">800 UT</strong>
+      </div>
+    </div>
+
+    <div class="main-card">
+      <!-- 스프레드 선택 -->
+      <div id="spreadSelection">
+        <h2 class="section-title">타로 스프레드 선택</h2>
+        
+        <div class="spread-selection">
+          <div class="spread-card" onclick="selectSpread('one')">
+            <div class="spread-icon">
+              <img src="img/tarot-spreads/one-card-spread.png" alt="원 카드" loading="lazy">
+            </div>
+            <div class="spread-name">원 카드</div>
+            <div class="spread-desc">오늘의 운세, 간단한 질문</div>
+          </div>
+
+          <div class="spread-card" onclick="selectSpread('three')">
+            <div class="spread-icon">
+              <img src="img/tarot-spreads/three-card-spread.png" alt="쓰리 카드" loading="lazy">
+            </div>
+            <div class="spread-name">쓰리 카드</div>
+            <div class="spread-desc">과거-현재-미래 흐름</div>
+          </div>
+
+          <div class="spread-card" onclick="selectSpread('love')">
+            <div class="spread-icon">
+              <img src="img/tarot-spreads/love-spread.png" alt="연애 스프레드" loading="lazy">
+            </div>
+            <div class="spread-name">연애 스프레드</div>
+            <div class="spread-desc">연애운, 관계 분석</div>
+          </div>
+
+          <div class="spread-card" onclick="selectSpread('career')">
+            <div class="spread-icon">
+              <img src="img/tarot-spreads/career-spread.png" alt="직업 스프레드" loading="lazy">
+            </div>
+            <div class="spread-name">직업 스프레드</div>
+            <div class="spread-desc">진로, 사업, 재물운</div>
+          </div>
+        </div>
+
+        <div class="question-input">
+          <label class="input-label">궁금한 점을 입력하세요 (선택사항)</label>
+          <input type="text" class="input-field" id="question" placeholder="예: 올해 나의 연애운은?">
+        </div>
+
+        <button class="btn-draw" onclick="startReading()">카드 뽑기 시작</button>
+      </div>
+
+      <!-- 카드 선택 -->
+      <div id="cardSelection" style="display:none;">
+        <h2 class="section-title">마음이 이끄는 카드를 선택하세요</h2>
+        <p style="text-align:center; color: var(--gold-light); margin-bottom: 20px;">
+          총 <span id="needCards">1</span>장의 카드를 선택해주세요
+        </p>
+        
+        <div class="cards-deck" id="cardsDeck"></div>
+
+        <button class="btn-draw" onclick="showResult()">선택 완료</button>
+      </div>
+
+      <!-- 결과 화면 -->
+      <div id="readingResult" class="reading-result">
+        <h2 class="section-title" id="resultTitle"></h2>
+
+        <div class="drawn-cards" id="drawnCards"></div>
+
+        <div class="interpretation-section">
+          <h3 class="interp-title">🔮 종합 해석</h3>
+          <div class="interp-content" id="overallInterp"></div>
+        </div>
+
+        <div class="interpretation-section">
+          <h3 class="interp-title">💡 조언</h3>
+          <div class="interp-content" id="adviceInterp"></div>
+        </div>
+
+        <button class="btn-draw" onclick="resetReading()">다시 보기</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ============================================
+    // 타로 카드 데이터베이스 (78장)
+    // ============================================
+
+    const TAROT_DECK = [
+      // Major Arcana (메이저 아르카나) - 22장
+      {
+        id: 0,
+        name: 'The Fool',
+        nameKo: '광대',
+        emoji: 'img/cards/tarot/major/00-fool.png',
+        upright: {
+          keyword: '새로운 시작, 순수함, 모험',
+          meaning: '순수한 마음으로 새로운 여정을 시작할 때입니다. 두려움 없이 앞으로 나아가세요. 예상치 못한 기회가 찾아올 것입니다.',
+          love: '새로운 만남이나 관계의 새로운 국면을 맞이할 것입니다. 순수한 마음으로 다가가세요.',
+          career: '새로운 프로젝트나 직장이 시작될 수 있습니다. 도전을 두려워하지 마세요.'
+        },
+        reversed: {
+          keyword: '무모함, 경솔함, 준비 부족',
+          meaning: '성급한 결정이나 무계획적인 행동을 조심하세요. 좀 더 신중하게 준비하는 시간이 필요합니다.',
+          love: '관계에서 지나치게 이상적인 기대를 하고 있을 수 있습니다. 현실을 직시하세요.',
+          career: '준비 없이 일을 시작하면 실패할 수 있습니다. 계획을 다시 점검하세요.'
+        }
+      },
+      {
+        id: 1,
+        name: 'The Magician',
+        nameKo: '마법사',
+        emoji: 'img/cards/tarot/major/01-magician.png',
+        upright: {
+          keyword: '창조력, 의지력, 능력',
+          meaning: '당신은 필요한 모든 것을 가지고 있습니다. 의지를 가지고 행동하면 원하는 것을 이룰 수 있습니다.',
+          love: '당신의 매력이 최고조에 달했습니다. 적극적으로 다가가면 좋은 결과가 있을 것입니다.',
+          career: '당신의 능력을 발휘할 최적의 시기입니다. 자신감을 가지고 추진하세요.'
+        },
+        reversed: {
+          keyword: '조작, 기만, 능력 부족',
+          meaning: '자신의 능력을 과대평가하거나 타인을 속이려는 시도는 실패로 끝날 것입니다.',
+          love: '진실하지 못한 관계나 사기를 조심하세요. 상대의 본심을 파악하세요.',
+          career: '능력 부족이나 준비 부족으로 어려움을 겪을 수 있습니다.'
+        }
+      },
+      {
+        id: 2,
+        name: 'The High Priestess',
+        nameKo: '여사제',
+        emoji: 'img/cards/tarot/major/02-high-priestess.png',
+        upright: {
+          keyword: '직관, 무의식, 신비',
+          meaning: '당신의 내면의 목소리에 귀 기울이세요. 직관이 올바른 길을 안내할 것입니다. 깊이 있는 통찰이 필요한 시기입니다.',
+          love: '표면적인 것보다 더 깊은 감정이 흐르고 있습니다. 마음의 소리를 들어보세요.',
+          career: '결정을 내리기 전에 충분히 생각하고 직관을 믿으세요. 숨겨진 정보가 있을 수 있습니다.'
+        },
+        reversed: {
+          keyword: '직관 무시, 혼란, 비밀',
+          meaning: '자신의 직관을 무시하고 있거나, 중요한 정보를 놓치고 있을 수 있습니다.',
+          love: '상대방이나 자신의 진심을 외면하고 있습니다. 솔직해질 필요가 있습니다.',
+          career: '중요한 정보가 숨겨져 있거나, 직관을 무시하여 실수할 수 있습니다.'
+        }
+      },
+      {
+        id: 3,
+        name: 'The Empress',
+        nameKo: '여제',
+        emoji: 'img/cards/tarot/major/03-empress.png',
+        upright: {
+          keyword: '풍요, 창조, 모성',
+          meaning: '풍요와 번영의 시기입니다. 창조적인 에너지가 넘치며, 무언가를 키우고 발전시킬 좋은 때입니다.',
+          love: '사랑이 무르익고 관계가 깊어집니다. 임신이나 출산의 가능성도 있습니다.',
+          career: '사업이나 프로젝트가 풍성한 결실을 맺을 것입니다. 투자의 결과가 좋습니다.'
+        },
+        reversed: {
+          keyword: '정체, 의존, 과잉보호',
+          meaning: '창조적 에너지가 막혀있거나, 과잉보호나 의존성 문제가 있을 수 있습니다.',
+          love: '관계에서 지나친 의존이나 집착이 문제가 될 수 있습니다.',
+          career: '계획한 일이 정체되거나, 자원이 부족할 수 있습니다.'
+        }
+      },
+      {
+        id: 4,
+        name: 'The Emperor',
+        nameKo: '황제',
+        emoji: 'img/cards/tarot/major/04-emperor.png',
+        upright: {
+          keyword: '권위, 안정, 리더십',
+          meaning: '강한 리더십과 권위가 필요한 시기입니다. 체계적이고 조직적인 접근이 성공을 가져올 것입니다.',
+          love: '안정적이고 헌신적인 관계를 원합니다. 책임감 있는 파트너를 만날 수 있습니다.',
+          career: '리더십을 발휘할 기회가 옵니다. 권위 있는 위치에 오를 수 있습니다.'
+        },
+        reversed: {
+          keyword: '독재, 경직, 미성숙',
+          meaning: '지나친 통제욕이나 권위주의적 태도가 문제를 일으킬 수 있습니다.',
+          love: '관계에서 지배욕이나 통제욕이 나타날 수 있습니다. 균형이 필요합니다.',
+          career: '권위에 대한 저항이나 리더십 부족으로 어려움을 겪을 수 있습니다.'
+        }
+      },
+      {
+        id: 5,
+        name: 'The Hierophant',
+        nameKo: '교황',
+        emoji: 'img/cards/tarot/major/05-hierophant.png',
+        upright: {
+          keyword: '전통, 교육, 영적 지혜',
+          meaning: '전통적인 방식이나 기존의 시스템을 따르는 것이 유리합니다. 멘토나 스승의 조언을 구하세요.',
+          love: '전통적인 관계나 결혼에 대한 진지한 고민을 하게 됩니다.',
+          career: '정규 교육이나 자격증 취득이 도움이 됩니다. 조직 내에서 인정받을 것입니다.'
+        },
+        reversed: {
+          keyword: '비순응, 독단, 권위에 대한 반항',
+          meaning: '기존의 틀에서 벗어나고 싶어하거나, 권위에 반발하고 있습니다.',
+          love: '비전통적인 관계나 사회적 규범에서 벗어난 사랑을 추구할 수 있습니다.',
+          career: '조직의 규칙이나 전통적 방식에 불만을 느낄 수 있습니다.'
+        }
+      },
+      {
+        id: 6,
+        name: 'The Lovers',
+        nameKo: '연인',
+        emoji: 'img/cards/tarot/major/06-lovers.png',
+        upright: {
+          keyword: '사랑, 선택, 조화',
+          meaning: '중요한 선택의 순간입니다. 마음과 이성의 조화를 찾아 올바른 결정을 내리세요.',
+          love: '깊은 사랑과 조화로운 관계를 경험합니다. 중요한 관계의 결정이 다가옵니다.',
+          career: '파트너십이나 협업이 성공의 열쇠입니다. 가치관에 맞는 선택을 하세요.'
+        },
+        reversed: {
+          keyword: '불화, 잘못된 선택, 불균형',
+          meaning: '관계에서 갈등이 있거나, 잘못된 선택을 할 위험이 있습니다.',
+          love: '가치관의 불일치나 소통 문제로 어려움을 겪을 수 있습니다.',
+          career: '협력자와의 불화나 가치관 충돌이 있을 수 있습니다.'
+        }
+      },
+      {
+        id: 7,
+        name: 'The Chariot',
+        nameKo: '전차',
+        emoji: 'img/cards/tarot/major/07-chariot.png',
+        upright: {
+          keyword: '승리, 의지력, 통제',
+          meaning: '강한 의지와 결단력으로 목표를 달성할 것입니다. 장애물을 극복하고 승리를 거둘 것입니다.',
+          love: '관계를 주도적으로 이끌어갈 것입니다. 당신의 열정이 성공을 가져옵니다.',
+          career: '목표를 향해 빠르게 전진합니다. 경쟁에서 승리하고 성공을 거둘 것입니다.'
+        },
+        reversed: {
+          keyword: '통제 상실, 좌절, 방향 상실',
+          meaning: '방향을 잃었거나 통제력을 상실했습니다. 다시 집중이 필요합니다.',
+          love: '관계에서 균형을 잃거나 한쪽으로 치우쳐 있습니다.',
+          career: '계획이 어긋나거나 목표 달성에 어려움을 겪고 있습니다.'
+        }
+      },
+      {
+        id: 8,
+        name: 'Strength',
+        nameKo: '힘',
+        emoji: 'img/cards/tarot/major/08-strength.png',
+        upright: {
+          keyword: '용기, 내적 힘, 인내',
+          meaning: '부드러운 힘으로 어려움을 극복합니다. 인내와 용기를 가지면 승리할 것입니다.',
+          love: '사랑의 힘으로 어려움을 극복합니다. 관용과 이해심이 관계를 강화합니다.',
+          career: '끈기와 인내로 목표를 달성합니다. 내적 힘을 발휘할 때입니다.'
+        },
+        reversed: {
+          keyword: '자신감 부족, 의심, 나약함',
+          meaning: '자신감이 부족하거나 내면의 두려움에 시달리고 있습니다.',
+          love: '관계에서 불안감이나 자신감 부족으로 어려움을 겪습니다.',
+          career: '도전에 대한 두려움이나 의지 부족으로 기회를 놓칠 수 있습니다.'
+        }
+      },
+      {
+        id: 9,
+        name: 'The Hermit',
+        nameKo: '은둔자',
+        emoji: 'img/cards/tarot/major/09-hermit.png',
+        upright: {
+          keyword: '성찰, 고독, 내면 탐구',
+          meaning: '혼자만의 시간을 가지며 깊이 성찰할 때입니다. 내면의 지혜를 찾으세요.',
+          love: '혼자만의 시간이 필요하거나, 관계에 대해 깊이 생각해볼 필요가 있습니다.',
+          career: '독립적으로 일하거나, 전문 지식을 깊이 연구할 좋은 시기입니다.'
+        },
+        reversed: {
+          keyword: '고립, 외로움, 은둔',
+          meaning: '지나친 고립이나 외로움에 빠져있습니다. 사회와의 연결이 필요합니다.',
+          love: '관계를 회피하거나 마음을 닫고 있습니다. 소통이 필요합니다.',
+          career: '팀워크 부족이나 고립으로 어려움을 겪을 수 있습니다.'
+        }
+      },
+      {
+        id: 10,
+        name: 'Wheel of Fortune',
+        nameKo: '운명의 수레바퀴',
+        emoji: 'img/cards/tarot/major/10-wheel.png',
+        upright: {
+          keyword: '변화, 운명, 행운',
+          meaning: '큰 변화의 시기입니다. 운명의 흐름을 받아들이고 긍정적으로 대응하세요.',
+          love: '운명적인 만남이나 관계의 중요한 전환점이 다가옵니다.',
+          career: '예상치 못한 기회나 변화가 찾아옵니다. 행운의 시기입니다.'
+        },
+        reversed: {
+          keyword: '불운, 저항, 예상치 못한 변화',
+          meaning: '변화에 저항하거나 불운을 겪을 수 있습니다. 흐름을 받아들이세요.',
+          love: '관계에 예기치 않은 변화나 위기가 올 수 있습니다.',
+          career: '계획이 어긋나거나 예상치 못한 어려움을 겪을 수 있습니다.'
+        }
+      },
+      {
+        id: 11,
+        name: 'Justice',
+        nameKo: '정의',
+        emoji: 'img/cards/tarot/major/11-justice.png',
+        upright: {
+          keyword: '공정, 진실, 균형',
+          meaning: '공정한 판단과 정의가 실현될 것입니다. 진실이 밝혀지고 균형이 회복됩니다.',
+          love: '관계에서 공정함과 균형이 중요합니다. 진실된 관계를 맺으세요.',
+          career: '계약이나 법적 문제가 공정하게 해결됩니다. 노력한 만큼 보상받습니다.'
+        },
+        reversed: {
+          keyword: '불공정, 불균형, 책임 회피',
+          meaning: '불공정한 대우를 받거나, 책임을 회피하고 있을 수 있습니다.',
+          love: '관계에서 불균형이나 불공정함을 느낍니다.',
+          career: '부당한 대우를 받거나 법적 문제에 어려움을 겪을 수 있습니다.'
+        }
+      },
+      {
+        id: 12,
+        name: 'The Hanged Man',
+        nameKo: '매달린 사람',
+        emoji: 'img/cards/tarot/major/12-hanged.png',
+        upright: {
+          keyword: '희생, 관점의 전환, 대기',
+          meaning: '때로는 기다림과 희생이 필요합니다. 다른 관점에서 상황을 바라보세요.',
+          love: '관계를 위해 양보하거나 기다려야 할 수 있습니다. 인내가 필요합니다.',
+          career: '즉각적인 결과를 기대하기보다 장기적 관점으로 접근하세요.'
+        },
+        reversed: {
+          keyword: '지연, 저항, 무의미한 희생',
+          meaning: '불필요한 희생이나 지연이 계속되고 있습니다. 변화가 필요합니다.',
+          love: '일방적인 희생이나 답답한 상황에서 벗어나야 합니다.',
+          career: '정체된 상황에서 벗어나지 못하고 있습니다. 적극적 행동이 필요합니다.'
+        }
+      },
+      {
+        id: 13,
+        name: 'Death',
+        nameKo: '죽음',
+        emoji: 'img/cards/tarot/major/13-death.png',
+        upright: {
+          keyword: '종결, 변화, 재탄생',
+          meaning: '어떤 것의 끝은 새로운 시작을 의미합니다. 과거를 놓아주고 변화를 받아들이세요.',
+          love: '관계의 중요한 전환점입니다. 끝이거나 새로운 단계로 발전할 수 있습니다.',
+          career: '직장이나 프로젝트의 종료, 하지만 새로운 기회가 기다리고 있습니다.'
+        },
+        reversed: {
+          keyword: '변화에 대한 저항, 정체',
+          meaning: '필요한 변화를 거부하거나 과거에 집착하고 있습니다.',
+          love: '끝내야 할 관계를 붙잡고 있거나, 변화를 두려워하고 있습니다.',
+          career: '필요한 변화를 미루고 있습니다. 새로운 시작이 필요합니다.'
+        }
+      },
+      {
+        id: 14,
+        name: 'Temperance',
+        nameKo: '절제',
+        emoji: 'img/cards/tarot/major/14-temperance.png',
+        upright: {
+          keyword: '균형, 조화, 인내',
+          meaning: '균형과 조화를 찾아야 합니다. 극단을 피하고 중용의 길을 가세요.',
+          love: '관계에서 균형과 타협이 필요합니다. 조화로운 사랑을 추구하세요.',
+          career: '팀워크와 협력이 중요합니다. 인내심을 가지고 조화롭게 일하세요.'
+        },
+        reversed: {
+          keyword: '불균형, 과잉, 조급함',
+          meaning: '균형을 잃었거나 극단적인 행동을 하고 있습니다.',
+          love: '관계에서 불균형이나 극단적 감정 기복이 있습니다.',
+          career: '업무에서 불균형이나 조급함으로 문제가 발생할 수 있습니다.'
+        }
+      },
+      {
+        id: 15,
+        name: 'The Devil',
+        nameKo: '악마',
+        emoji: 'img/cards/tarot/major/15-devil.png',
+        upright: {
+          keyword: '유혹, 집착, 속박',
+          meaning: '물질적 욕망이나 나쁜 습관에 사로잡혀 있습니다. 스스로를 해방시키세요.',
+          love: '집착이나 불건전한 관계에 빠져있을 수 있습니다. 자유가 필요합니다.',
+          career: '물질만을 추구하거나 나쁜 습관이 성공을 방해하고 있습니다.'
+        },
+        reversed: {
+          keyword: '해방, 자유, 깨달음',
+          meaning: '속박에서 벗어나고 있습니다. 나쁜 습관이나 관계를 끊을 수 있습니다.',
+          love: '불건전한 관계에서 벗어나거나, 집착을 놓아줄 수 있습니다.',
+          career: '나쁜 직장이나 습관에서 해방될 기회가 옵니다.'
+        }
+      },
+      {
+        id: 16,
+        name: 'The Tower',
+        nameKo: '탑',
+        emoji: 'img/cards/tarot/major/16-tower.png',
+        upright: {
+          keyword: '파괴, 혼란, 갑작스런 변화',
+          meaning: '갑작스러운 변화나 충격적인 사건이 일어날 수 있습니다. 이는 재건을 위한 과정입니다.',
+          love: '관계의 갑작스러운 파탄이나 진실이 밝혀질 수 있습니다.',
+          career: '예상치 못한 변화나 위기가 찾아옵니다. 새로운 시작을 준비하세요.'
+        },
+        reversed: {
+          keyword: '위기 회피, 내적 변화',
+          meaning: '큰 위기는 피했지만, 내적 혼란이 있습니다. 변화를 받아들이세요.',
+          love: '관계의 위기를 겨우 넘겼지만, 근본적 해결이 필요합니다.',
+          career: '최악의 상황은 피했지만, 불안정한 상태입니다.'
+        }
+      },
+      {
+        id: 17,
+        name: 'The Star',
+        nameKo: '별',
+        emoji: 'img/cards/tarot/major/17-star.png',
+        upright: {
+          keyword: '희망, 영감, 치유',
+          meaning: '희망의 빛이 보입니다. 치유와 회복의 시간입니다. 미래에 대한 긍정적 전망이 있습니다.',
+          love: '순수하고 이상적인 사랑을 경험합니다. 관계가 치유되고 회복됩니다.',
+          career: '영감과 창의성이 빛을 발합니다. 목표가 명확해지고 희망이 보입니다.'
+        },
+        reversed: {
+          keyword: '절망, 환멸, 신뢰 상실',
+          meaning: '희망을 잃었거나 미래에 대한 불안이 있습니다. 다시 희망을 찾으세요.',
+          love: '이상과 현실의 괴리로 실망할 수 있습니다.',
+          career: '목표에 대한 회의감이나 창의성 고갈을 경험합니다.'
+        }
+      },
+      {
+        id: 18,
+        name: 'The Moon',
+        nameKo: '달',
+        emoji: 'img/cards/tarot/major/18-moon.png',
+        upright: {
+          keyword: '환상, 불안, 직관',
+          meaning: '모든 것이 명확하지 않습니다. 직관을 믿되, 환상과 현실을 구분하세요.',
+          love: '불확실성과 오해가 있을 수 있습니다. 솔직한 소통이 필요합니다.',
+          career: '숨겨진 정보나 불명확한 상황이 있습니다. 신중하게 행동하세요.'
+        },
+        reversed: {
+          keyword: '명확해짐, 진실의 발견',
+          meaning: '혼란이 걷히고 진실이 드러납니다. 두려움에서 벗어납니다.',
+          love: '오해가 풀리고 관계가 명확해집니다.',
+          career: '불확실했던 상황이 명확해지고 방향이 잡힙니다.'
+        }
+      },
+      {
+        id: 19,
+        name: 'The Sun',
+        nameKo: '태양',
+        emoji: 'img/cards/tarot/major/19-sun.png',
+        upright: {
+          keyword: '성공, 기쁨, 긍정',
+          meaning: '최고의 행운과 성공의 시기입니다. 모든 것이 밝고 긍정적입니다.',
+          love: '행복하고 밝은 관계입니다. 사랑이 빛납니다.',
+          career: '큰 성공과 인정을 받습니다. 모든 일이 잘 풀립니다.'
+        },
+        reversed: {
+          keyword: '일시적 어둠, 과신',
+          meaning: '일시적으로 에너지가 떨어지거나 과신으로 인한 실수가 있을 수 있습니다.',
+          love: '관계에서 일시적 어려움이 있지만 곧 회복됩니다.',
+          career: '성공이 지연되거나 자만심으로 실수할 수 있습니다.'
+        }
+      },
+      {
+        id: 20,
+        name: 'Judgement',
+        nameKo: '심판',
+        emoji: 'img/cards/tarot/major/20-judgement.png',
+        upright: {
+          keyword: '각성, 판단, 부활',
+          meaning: '과거를 평가하고 새로운 시작을 준비하세요. 중요한 결정의 순간입니다.',
+          love: '관계를 재평가하고 중요한 결정을 내릴 때입니다.',
+          career: '경력을 재평가하고 새로운 방향을 설정할 기회입니다.'
+        },
+        reversed: {
+          keyword: '자기 의심, 후회, 판단력 흐림',
+          meaning: '과거에 집착하거나 결정을 내리지 못하고 있습니다.',
+          love: '관계에 대한 확신이 없거나 과거를 놓지 못합니다.',
+          career: '중요한 결정을 미루거나 잘못된 판단을 할 수 있습니다.'
+        }
+      },
+      {
+        id: 21,
+        name: 'The World',
+        nameKo: '세계',
+        emoji: 'img/cards/tarot/major/21-world.png',
+        upright: {
+          keyword: '완성, 성취, 통합',
+          meaning: '목표를 달성하고 완성의 기쁨을 누립니다. 한 사이클이 완료됩니다.',
+          love: '관계가 완전하고 조화롭습니다. 완벽한 사랑을 경험합니다.',
+          career: '프로젝트가 성공적으로 완료되고 큰 성취를 이룹니다.'
+        },
+        reversed: {
+          keyword: '미완성, 지연, 부분적 성공',
+          meaning: '목표 달성이 지연되거나 불완전합니다. 마지막 노력이 필요합니다.',
+          love: '관계가 완전하지 않거나 해결해야 할 문제가 남아있습니다.',
+          career: '프로젝트가 거의 완료되었지만 마무리가 필요합니다.'
+        }
+      },
+      
+      // ========== Minor Arcana (56장) ==========
+      // CUPS (컵) 14장
+      {id:22,name:'Ace of Cups',nameKo:'컵 에이스',emoji:'img/cards/tarot/minor/cups/ace.png',upright:{keyword:'새 사랑,감정충만',meaning:'새로운 사랑과 감정의 시작',love:'새로운 사랑 시작',career:'창의적 기회'},reversed:{keyword:'감정차단,실망',meaning:'감정적 어려움',love:'사랑의 실망',career:'창의력 부족'}},
+      {id:23,name:'Two of Cups',nameKo:'컵 2',emoji:'img/cards/tarot/minor/cups/02.png',upright:{keyword:'파트너십,사랑',meaning:'조화로운 관계',love:'깊은 유대',career:'협력 성공'},reversed:{keyword:'불화,이별',meaning:'관계 문제',love:'갈등',career:'협력 실패'}},
+      {id:24,name:'Three of Cups',nameKo:'컵 3',emoji:'img/cards/tarot/minor/cups/03.png',upright:{keyword:'축하,우정,기쁨',meaning:'즐거운 모임',love:'행복한 관계',career:'팀워크 성공'},reversed:{keyword:'과잉,고립',meaning:'관계 과잉',love:'삼각관계',career:'팀 갈등'}},
+      {id:25,name:'Four of Cups',nameKo:'컵 4',emoji:'img/cards/tarot/minor/cups/04.png',upright:{keyword:'무관심,명상',meaning:'내면 성찰',love:'관계 권태',career:'새 기회 무시'},reversed:{keyword:'각성,동기부여',meaning:'새로운 관심',love:'관계 재평가',career:'기회 인식'}},
+      {id:26,name:'Five of Cups',nameKo:'컵 5',emoji:'img/cards/tarot/minor/cups/05.png',upright:{keyword:'상실,슬픔,후회',meaning:'과거 집착',love:'이별 슬픔',career:'실패 경험'},reversed:{keyword:'회복,용서,앞으로',meaning:'치유 시작',love:'과거 놓기',career:'재기'}},
+      {id:27,name:'Six of Cups',nameKo:'컵 6',emoji:'img/cards/tarot/minor/cups/06.png',upright:{keyword:'향수,순수,재회',meaning:'과거 추억',love:'옛사랑 재회',career:'과거 경험 활용'},reversed:{keyword:'과거집착,미성숙',meaning:'과거에 갇힘',love:'옛사랑 미련',career:'과거 방식 고집'}},
+      {id:28,name:'Seven of Cups',nameKo:'컵 7',emoji:'img/cards/tarot/minor/cups/07.png',upright:{keyword:'선택,환상,유혹',meaning:'많은 선택지',love:'이상과 현실 혼란',career:'다양한 기회'},reversed:{keyword:'명료함,결단',meaning:'분명한 선택',love:'현실 직시',career:'집중'}},
+      {id:29,name:'Eight of Cups',nameKo:'컵 8',emoji:'img/cards/tarot/minor/cups/08.png',upright:{keyword:'떠남,포기,탐색',meaning:'현재 상황 떠남',love:'관계 포기',career:'이직,전환'},reversed:{keyword:'두려움,회피',meaning:'떠나지 못함',love:'관계 유지',career:'변화 두려움'}},
+      {id:30,name:'Nine of Cups',nameKo:'컵 9',emoji:'img/cards/tarot/minor/cups/09.png',upright:{keyword:'소원성취,만족',meaning:'바라던 것 이룸',love:'행복한 관계',career:'목표 달성'},reversed:{keyword:'불만족,탐욕',meaning:'만족 불가',love:'기대 과다',career:'성공 후 공허'}},
+      {id:31,name:'Ten of Cups',nameKo:'컵 10',emoji:'img/cards/tarot/minor/cups/10.png',upright:{keyword:'가족,행복,조화',meaning:'완벽한 조화',love:'가족 행복',career:'안정된 성공'},reversed:{keyword:'가족갈등,불화',meaning:'관계 문제',love:'가정 불화',career:'팀 분열'}},
+      {id:32,name:'Page of Cups',nameKo:'컵 페이지',emoji:'img/cards/tarot/minor/cups/page.png',upright:{keyword:'감성,직관,소식',meaning:'감정적 메시지',love:'사랑 고백',career:'창의적 시작'},reversed:{keyword:'미숙,감정억제',meaning:'감정 미성숙',love:'사랑 주저',career:'창의력 부족'}},
+      {id:33,name:'Knight of Cups',nameKo:'컵 기사',emoji:'img/cards/tarot/minor/cups/knight.png',upright:{keyword:'낭만,매력,제안',meaning:'로맨틱 접근',love:'프러포즈',career:'매력적 제안'},reversed:{keyword:'비현실,변덕',meaning:'불안정한 감정',love:'공허한 약속',career:'비현실적 계획'}},
+      {id:34,name:'Queen of Cups',nameKo:'컵 여왕',emoji:'img/cards/tarot/minor/cups/queen.png',upright:{keyword:'공감,직관,양육',meaning:'감정적 성숙',love:'이해심 깊은 관계',career:'배려 리더십'},reversed:{keyword:'과민,의존',meaning:'감정 불안정',love:'집착',career:'감정적 결정'}},
+      {id:35,name:'King of Cups',nameKo:'컵 킹',emoji:'img/cards/tarot/minor/cups/king.png',upright:{keyword:'감정통제,지혜',meaning:'감정 균형',love:'안정된 파트너',career:'감정적 리더십'},reversed:{keyword:'감정억압,조종',meaning:'감정 통제 실패',love:'감정 조종',career:'감정적 폭발'}},
+
+      // SWORDS (소드) 14장
+      {id:36,name:'Ace of Swords',nameKo:'소드 에이스',emoji:'img/cards/tarot/minor/swords/ace.png',upright:{keyword:'진실,명료,돌파',meaning:'새로운 통찰',love:'진실 밝혀짐',career:'명확한 아이디어'},reversed:{keyword:'혼란,거짓',meaning:'생각 혼란',love:'오해',career:'잘못된 판단'}},
+      {id:37,name:'Two of Swords',nameKo:'소드 2',emoji:'img/cards/tarot/minor/swords/02.png',upright:{keyword:'선택회피,균형',meaning:'결정 어려움',love:'관계 갈등 회피',career:'중요한 선택 앞'},reversed:{keyword:'결단,진실직시',meaning:'결정 내림',love:'명확한 선택',career:'결단력'}},
+      {id:38,name:'Three of Swords',nameKo:'소드 3',emoji:'img/cards/tarot/minor/swords/03.png',upright:{keyword:'이별,상처,슬픔',meaning:'깊은 상처',love:'이별,배신',career:'실패 경험'},reversed:{keyword:'치유,용서',meaning:'회복 시작',love:'용서',career:'실패에서 배움'}},
+      {id:39,name:'Four of Swords',nameKo:'소드 4',emoji:'img/cards/tarot/minor/swords/04.png',upright:{keyword:'휴식,회복,명상',meaning:'필요한 휴식',love:'관계 정리',career:'재충전 필요'},reversed:{keyword:'번아웃,불안',meaning:'휴식 부족',love:'정리 실패',career:'과로'}},
+      {id:40,name:'Five of Swords',nameKo:'소드 5',emoji:'img/cards/tarot/minor/swords/05.png',upright:{keyword:'갈등,패배,자기중심',meaning:'공정하지 않은 승리',love:'관계 갈등',career:'팀 분열'},reversed:{keyword:'화해,겸손',meaning:'갈등 해소',love:'화해 시도',career:'협력 회복'}},
+      {id:41,name:'Six of Swords',nameKo:'소드 6',emoji:'img/cards/tarot/minor/swords/06.png',upright:{keyword:'이동,전환,회복',meaning:'어려움에서 벗어남',love:'관계 회복',career:'새 환경 이동'},reversed:{keyword:'정체,회피',meaning:'변화 두려움',love:'과거 집착',career:'이직 실패'}},
+      {id:42,name:'Seven of Swords',nameKo:'소드 7',emoji:'img/cards/tarot/minor/swords/07.png',upright:{keyword:'전략,속임,도피',meaning:'교묘한 전략',love:'비밀',career:'독자 행동'},reversed:{keyword:'양심,정직',meaning:'진실 밝혀짐',love:'비밀 탄로',career:'책임 직면'}},
+      {id:43,name:'Eight of Swords',nameKo:'소드 8',emoji:'img/cards/tarot/minor/swords/08.png',upright:{keyword:'제약,두려움,무력',meaning:'스스로 갇힘',love:'관계 두려움',career:'자기 제한'},reversed:{keyword:'해방,자유',meaning:'제약 벗어남',love:'자유',career:'장애물 극복'}},
+      {id:44,name:'Nine of Swords',nameKo:'소드 9',emoji:'img/cards/tarot/minor/swords/09.png',upright:{keyword:'불안,악몽,걱정',meaning:'과도한 걱정',love:'관계 불안',career:'스트레스'},reversed:{keyword:'희망,회복',meaning:'불안 감소',love:'안정',career:'긍정적 전환'}},
+      {id:45,name:'Ten of Swords',nameKo:'소드 10',emoji:'img/cards/tarot/minor/swords/10.png',upright:{keyword:'종말,배신,고통',meaning:'최악의 끝',love:'관계 종료',career:'프로젝트 실패'},reversed:{keyword:'회복,재기',meaning:'최악 지남',love:'새 시작',career:'재건'}},
+      {id:46,name:'Page of Swords',nameKo:'소드 페이지',emoji:'img/cards/tarot/minor/swords/page.png',upright:{keyword:'호기심,경계,소식',meaning:'새 정보',love:'관계 탐색',career:'학습 기회'},reversed:{keyword:'험담,속임',meaning:'부정적 정보',love:'오해',career:'잘못된 정보'}},
+      {id:47,name:'Knight of Swords',nameKo:'소드 기사',emoji:'img/cards/tarot/minor/swords/knight.png',upright:{keyword:'행동,야망,돌진',meaning:'빠른 행동',love:'직설적 접근',career:'추진력'},reversed:{keyword:'무모,충동',meaning:'성급한 행동',love:'충동적 결정',career:'계획 없는 행동'}},
+      {id:48,name:'Queen of Swords',nameKo:'소드 여왕',emoji:'img/cards/tarot/minor/swords/queen.png',upright:{keyword:'독립,명료,직설',meaning:'명확한 소통',love:'독립적 관계',career:'공정한 판단'},reversed:{keyword:'냉정,편협',meaning:'감정 결여',love:'냉담',career:'비판적'}},
+      {id:49,name:'King of Swords',nameKo:'소드 킹',emoji:'img/cards/tarot/minor/swords/king.png',upright:{keyword:'지적,권위,진실',meaning:'논리적 리더십',love:'이성적 관계',career:'전문성'},reversed:{keyword:'독단,냉혹',meaning:'권위주의',love:'감정 무시',career:'독재적'}},
+
+      // PENTACLES (펜타클) 14장
+      {id:50,name:'Ace of Pentacles',nameKo:'펜타클 에이스',emoji:'img/cards/tarot/minor/pentacles/ace.png',upright:{keyword:'새 기회,풍요',meaning:'물질적 시작',love:'안정된 관계',career:'새 직장,투자'},reversed:{keyword:'기회상실',meaning:'놓친 기회',love:'불안정',career:'재정 손실'}},
+      {id:51,name:'Two of Pentacles',nameKo:'펜타클 2',emoji:'img/cards/tarot/minor/pentacles/02.png',upright:{keyword:'균형,적응,유연',meaning:'다중 역할',love:'관계와 일 균형',career:'멀티태스킹'},reversed:{keyword:'불균형,과부하',meaning:'일 과다',love:'관계 소홀',career:'우선순위 혼란'}},
+      {id:52,name:'Three of Pentacles',nameKo:'펜타클 3',emoji:'img/cards/tarot/minor/pentacles/03.png',upright:{keyword:'협업,숙련,인정',meaning:'팀워크 성공',love:'관계 구축',career:'전문성 인정'},reversed:{keyword:'불협화음',meaning:'팀 갈등',love:'협력 부족',career:'품질 저하'}},
+      {id:53,name:'Four of Pentacles',nameKo:'펜타클 4',emoji:'img/cards/tarot/minor/pentacles/04.png',upright:{keyword:'안정,보수,집착',meaning:'재정 안정',love:'안전 추구',career:'보수적 결정'},reversed:{keyword:'인색,집착',meaning:'과도한 통제',love:'소유욕',career:'기회 놓침'}},
+      {id:54,name:'Five of Pentacles',nameKo:'펜타클 5',emoji:'img/cards/tarot/minor/pentacles/05.png',upright:{keyword:'곤란,가난,고립',meaning:'재정 어려움',love:'외로움',career:'실업,손실'},reversed:{keyword:'회복,지원',meaning:'도움 받음',love:'관계 회복',career:'재정 개선'}},
+      {id:55,name:'Six of Pentacles',nameKo:'펜타클 6',emoji:'img/cards/tarot/minor/pentacles/06.png',upright:{keyword:'관대,나눔,균형',meaning:'주고받음',love:'균형된 관계',career:'보상,승진'},reversed:{keyword:'불공정,빚',meaning:'일방적 관계',love:'불평등',career:'불공정 대우'}},
+      {id:56,name:'Seven of Pentacles',nameKo:'펜타클 7',emoji:'img/cards/tarot/minor/pentacles/07.png',upright:{keyword:'인내,평가,재고',meaning:'중간 평가',love:'관계 점검',career:'성과 검토'},reversed:{keyword:'조급,불만',meaning:'결과 조급',love:'인내 부족',career:'노력 헛됨'}},
+      {id:57,name:'Eight of Pentacles',nameKo:'펜타클 8',emoji:'img/cards/tarot/minor/pentacles/08.png',upright:{keyword:'숙련,노력,장인',meaning:'꾸준한 노력',love:'관계 투자',career:'기술 향상'},reversed:{keyword:'완벽주의,지루',meaning:'무의미한 반복',love:'관계 권태',career:'번아웃'}},
+      {id:58,name:'Nine of Pentacles',nameKo:'펜타클 9',emoji:'img/cards/tarot/minor/pentacles/09.png',upright:{keyword:'풍요,독립,성취',meaning:'자립 성공',love:'독립적 만족',career:'재정 독립'},reversed:{keyword:'의존,과시',meaning:'허영',love:'물질 집착',career:'불안정'}},
+      {id:59,name:'Ten of Pentacles',nameKo:'펜타클 10',emoji:'img/cards/tarot/minor/pentacles/10.png',upright:{keyword:'유산,안정,가족',meaning:'세대 번영',love:'가족 행복',career:'장기 성공'},reversed:{keyword:'재정불안,갈등',meaning:'가족 문제',love:'가정 불화',career:'재산 손실'}},
+      {id:60,name:'Page of Pentacles',nameKo:'펜타클 페이지',emoji:'img/cards/tarot/minor/pentacles/page.png',upright:{keyword:'학습,계획,기회',meaning:'새 시작',love:'진지한 관계',career:'학습,훈련'},reversed:{keyword:'미숙,산만',meaning:'계획 부족',love:'불성실',career:'기회 낭비'}},
+      {id:61,name:'Knight of Pentacles',nameKo:'펜타클 기사',emoji:'img/cards/tarot/minor/pentacles/knight.png',upright:{keyword:'책임,근면,신뢰',meaning:'착실한 진행',love:'헌신적 관계',career:'성실한 노력'},reversed:{keyword:'지루,완고',meaning:'진전 없음',love:'권태',career:'정체'}},
+      {id:62,name:'Queen of Pentacles',nameKo:'펜타클 여왕',emoji:'img/cards/tarot/minor/pentacles/queen.png',upright:{keyword:'양육,풍요,실용',meaning:'물질적 안정',love:'따뜻한 관계',career:'실용적 성공'},reversed:{keyword:'물질집착,과보호',meaning:'균형 상실',love:'과잉보호',career:'일중독'}},
+      {id:63,name:'King of Pentacles',nameKo:'펜타클 킹',emoji:'img/cards/tarot/minor/pentacles/king.png',upright:{keyword:'풍요,사업,성공',meaning:'물질적 달성',love:'안정된 파트너',career:'사업 성공'},reversed:{keyword:'탐욕,완고',meaning:'물질주의',love:'돈 문제',career:'부패'}},
+
+      // WANDS (완드) 14장
+      {id:64,name:'Ace of Wands',nameKo:'완드 에이스',emoji:'img/cards/tarot/minor/wands/ace.png',upright:{keyword:'창조,영감,시작',meaning:'열정적 시작',love:'새 열정',career:'새 프로젝트'},reversed:{keyword:'지연,좌절',meaning:'에너지 부족',love:'열정 식음',career:'동기 부족'}},
+      {id:65,name:'Two of Wands',nameKo:'완드 2',emoji:'img/cards/tarot/minor/wands/02.png',upright:{keyword:'계획,결정,미래',meaning:'다음 단계 계획',love:'관계 방향 결정',career:'사업 확장 고민'},reversed:{keyword:'두려움,우유부단',meaning:'결정 못함',love:'불확실성',career:'계획 부족'}},
+      {id:66,name:'Three of Wands',nameKo:'완드 3',emoji:'img/cards/tarot/minor/wands/03.png',upright:{keyword:'확장,예측,진보',meaning:'성장 전망',love:'관계 발전',career:'해외 기회'},reversed:{keyword:'지연,실망',meaning:'계획 차질',love:'기대 실망',career:'확장 실패'}},
+      {id:67,name:'Four of Wands',nameKo:'완드 4',emoji:'img/cards/tarot/minor/wands/04.png',upright:{keyword:'축하,안정,화합',meaning:'성취 축하',love:'결혼,동거',career:'프로젝트 완료'},reversed:{keyword:'불안정,취소',meaning:'계획 변경',love:'관계 불안',career:'연기'}},
+      {id:68,name:'Five of Wands',nameKo:'완드 5',emoji:'img/cards/tarot/minor/wands/05.png',upright:{keyword:'경쟁,갈등,긴장',meaning:'건전한 경쟁',love:'의견 충돌',career:'경쟁 환경'},reversed:{keyword:'회피,내적갈등',meaning:'갈등 회피',love:'소통 부족',career:'팀워크 결여'}},
+      {id:69,name:'Six of Wands',nameKo:'완드 6',emoji:'img/cards/tarot/minor/wands/06.png',upright:{keyword:'승리,인정,성공',meaning:'대중적 성공',love:'관계 인정',career:'목표 달성'},reversed:{keyword:'자만,실패',meaning:'인정 부족',love:'과시',career:'실패 경험'}},
+      {id:70,name:'Seven of Wands',nameKo:'완드 7',emoji:'img/cards/tarot/minor/wands/07.png',upright:{keyword:'방어,도전,인내',meaning:'입장 고수',love:'관계 방어',career:'경쟁 대응'},reversed:{keyword:'포기,압도',meaning:'방어 실패',love:'관계 포기',career:'경쟁 패배'}},
+      {id:71,name:'Eight of Wands',nameKo:'완드 8',emoji:'img/cards/tarot/minor/wands/08.png',upright:{keyword:'속도,행동,소식',meaning:'급속 진행',love:'빠른 발전',career:'신속한 결과'},reversed:{keyword:'지연,혼란',meaning:'진행 지연',love:'관계 정체',career:'계획 차질'}},
+      {id:72,name:'Nine of Wands',nameKo:'완드 9',emoji:'img/cards/tarot/minor/wands/09.png',upright:{keyword:'인내,회복력,경계',meaning:'마지막 노력',love:'관계 시험',career:'끈기 필요'},reversed:{keyword:'탈진,포기',meaning:'한계 도달',love:'지침',career:'번아웃'}},
+      {id:73,name:'Ten of Wands',nameKo:'완드 10',emoji:'img/cards/tarot/minor/wands/10.png',upright:{keyword:'부담,책임,압박',meaning:'과도한 짐',love:'관계 부담',career:'업무 과다'},reversed:{keyword:'위임,해방',meaning:'짐 내려놓음',love:'책임 분담',career:'업무 조정'}},
+      {id:74,name:'Page of Wands',nameKo:'완드 페이지',emoji:'img/cards/tarot/minor/wands/page.png',upright:{keyword:'열정,탐험,소식',meaning:'새로운 모험',love:'열정적 시작',career:'창의적 기회'},reversed:{keyword:'충동,산만',meaning:'계획 없음',love:'불안정',career:'집중력 부족'}},
+      {id:75,name:'Knight of Wands',nameKo:'완드 기사',emoji:'img/cards/tarot/minor/wands/knight.png',upright:{keyword:'모험,에너지,추진',meaning:'대담한 행동',love:'열정적 접근',career:'빠른 진행'},reversed:{keyword:'무모,충동',meaning:'계획 없는 행동',love:'불안정 관계',career:'성급함'}},
+      {id:76,name:'Queen of Wands',nameKo:'완드 여왕',emoji:'img/cards/tarot/minor/wands/queen.png',upright:{keyword:'자신감,카리스마',meaning:'매력적 리더',love:'독립적 관계',career:'자신감 있는 리더십'},reversed:{keyword:'질투,독선',meaning:'자기중심적',love:'소유욕',career:'독단적'}},
+      {id:77,name:'King of Wands',nameKo:'완드 킹',emoji:'img/cards/tarot/minor/wands/king.png',upright:{keyword:'리더십,비전',meaning:'카리스마 리더',love:'열정적 파트너',career:'사업 성공'},reversed:{keyword:'독재,충동',meaning:'통제 과다',love:'지배욕',career:'권위주의'}}
+    ];
+
+    // ============================================
+    // 타로 리딩 시스템
+    // ============================================
+
+    let selectedSpread = null;
+    let selectedCards = [];
+    let shuffledDeck = [];
+
+    function selectSpread(spreadType) {
+      // 모든 스프레드 카드에서 selected 클래스 제거
+      document.querySelectorAll('.spread-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+      
+      // 클릭한 카드에 selected 클래스 추가
+      event.currentTarget.classList.add('selected');
+      
+      selectedSpread = spreadType;
+    }
+
+    function startReading() {
+      if (!selectedSpread) {
+        alert('타로 스프레드를 먼저 선택해주세요.');
+        return;
+      }
+      
+      // UT 차감 로직
+      const TAROT_COST = 800; // 타로 리딩 비용
+      const currentUT = parseInt(localStorage.getItem('ut_balance') || '0');
+      
+      // UT 잔액 확인
+      if (currentUT < TAROT_COST) {
+        alert(`❌ UT가 부족합니다!\n\n필요: ${TAROT_COST} UT\n보유: ${currentUT} UT\n부족: ${TAROT_COST - currentUT} UT\n\nUT를 충전해주세요.`);
+        return;
+      }
+      
+      // UT 차감 애니메이션
+      const balanceEl = document.getElementById('tarot-ut-balance');
+      const oldBalance = currentUT;
+      const newBalance = currentUT - TAROT_COST;
+      
+      // UT 차감
+      localStorage.setItem('ut_balance', newBalance.toString());
+      
+      // 애니메이션으로 표시
+      balanceEl.style.transition = 'all 0.5s ease';
+      balanceEl.style.transform = 'scale(1.3)';
+      balanceEl.style.color = '#ff6b6b';
+      
+      setTimeout(() => {
+        balanceEl.textContent = newBalance;
+        balanceEl.style.transform = 'scale(1)';
+        balanceEl.style.color = '#fff';
+      }, 300);
+      
+      // 차감 알림
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed; top: 100px; right: 20px; z-index: 10000;
+        padding: 16px 24px; background: linear-gradient(135deg, #9333ea, #6b21a8);
+        border: 2px solid rgba(192,132,252,0.5); border-radius: 12px;
+        color: #fff; font-size: 16px; font-weight: 700;
+        box-shadow: 0 8px 24px rgba(147,51,234,0.5);
+        animation: slideInRight 0.5s ease;
+      `;
+      notification.innerHTML = `🔮 ${TAROT_COST} UT 차감<br><small style="font-size:13px; opacity:0.9;">잔액: ${newBalance} UT</small>`;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.animation = 'slideOutRight 0.5s ease';
+        setTimeout(() => notification.remove(), 500);
+      }, 3000);
+
+      // 덱 섞기
+      shuffledDeck = [...TAROT_DECK].sort(() => Math.random() - 0.5);
+      
+      // 필요한 카드 수 설정
+      let needCards = 1;
+      if (selectedSpread === 'three') needCards = 3;
+      else if (selectedSpread === 'love' || selectedSpread === 'career') needCards = 4;
+
+      document.getElementById('needCards').textContent = needCards;
+
+      // 카드 덱 생성
+      const deckContainer = document.getElementById('cardsDeck');
+      deckContainer.innerHTML = '';
+      
+      for (let i = 0; i < 30; i++) {
+        const cardBack = document.createElement('div');
+        cardBack.className = 'card-back';
+        cardBack.textContent = '🎴';
+        cardBack.onclick = function() {
+          if (selectedCards.length < needCards && !this.classList.contains('selected')) {
+            this.classList.add('selected');
+            selectedCards.push(i);
+          } else if (this.classList.contains('selected')) {
+            this.classList.remove('selected');
+            selectedCards = selectedCards.filter(idx => idx !== i);
+          }
+        };
+        deckContainer.appendChild(cardBack);
+      }
+
+      // 화면 전환
+      document.getElementById('spreadSelection').style.display = 'none';
+      document.getElementById('cardSelection').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function showResult() {
+      const needCards = selectedSpread === 'one' ? 1 : 
+                       selectedSpread === 'three' ? 3 : 4;
+
+      if (selectedCards.length !== needCards) {
+        alert(`${needCards}장의 카드를 선택해주세요.`);
+        return;
+      }
+
+      // 선택한 카드 가져오기
+      const drawnCards = selectedCards.map(idx => {
+        const card = shuffledDeck[idx % TAROT_DECK.length];
+        const isReversed = Math.random() > 0.5;
+        return { ...card, isReversed };
+      });
+
+      // 결과 표시
+      displayResult(drawnCards);
+
+      // 화면 전환
+      document.getElementById('cardSelection').style.display = 'none';
+      document.getElementById('readingResult').classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function displayResult(cards) {
+      const question = document.getElementById('question').value || '운세';
+      
+      // 제목 설정
+      const spreadNames = {
+        'one': '원 카드 리딩',
+        'three': '쓰리 카드 스프레드',
+        'love': '연애 운세',
+        'career': '직업·재물 운세'
+      };
+      document.getElementById('resultTitle').textContent = spreadNames[selectedSpread];
+
+      // 카드 표시
+      const container = document.getElementById('drawnCards');
+      container.innerHTML = '';
+
+      const positions = {
+        'one': ['현재 상황'],
+        'three': ['과거', '현재', '미래'],
+        'love': ['나의 마음', '상대의 마음', '관계의 흐름', '조언'],
+        'career': ['현재 상황', '장애물', '강점', '결과']
+      };
+
+      const positionLabels = positions[selectedSpread];
+
+      cards.forEach((card, idx) => {
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'drawn-card';
+        
+        const interpretation = card.isReversed ? card.reversed : card.upright;
+        
+        cardDiv.innerHTML = `
+          <div class="card-position">${positionLabels[idx]}</div>
+          <div class="card-name">${card.nameKo}</div>
+          <div class="card-direction">${card.isReversed ? '역방향 ↓' : '정방향 ↑'}</div>
+          <div class="card-image">
+            <img src="${card.emoji}" alt="${card.nameKo}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px; box-shadow: 0 8px 32px rgba(251,191,36,0.3);">
+          </div>
+          <div style="font-size: 13px; color: var(--gold-light); margin-top: 12px;">
+            ${interpretation.keyword}
+          </div>
+        `;
+        
+        container.appendChild(cardDiv);
+      });
+
+      // 종합 해석
+      generateOverallInterpretation(cards);
+
+      // 조언
+      generateAdvice(cards);
+      
+      // ⚡ AI 분석 버튼 추가
+      setTimeout(initAIAnalysisButton, 100);
+    }
+
+    function generateOverallInterpretation(cards) {
+      const context = selectedSpread === 'love' ? 'love' : 
+                     selectedSpread === 'career' ? 'career' : 'meaning';
+      
+      let interpretation = '';
+
+      cards.forEach((card, idx) => {
+        const meaning = card.isReversed ? card.reversed : card.upright;
+        const contextText = meaning[context] || meaning.meaning;
+        
+        if (selectedSpread === 'three') {
+          const labels = ['과거에는', '현재', '미래에는'];
+          interpretation += `<p style="margin-bottom: 16px;"><strong>${labels[idx]}:</strong> ${contextText}</p>`;
+        } else if (selectedSpread === 'one') {
+          interpretation = `<p>${contextText}</p>`;
+        } else {
+          interpretation += `<p style="margin-bottom: 16px;">${contextText}</p>`;
+        }
+      });
+
+      document.getElementById('overallInterp').innerHTML = interpretation;
+    }
+
+    function generateAdvice(cards) {
+      const uprightCount = cards.filter(c => !c.isReversed).length;
+      const reversedCount = cards.length - uprightCount;
+
+      let advice = '';
+
+      if (uprightCount >= cards.length * 0.7) {
+        advice = '대체로 긍정적인 흐름입니다. 현재의 방향을 유지하며 자신감을 가지고 나아가세요. 타로는 당신의 노력이 좋은 결과를 가져올 것임을 말하고 있습니다.';
+      } else if (reversedCount >= cards.length * 0.7) {
+        advice = '도전적인 시기입니다. 하지만 이는 성장의 기회이기도 합니다. 현재 상황을 재평가하고, 필요하다면 접근 방식을 바꿔보세요. 인내심을 가지고 한 걸음씩 나아가면 극복할 수 있습니다.';
+      } else {
+        advice = '빛과 그림자가 공존하는 시기입니다. 긍정적인 면을 키우고 부정적인 면은 개선하려는 노력이 필요합니다. 균형잡힌 시각으로 상황을 바라보세요.';
+      }
+
+      // 카드별 특별 조언
+      const hasDeathOrTower = cards.some(c => ['Death', 'The Tower'].includes(c.name));
+      if (hasDeathOrTower) {
+        advice += ' 큰 변화의 시기이지만, 이는 더 나은 미래를 위한 필수적인 과정입니다. 변화를 두려워하지 마세요.';
+      }
+
+      const hasSunOrWorld = cards.some(c => ['The Sun', 'The World'].includes(c.name));
+      if (hasSunOrWorld) {
+        advice += ' 성공과 완성의 에너지가 함께합니다. 지금이 목표를 향해 전진할 최적의 시기입니다.';
+      }
+
+      document.getElementById('adviceInterp').textContent = advice;
+    }
+
+    function resetReading() {
+      selectedSpread = null;
+      selectedCards = [];
+      shuffledDeck = [];
+      
+      document.getElementById('question').value = '';
+      document.querySelectorAll('.spread-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+      
+      document.getElementById('spreadSelection').style.display = 'block';
+      document.getElementById('cardSelection').style.display = 'none';
+      document.getElementById('readingResult').classList.remove('active');
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    // ========================================
+    // 🤖 AI 분석 시스템
+    // ========================================
+    
+    function initAIAnalysisButton() {
+      // 기존 버튼 제거
+      const existing = document.getElementById('ai-analysis-btn');
+      if (existing) existing.remove();
+      
+      const existingPanel = document.getElementById('ai-analysis-panel');
+      if (existingPanel) existingPanel.remove();
+      
+      // AI 분석 버튼 생성
+      const adviceSection = document.getElementById('adviceInterp').parentElement;
+      const aiButton = document.createElement('button');
+      aiButton.id = 'ai-analysis-btn';
+      aiButton.innerHTML = '🤖 AI 딥 분석 시작';
+      aiButton.style.cssText = `
+        width: 100%; max-width: 400px; margin: 20px auto; display: block;
+        padding: 16px 24px; font-size: 18px; font-weight: 700;
+        background: linear-gradient(135deg, #a855f7, #ec4899);
+        border: none; border-radius: 999px; color: #fff;
+        cursor: pointer; box-shadow: 0 10px 30px rgba(168,85,247,0.5);
+        transition: all 0.3s ease;
+      `;
+      aiButton.onmouseover = () => aiButton.style.transform = 'translateY(-2px)';
+      aiButton.onmouseout = () => aiButton.style.transform = 'translateY(0)';
+      aiButton.onclick = performAIAnalysis;
+      
+      adviceSection.parentElement.appendChild(aiButton);
+      
+      // AI 분석 결과 패널 생성
+      const aiPanel = document.createElement('div');
+      aiPanel.id = 'ai-analysis-panel';
+      aiPanel.style.cssText = `
+        display: none; margin-top: 24px; padding: 24px;
+        background: linear-gradient(135deg, rgba(88,28,135,0.15), rgba(15,23,42,0.95));
+        border-radius: 20px; border: 1px solid rgba(168,85,247,0.4);
+        box-shadow: 0 0 30px rgba(168,85,247,0.3);
+      `;
+      aiPanel.innerHTML = `
+        <h3 style="color:#a855f7; font-size:22px; margin-bottom:16px; text-align:center;">
+          🔮 AI 딥 분석 결과
+        </h3>
+        
+        <div id="energy-analysis" style="margin-bottom:20px; padding:16px; background:rgba(15,23,42,0.8); border-radius:12px;">
+          <h4 style="color:#fbbf24; font-size:16px; margin-bottom:10px;">⚡ 에너지 분석</h4>
+          <div id="energy-content" style="color:#e5e7eb; line-height:1.6;"></div>
+        </div>
+        
+        <div id="timeline-analysis" style="display:none; margin-bottom:20px; padding:16px; background:rgba(15,23,42,0.8); border-radius:12px;">
+          <h4 style="color:#fbbf24; font-size:16px; margin-bottom:10px;">⏰ 과거-현재-미래 분석</h4>
+          <div id="timeline-content" style="color:#e5e7eb; line-height:1.6;"></div>
+        </div>
+        
+        <div id="deep-insight" style="margin-bottom:20px; padding:16px; background:rgba(88,28,135,0.25); border-radius:12px; border:1px solid rgba(168,85,247,0.3);">
+          <h4 style="color:#c084fc; font-size:16px; margin-bottom:10px;">💎 심층 통찰</h4>
+          <div id="insight-content" style="color:#e5e7eb; line-height:1.7; font-size:15px;"></div>
+        </div>
+        
+        <div id="action-steps" style="margin-bottom:20px; padding:16px; background:rgba(15,23,42,0.8); border-radius:12px;">
+          <h4 style="color:#fbbf24; font-size:16px; margin-bottom:10px;">🎯 실천 가이드</h4>
+          <ul id="action-list" style="color:#e5e7eb; line-height:1.8; padding-left:24px;"></ul>
+        </div>
+        
+        <div id="affirmation" style="padding:20px; background:linear-gradient(135deg, rgba(168,85,247,0.2), rgba(236,72,153,0.2)); border-radius:12px; text-align:center; border:2px solid rgba(168,85,247,0.4);">
+          <h4 style="color:#e879f9; font-size:16px; margin-bottom:12px;">✨ 오늘의 확언</h4>
+          <div id="affirmation-text" style="color:#fce7f3; font-size:17px; font-weight:600; line-height:1.6; font-style:italic;"></div>
+        </div>
+      `;
+      
+      adviceSection.parentElement.appendChild(aiPanel);
+    }
+    
+    function performAIAnalysis() {
+      if (!selectedCards || selectedCards.length === 0) {
+        alert('먼저 카드를 뽑아주세요!');
+        return;
+      }
+      
+      // AI 엔진 실행
+      const aiResult = TAROT_AI_ENGINE.generateAIReading(selectedCards, selectedSpread);
+      
+      // 결과 표시
+      const panel = document.getElementById('ai-analysis-panel');
+      panel.style.display = 'block';
+      
+      // 에너지 분석
+      const energyDiv = document.getElementById('energy-content');
+      energyDiv.innerHTML = `
+        <p><strong>지배 에너지:</strong> ${translateSuit(aiResult.combination.dominantEnergy)}</p>
+        <p><strong>종합 레벨:</strong> ${translateLevel(aiResult.combination.synthesisLevel)}</p>
+        <div style="margin-top:10px; padding:10px; background:rgba(251,191,36,0.1); border-radius:8px;">
+          <small>에너지 분포: ${Object.entries(aiResult.combination.energyScore).map(([k,v]) => `${translateSuit(k)}(${v})`).join(' | ')}</small>
+        </div>
+      `;
+      
+      // 시간대 분석 (3장일 때만)
+      if (aiResult.timeline) {
+        const timelineDiv = document.getElementById('timeline-analysis');
+        const timelineContent = document.getElementById('timeline-content');
+        timelineDiv.style.display = 'block';
+        timelineContent.innerHTML = `
+          <div style="margin-bottom:12px;">
+            <strong style="color:#fbbf24;">📜 과거:</strong> ${aiResult.timeline.past.lesson}
+          </div>
+          <div style="margin-bottom:12px;">
+            <strong style="color:#fbbf24;">⚡ 현재:</strong> 도전 - ${aiResult.timeline.present.challenge}<br>
+            <span style="margin-left:20px;">기회 - ${aiResult.timeline.present.opportunity}</span>
+          </div>
+          <div style="margin-bottom:12px;">
+            <strong style="color:#fbbf24;">🌟 미래:</strong> ${aiResult.timeline.future.potential}<br>
+            <span style="margin-left:20px;">조언 - ${aiResult.timeline.future.advice}</span>
+          </div>
+          <div style="margin-top:16px; padding:12px; background:rgba(168,85,247,0.2); border-radius:8px;">
+            <strong>전체 흐름:</strong> ${aiResult.timeline.overallFlow}
+          </div>
+        `;
+      }
+      
+      // 심층 통찰
+      document.getElementById('insight-content').textContent = aiResult.deepInsight;
+      
+      // 액션 스텝
+      const actionList = document.getElementById('action-list');
+      actionList.innerHTML = aiResult.actionSteps.map(step => `<li>${step}</li>`).join('');
+      
+      // 긍정 확언
+      document.getElementById('affirmation-text').textContent = aiResult.affirmation;
+      
+      // 스크롤
+      panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    
+    function translateSuit(suit) {
+      const names = {
+        major: '메이저 아르카나', cups: '컵(감정)', swords: '소드(정신)',
+        pentacles: '펜타클(물질)', wands: '완드(창조)', emotional: '감정',
+        mental: '정신', material: '물질', creative: '창조', universal: '우주'
+      };
+      return names[suit] || suit;
+    }
+    
+    function translateLevel(level) {
+      const levels = {
+        highly_positive: '매우 긍정 ⭐⭐⭐⭐⭐',
+        positive: '긍정 ⭐⭐⭐⭐',
+        balanced: '균형 ⚖️',
+        challenging: '도전 💪',
+        transformative: '변화 🔥'
+      };
+      return levels[level] || level;
+    }
+    
+    // ============================================
+    // UT 잔액 초기화 및 업데이트
+    // ============================================
+    function updateUTDisplay() {
+      const balance = parseInt(localStorage.getItem('ut_balance') || '0');
+      const balanceEl = document.getElementById('tarot-ut-balance');
+      if (balanceEl) {
+        balanceEl.textContent = balance;
+      }
+    }
+    
+    // 페이지 로드 시 UT 잔액 표시
+    window.addEventListener('DOMContentLoaded', updateUTDisplay);
+    
+    // 다른 탭에서 UT 변경 시 업데이트
+    window.addEventListener('storage', function(e) {
+      if (e.key === 'ut_balance') {
+        updateUTDisplay();
+      }
+    });
+  </script>
+  
+  <!-- AI 엔진 로드 -->
+  <script src="tarot-ai-enhancement.js"></script>
+
+  <!-- ✨ THE UNIQUE LEGENDARY CORE FRAMEWORK v4.0 -->
+  <script src="js/the-unique-core.js"></script>
+
+</body>
+</html>

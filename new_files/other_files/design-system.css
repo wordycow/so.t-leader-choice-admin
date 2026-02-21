@@ -1,0 +1,359 @@
+/**
+ * THE UNIQUE Design System
+ * 2026 Modern CSS Variables & Fluid Typography
+ * 
+ * 목적: 일관된 디자인 언어, 유지보수성 향상, 반응형 최적화
+ */
+
+:root {
+  /* ==================== Color System ==================== */
+  /* Primary Colors */
+  --color-primary: #fbbf24;
+  --color-primary-light: #fcd34d;
+  --color-primary-dark: #f59e0b;
+  --color-primary-darker: #d97706;
+  
+  /* Secondary Colors */
+  --color-secondary: #a855f7;
+  --color-secondary-light: #c084fc;
+  --color-secondary-dark: #9333ea;
+  
+  /* Accent Colors */
+  --color-accent-cyan: #00f7ff;
+  --color-accent-lime: #84cc16;
+  --color-accent-pink: #ec4899;
+  
+  /* Background Colors */
+  --color-bg-primary: #0B1120;
+  --color-bg-secondary: #0f172a;
+  --color-bg-tertiary: #1e293b;
+  --color-bg-elevated: #1e2848;
+  
+  /* Text Colors */
+  --color-text-primary: #f9fafb;
+  --color-text-secondary: #e5e7eb;
+  --color-text-tertiary: #cbd5e1;
+  --color-text-muted: #94a3b8;
+  --color-text-disabled: #64748b;
+  
+  /* Border Colors */
+  --color-border-primary: rgba(245, 158, 11, 0.95);
+  --color-border-secondary: rgba(251, 191, 36, 0.4);
+  --color-border-subtle: rgba(255, 255, 255, 0.1);
+  --color-border-glass: rgba(255, 255, 255, 0.18);
+  
+  /* Overlay Colors */
+  --color-overlay-light: rgba(255, 255, 255, 0.1);
+  --color-overlay-medium: rgba(0, 0, 0, 0.3);
+  --color-overlay-heavy: rgba(0, 0, 0, 0.6);
+  
+  /* Semantic Colors */
+  --color-success: #10b981;
+  --color-success-light: #34d399;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #3b82f6;
+  
+  /* ==================== Spacing System ==================== */
+  /* Base: 4px (0.25rem) */
+  --space-0: 0;
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-7: 1.75rem;   /* 28px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  --space-20: 5rem;     /* 80px */
+  --space-24: 6rem;     /* 96px */
+  
+  /* ==================== Typography System ==================== */
+  /* Font Families */
+  --font-primary: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  --font-display: "Cinzel", "Times New Roman", serif;
+  --font-korean: "Pretendard", var(--font-primary);
+  
+  /* Font Weights */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
+  
+  /* Fluid Font Sizes (Responsive) */
+  /* clamp(min, preferred, max) */
+  --text-xs: clamp(0.625rem, 0.5vw + 0.5rem, 0.75rem);      /* 10-12px */
+  --text-sm: clamp(0.75rem, 0.6vw + 0.6rem, 0.875rem);      /* 12-14px */
+  --text-base: clamp(0.875rem, 0.8vw + 0.7rem, 1rem);       /* 14-16px */
+  --text-lg: clamp(1rem, 1vw + 0.8rem, 1.125rem);           /* 16-18px */
+  --text-xl: clamp(1.125rem, 1.2vw + 0.9rem, 1.25rem);      /* 18-20px */
+  --text-2xl: clamp(1.25rem, 1.5vw + 1rem, 1.5rem);         /* 20-24px */
+  --text-3xl: clamp(1.5rem, 2vw + 1.2rem, 1.875rem);        /* 24-30px */
+  --text-4xl: clamp(1.875rem, 2.5vw + 1.5rem, 2.25rem);     /* 30-36px */
+  --text-5xl: clamp(2.25rem, 3vw + 1.8rem, 3rem);           /* 36-48px */
+  
+  /* Line Heights */
+  --leading-none: 1;
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+  
+  /* Letter Spacing */
+  --tracking-tighter: -0.05em;
+  --tracking-tight: -0.025em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.1em;
+  
+  /* ==================== Border Radius ==================== */
+  --radius-sm: 0.375rem;    /* 6px */
+  --radius-base: 0.5rem;    /* 8px */
+  --radius-md: 0.75rem;     /* 12px */
+  --radius-lg: 1rem;        /* 16px */
+  --radius-xl: 1.25rem;     /* 20px */
+  --radius-2xl: 1.5rem;     /* 24px */
+  --radius-3xl: 1.875rem;   /* 30px */
+  --radius-full: 9999px;
+  
+  /* ==================== Shadows ==================== */
+  /* Elevation System */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  
+  /* Premium Shadows (Dark theme optimized) */
+  --shadow-premium-sm: 0 4px 12px rgba(0, 0, 0, 0.35);
+  --shadow-premium-md: 0 8px 18px rgba(0, 0, 0, 0.45);
+  --shadow-premium-lg: 0 12px 28px rgba(0, 0, 0, 0.55);
+  --shadow-premium-xl: 0 20px 40px rgba(0, 0, 0, 0.65);
+  --shadow-premium-2xl: 0 30px 60px rgba(0, 0, 0, 0.75);
+  
+  /* Glow Effects */
+  --glow-gold: 0 0 16px rgba(251, 191, 36, 0.35);
+  --glow-gold-lg: 0 0 24px rgba(251, 191, 36, 0.5);
+  --glow-cyan: 0 0 18px rgba(0, 247, 255, 0.35);
+  --glow-purple: 0 0 18px rgba(168, 85, 247, 0.35);
+  
+  /* ==================== Transitions ==================== */
+  /* Duration */
+  --duration-fast: 0.1s;
+  --duration-base: 0.2s;
+  --duration-medium: 0.3s;
+  --duration-slow: 0.5s;
+  
+  /* Easing */
+  --ease-linear: linear;
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* ==================== Z-Index Scale ==================== */
+  --z-base: 0;
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-notification: 1080;
+  
+  /* ==================== Breakpoints (for JS) ==================== */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+  
+  /* ==================== Glass Morphism ==================== */
+  --glass-bg-light: rgba(255, 255, 255, 0.1);
+  --glass-bg-medium: rgba(255, 255, 255, 0.15);
+  --glass-bg-heavy: rgba(255, 255, 255, 0.25);
+  --glass-blur: blur(20px) saturate(180%);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.18);
+  
+  /* ==================== Component Specific ==================== */
+  /* Card */
+  --card-padding: var(--space-6);
+  --card-radius: var(--radius-2xl);
+  --card-shadow: var(--shadow-premium-lg);
+  
+  /* Button */
+  --button-padding-sm: var(--space-2) var(--space-4);
+  --button-padding-md: var(--space-3) var(--space-6);
+  --button-padding-lg: var(--space-4) var(--space-8);
+  --button-radius: var(--radius-full);
+  
+  /* Input */
+  --input-padding: var(--space-3) var(--space-4);
+  --input-radius: var(--radius-md);
+  --input-border: 1px solid var(--color-border-subtle);
+  
+  /* ==================== Utility Classes Support ==================== */
+  /* Grid & Flex Gap */
+  --gap-sm: var(--space-2);
+  --gap-base: var(--space-4);
+  --gap-md: var(--space-6);
+  --gap-lg: var(--space-8);
+  
+  /* Container Max Width */
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1280px;
+  --container-2xl: 1536px;
+}
+
+/* ==================== Dark Mode Support (Future) ==================== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Already optimized for dark, no changes needed */
+  }
+}
+
+/* ==================== Reduced Motion Support ==================== */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0.01ms;
+    --duration-base: 0.01ms;
+    --duration-medium: 0.01ms;
+    --duration-slow: 0.01ms;
+  }
+  
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ==================== Focus Visible (Accessibility) ==================== */
+*:focus {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
+}
+
+/* Remove focus outline for mouse/touch users */
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ==================== Selection Styling ==================== */
+::selection {
+  background-color: var(--color-primary);
+  color: var(--color-bg-primary);
+}
+
+::-moz-selection {
+  background-color: var(--color-primary);
+  color: var(--color-bg-primary);
+}
+
+/* ==================== Scrollbar Styling ==================== */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: var(--radius-full);
+  transition: background var(--duration-base) var(--ease-out);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.55);
+}
+
+/* ==================== Utility Classes ==================== */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
+}
+
+@media (min-width: 640px) {
+  .container { max-width: var(--container-sm); }
+}
+
+@media (min-width: 768px) {
+  .container { max-width: var(--container-md); }
+}
+
+@media (min-width: 1024px) {
+  .container { max-width: var(--container-lg); }
+}
+
+@media (min-width: 1280px) {
+  .container { max-width: var(--container-xl); }
+}
+
+@media (min-width: 1536px) {
+  .container { max-width: var(--container-2xl); }
+}
+
+/* ==================== Performance Optimizations ==================== */
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* ==================== Print Styles ==================== */
+@media print {
+  :root {
+    --color-text-primary: #000;
+    --color-bg-primary: #fff;
+  }
+  
+  .no-print {
+    display: none !important;
+  }
+}

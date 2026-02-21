@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>니즈별 안내 샘플 – 별책 부록</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- 폰트 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    body {
+      font-family: "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #020617 url('img/ebook4-background.png') center/cover no-repeat fixed;
+      color: #e5e7eb;
+    }
+
+    .page-wrap {
+      max-width: 960px;
+      margin: 32px auto 40px;
+      padding: 0 16px 24px;
+    }
+
+    /* 상단 타이틀 */
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .title-en {
+      font-family: "Cinzel", "Times New Roman", serif;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #facc15;
+      text-shadow: 0 0 12px rgba(250, 204, 21, 0.8);
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #9ca3af;
+    }
+
+    /* 메인 카드 (커버 + 정보) */
+    .main-card {
+      border-radius: 24px;
+      padding: 18px 18px 20px;
+      background: radial-gradient(circle at top, rgba(15,23,42,0.96), rgba(15,23,42,0.99));
+      border: 1px solid rgba(148,163,184,0.6);
+      box-shadow:
+        0 0 0 1px rgba(15,23,42,1),
+        0 20px 55px rgba(0,0,0,0.95);
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 2.2fr);
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .cover-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .cover {
+      width: 100%;
+      max-width: 260px;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow:
+        0 10px 28px rgba(0,0,0,0.95),
+        0 0 0 1px rgba(30,64,118,0.8);
+    }
+
+    .cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .tag {
+      font-size: 11px;
+      color: #facc15;
+      border-radius: 999px;
+      padding: 4px 10px;
+      border: 1px solid rgba(250,204,21,0.9);
+      background: rgba(15,23,42,0.95);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .info {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .info-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #f9fafb;
+    }
+
+    .info-sub {
+      font-size: 13px;
+      color: #cbd5f5;
+    }
+
+    .info-desc {
+      font-size: 13px;
+      color: #e5e7eb;
+      line-height: 1.7;
+      white-space: pre-line;
+    }
+
+    /* 영상/음원 섹션 */
+    .media-section {
+      border-radius: 18px;
+      padding: 16px 18px 14px;
+      background: radial-gradient(circle at top, rgba(15,23,42,0.96), rgba(15,23,42,0.99));
+      border: 1px solid rgba(30,64,118,0.9);
+      box-shadow: 0 14px 32px rgba(0,0,0,0.95);
+      margin-bottom: 16px;
+    }
+
+    .media-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #e5e7eb;
+      margin-bottom: 6px;
+    }
+
+    .media-sub {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-bottom: 8px;
+    }
+
+    video, audio {
+      width: 100%;
+      max-width: 100%;
+      border-radius: 12px;
+      outline: none;
+    }
+
+    video {
+      margin-bottom: 10px;
+      background: #020617;
+      box-shadow: 0 12px 26px rgba(0,0,0,0.9);
+    }
+
+    audio {
+      background: #020617;
+    }
+
+    /* 대화 스크립트 섹션 */
+    .script-section {
+      border-radius: 18px;
+      padding: 14px 16px 14px;
+      background: radial-gradient(circle at top, rgba(15,23,42,0.98), rgba(15,23,42,0.99));
+      border: 1px solid rgba(55,65,81,0.9);
+      box-shadow: 0 10px 26px rgba(0,0,0,0.9);
+      margin-bottom: 10px;
+    }
+
+    .script-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .script-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .copy-btn {
+      padding: 5px 10px;
+      font-size: 11px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.9);
+      background: rgba(15,23,42,0.96);
+      color: #e5e7eb;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition: background 0.12s ease, transform 0.08s ease, border-color 0.12s ease;
+    }
+
+    .copy-btn:hover {
+      background: rgba(30,64,175,0.9);
+      border-color: rgba(191,219,254,0.9);
+      transform: translateY(-1px);
+    }
+
+    .script-text {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid rgba(31,41,55,0.95);
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 13px;
+      padding: 10px 11px;
+      resize: vertical;
+      min-height: 110px;
+      line-height: 1.6;
+    }
+
+    .script-text:focus {
+      outline: none;
+      border-color: rgba(248,181,84,0.9);
+      box-shadow: 0 0 0 1px rgba(248,181,84,0.6);
+    }
+
+    .footer-note {
+      margin-top: 10px;
+      font-size: 11px;
+      color: #9ca3af;
+      text-align: right;
+      opacity: 0.8;
+    }
+
+    @media (max-width: 768px) {
+      .main-card {
+        grid-template-columns: minmax(0,1fr);
+      }
+      .page-wrap {
+        margin-top: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrap">
+    <header class="header">
+      <div class="title-en">THE UNIQUE – 별책 부록</div>
+      <div class="subtitle">니즈별 안내 샘플 · 니즈 찾기</div>
+    </header>
+
+    <!-- 메인 정보 카드 -->
+    <section class="main-card">
+      <div class="cover-wrap">
+        <div class="cover">
+          <!-- ★ 커버 이미지 경로 유지 -->
+          <img src="img/need-bood.jpg" alt="니즈별 안내 샘플 커버 이미지" />
+        </div>
+        <div class="tag">NEED SMPL</div>
+      </div>
+
+      <div class="info">
+        <div class="info-title">니즈별 안내 샘플</div>
+        <div class="info-sub">사람마다 다른 ‘지금 가장 필요한 것’을 가볍게 찾는 방법</div>
+        <div class="info-desc">
+똑같은 설명을 해도, 누구는 바로 반응하고
+누구는 전혀 관심을 보이지 않는 이유는 "니즈"가 다르기 때문입니다.
+
+이 페이지에서는
+- 상대의 현재 니즈를 확인하는 가벼운 질문들,
+- 그 니즈에 맞춰 짧게 안내하는 멘트들,
+- 그대로 복사해서 상황에 맞게 수정할 수 있는 스크립트
+
+를 한 번에 정리해 놓았습니다.
+        </div>
+      </div>
+    </section>
+
+    <!-- 영상/음원 섹션 -->
+    <section class="media-section">
+      <div class="media-title">영상 · 음성 예시</div>
+      <div class="media-sub">톤과 길이, 질문 흐름을 참고해서 각자 말투에 맞게 바꿔 쓰면 됩니다.</div>
+
+      <!-- ★ 영상 파일(mp4) 경로 유지 -->
+      <video controls poster="img/need-bood.jpg">
+        <source src="img/need-bood.mp4" type="video/mp4" />
+        브라우저에서 동영상을 재생할 수 없습니다. 파일을 직접 다운로드해서 확인해 주세요.
+      </video>
+
+      <!-- ★ 음성 파일(mp3) 경로 유지 -->
+      <audio controls>
+        <source src="audio/need-bood.MP3" type="audio/mpeg" />
+        브라우저에서 오디오를 재생할 수 없습니다.
+      </audio>
+    </section>
+
+    <!-- 니즈 질문/안내 멘트 스크립트 -->
+    <section class="script-section">
+      <div class="script-header">
+        <div class="script-title">니즈 질문 · 안내 멘트 샘플 (복사해서 수정해서 사용)</div>
+        <button id="copy-btn" class="copy-btn" type="button">
+          <span>전체 복사</span>
+        </button>
+      </div>
+      <textarea id="need-script" class="script-text">
+요즘 [이름]님은
+- 시간 쪽이 제일 답답해요?
+- 아니면 수입/돈 쪽이 더 신경 쓰여요?
+- 아니면 건강/컨디션이 제일 먼저 떠오르세요?
+
+(상대가 하나를 골랐을 때)
+
+좋아요. 그럼 저는 그 부분만 딱 짚어서
+도움 될 수 있는지 한 번 보여드릴게요.
+
+크게 부담 주는 내용은 아니고,
+짧은 자료/영상 하나 먼저 보내드리고 나서
+
+"이 방향은 나랑 안 맞는다" 싶으면
+그냥 편하게 아니라고 말해주셔도 돼요.
+
+반대로
+"어? 이건 한 번 제대로 들어보고 싶다" 싶으면
+10~15분만 시간 잡고
+[시간/수입/건강] 쪽에서 어떤 그림이 가능한지
+조금 더 구체적으로 설명 드릴게요.
+      </textarea>
+      <div style="margin-top:6px; font-size:11px; color:#9ca3af;">
+        ▸ 위 멘트는 “뼈대”만 두고, <strong>[이름] / [시간·수입·건강]</strong> 부분을 상대 상황에 맞게 바꿔서 쓰면 좋습니다.
+      </div>
+    </section>
+
+    <div class="footer-note">
+      THE UNIQUE – need smpl · 별책 부록
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var btn = document.getElementById("copy-btn");
+      var textarea = document.getElementById("need-script");
+      if (!btn || !textarea) return;
+
+      btn.addEventListener("click", function () {
+        textarea.select();
+        textarea.setSelectionRange(0, textarea.value.length);
+        try {
+          var ok = document.execCommand("copy");
+          if (ok) {
+            alert("니즈 질문/안내 멘트가 복사되었습니다. 대화창에 붙여 넣고, 상대에 맞게만 살짝 수정해서 사용하세요.");
+          } else {
+            alert("복사에 실패했습니다. 텍스트를 직접 드래그해서 복사해 주세요.");
+          }
+        } catch (e) {
+          alert("복사에 실패했습니다. 텍스트를 직접 드래그해서 복사해 주세요.");
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,2583 @@
+{
+  "timestamp": "2026-02-16T22:11:43.278569",
+  "test_coins": [
+    "KRW-BTC",
+    "KRW-ETH",
+    "KRW-XRP",
+    "KRW-SOL",
+    "KRW-DOGE",
+    "KRW-ADA",
+    "KRW-AVAX",
+    "KRW-MATIC",
+    "KRW-DOT",
+    "KRW-SHIB"
+  ],
+  "coin_results": [
+    {
+      "ticker": "KRW-BTC",
+      "total_candles": 168,
+      "strategies": {
+        "surge_hunter": {
+          "name": "급등 포착",
+          "total_signals": 0
+        },
+        "dip_hunter": {
+          "name": "급락 반등",
+          "total_signals": 0
+        },
+        "box_trader": {
+          "name": "박스권 매매",
+          "total_signals": 14,
+          "winning_trades": 1,
+          "win_rate": 7.142857142857142,
+          "avg_profit": 1.5927531121942144,
+          "max_profit": 4.929080223454406,
+          "min_profit": 0.26260398917510275,
+          "signals": [
+            {
+              "timestamp": "2026-02-11 14:00:00",
+              "buy_price": 99770000.0,
+              "max_price": 100032000.0,
+              "profit_rate": 0.26260398917510275,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 25.33197139938713,
+                "score": 0.46680286006128713
+              }
+            },
+            {
+              "timestamp": "2026-02-11 15:00:00",
+              "buy_price": 98830000.0,
+              "max_price": 100032000.0,
+              "profit_rate": 1.2162298897096022,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 18.174834844062076,
+                "score": 1.1825165155937924
+              }
+            },
+            {
+              "timestamp": "2026-02-11 16:00:00",
+              "buy_price": 99341000.0,
+              "max_price": 100032000.0,
+              "profit_rate": 0.6955838978870759,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 18.21253071253072,
+                "score": 1.1787469287469279
+              }
+            },
+            {
+              "timestamp": "2026-02-11 17:00:00",
+              "buy_price": 99223000.0,
+              "max_price": 100032000.0,
+              "profit_rate": 0.8153351541477277,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 21.369369369369366,
+                "score": 0.8630630630630634
+              }
+            },
+            {
+              "timestamp": "2026-02-11 18:00:00",
+              "buy_price": 98803000.0,
+              "max_price": 100032000.0,
+              "profit_rate": 1.2438893555863688,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 18.514733435530573,
+                "score": 1.1485266564469427
+              }
+            }
+          ]
+        },
+        "trend_follower": {
+          "name": "추세 추종",
+          "total_signals": 27,
+          "winning_trades": 11,
+          "win_rate": 40.74074074074074,
+          "avg_profit": 2.767585645625244,
+          "max_profit": 5.565362063018646,
+          "min_profit": -0.6232256707800835,
+          "signals": [
+            {
+              "timestamp": "2026-02-13 20:00:00",
+              "buy_price": 98716000.0,
+              "max_price": 104060000.0,
+              "profit_rate": 5.413509461485474,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.4762034725552386,
+                "score": 0.7381017362776193
+              }
+            },
+            {
+              "timestamp": "2026-02-13 21:00:00",
+              "buy_price": 98574000.0,
+              "max_price": 104060000.0,
+              "profit_rate": 5.565362063018646,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.3152877403917804,
+                "score": 0.6576438701958902
+              }
+            },
+            {
+              "timestamp": "2026-02-13 22:00:00",
+              "buy_price": 98819000.0,
+              "max_price": 104060000.0,
+              "profit_rate": 5.303635940456795,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.482562065245465,
+                "score": 0.7412810326227325
+              }
+            },
+            {
+              "timestamp": "2026-02-13 23:00:00",
+              "buy_price": 99438000.0,
+              "max_price": 104060000.0,
+              "profit_rate": 4.648122448158651,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.9866462908072737,
+                "score": 0.9933231454036369
+              }
+            },
+            {
+              "timestamp": "2026-02-14 00:00:00",
+              "buy_price": 100735000.0,
+              "max_price": 104060000.0,
+              "profit_rate": 3.300739564203107,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 3.1655282631148545,
+                "score": 1.5827641315574272
+              }
+            }
+          ]
+        },
+        "volume_hunter": {
+          "name": "거래량 급증",
+          "total_signals": 25,
+          "winning_trades": 4,
+          "win_rate": 16.0,
+          "avg_profit": 1.52563889467227,
+          "max_profit": 5.303635940456795,
+          "min_profit": -1.128093521947908,
+          "signals": [
+            {
+              "timestamp": "2026-02-11 12:00:00",
+              "buy_price": 100950000.0,
+              "max_price": 100032000.0,
+              "profit_rate": -0.9093610698365527,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 248.8334668787479,
+                "score": 3
+              }
+            },
+            {
+              "timestamp": "2026-02-11 13:00:00",
+              "buy_price": 100000000.0,
+              "max_price": 100032000.0,
+              "profit_rate": 0.032,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 711.6471315823065,
+                "score": 3
+              }
+            },
+            {
+              "timestamp": "2026-02-11 14:00:00",
+              "buy_price": 99770000.0,
+              "max_price": 100032000.0,
+              "profit_rate": 0.26260398917510275,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 55.398019503713414,
+                "score": 1.1079603900742683
+              }
+            },
+            {
+              "timestamp": "2026-02-11 15:00:00",
+              "buy_price": 98830000.0,
+              "max_price": 100032000.0,
+              "profit_rate": 1.2162298897096022,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 267.04776116813457,
+                "score": 3
+              }
+            },
+            {
+              "timestamp": "2026-02-11 23:00:00",
+              "buy_price": 98888000.0,
+              "max_price": 100169000.0,
+              "profit_rate": 1.2954049025159777,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 100.89947401135404,
+                "score": 2.017989480227081
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "ticker": "KRW-ETH",
+      "total_candles": 168,
+      "strategies": {
+        "surge_hunter": {
+          "name": "급등 포착",
+          "total_signals": 0
+        },
+        "dip_hunter": {
+          "name": "급락 반등",
+          "total_signals": 11,
+          "winning_trades": 5,
+          "win_rate": 45.45454545454545,
+          "avg_profit": 2.538645512630239,
+          "max_profit": 3.473613894455578,
+          "min_profit": 0.5851979345955249,
+          "signals": [
+            {
+              "timestamp": "2026-02-12 06:00:00",
+              "buy_price": 2905000.0,
+              "max_price": 2922000.0,
+              "profit_rate": 0.5851979345955249,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 5.19611129735166,
+                "recovery": 2.722772277227723,
+                "score": 1.3613861386138615
+              }
+            },
+            {
+              "timestamp": "2026-02-12 09:00:00",
+              "buy_price": 2892000.0,
+              "max_price": 2922000.0,
+              "profit_rate": 1.0373443983402488,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 5.19611129735166,
+                "recovery": 2.263083451202263,
+                "score": 1.1315417256011315
+              }
+            },
+            {
+              "timestamp": "2026-02-14 01:00:00",
+              "buy_price": 3016000.0,
+              "max_price": 3098000.0,
+              "profit_rate": 2.7188328912466844,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 5.923460898502496,
+                "recovery": 6.685532366466218,
+                "score": 3.342766183233109
+              }
+            },
+            {
+              "timestamp": "2026-02-14 02:00:00",
+              "buy_price": 3012000.0,
+              "max_price": 3098000.0,
+              "profit_rate": 2.8552456839309426,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 6.4005278785879245,
+                "recovery": 6.168487839266831,
+                "score": 3.0842439196334155
+              }
+            },
+            {
+              "timestamp": "2026-02-14 03:00:00",
+              "buy_price": 3007000.0,
+              "max_price": 3098000.0,
+              "profit_rate": 3.026272031925507,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 6.4005278785879245,
+                "recovery": 5.992245329573493,
+                "score": 2.9961226647867467
+              }
+            }
+          ]
+        },
+        "box_trader": {
+          "name": "박스권 매매",
+          "total_signals": 20,
+          "winning_trades": 1,
+          "win_rate": 5.0,
+          "avg_profit": 1.58100448856904,
+          "max_profit": 3.125,
+          "min_profit": 0.4728132387706856,
+          "signals": [
+            {
+              "timestamp": "2026-02-11 15:00:00",
+              "buy_price": 2883000.0,
+              "max_price": 2908000.0,
+              "profit_rate": 0.8671522719389525,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 23.555555555555557,
+                "score": 0.6444444444444443
+              }
+            },
+            {
+              "timestamp": "2026-02-11 16:00:00",
+              "buy_price": 2891000.0,
+              "max_price": 2908000.0,
+              "profit_rate": 0.588031822898651,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 20.370370370370367,
+                "score": 0.9629629629629634
+              }
+            },
+            {
+              "timestamp": "2026-02-11 17:00:00",
+              "buy_price": 2888000.0,
+              "max_price": 2908000.0,
+              "profit_rate": 0.6925207756232686,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 23.404255319148945,
+                "score": 0.6595744680851056
+              }
+            },
+            {
+              "timestamp": "2026-02-11 18:00:00",
+              "buy_price": 2876000.0,
+              "max_price": 2908000.0,
+              "profit_rate": 1.1126564673157162,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 17.89473684210526,
+                "score": 1.210526315789474
+              }
+            },
+            {
+              "timestamp": "2026-02-11 19:00:00",
+              "buy_price": 2865000.0,
+              "max_price": 2921000.0,
+              "profit_rate": 1.954624781849913,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 17.708333333333343,
+                "score": 1.2291666666666656
+              }
+            }
+          ]
+        },
+        "trend_follower": {
+          "name": "추세 추종",
+          "total_signals": 31,
+          "winning_trades": 12,
+          "win_rate": 38.70967741935484,
+          "avg_profit": 2.888495887028045,
+          "max_profit": 7.494795281054822,
+          "min_profit": -0.7871321013004791,
+          "signals": [
+            {
+              "timestamp": "2026-02-12 19:00:00",
+              "buy_price": 2921000.0,
+              "max_price": 2922000.0,
+              "profit_rate": 0.034234851078397806,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.3128002358531468,
+                "score": 0.6564001179265734
+              }
+            },
+            {
+              "timestamp": "2026-02-12 20:00:00",
+              "buy_price": 2916000.0,
+              "max_price": 2922000.0,
+              "profit_rate": 0.205761316872428,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.0727717023968388,
+                "score": 0.5363858511984194
+              }
+            },
+            {
+              "timestamp": "2026-02-12 22:00:00",
+              "buy_price": 2922000.0,
+              "max_price": 2899000.0,
+              "profit_rate": -0.7871321013004791,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.068797343571651,
+                "score": 0.5343986717858255
+              }
+            },
+            {
+              "timestamp": "2026-02-13 19:00:00",
+              "buy_price": 2875000.0,
+              "max_price": 3066000.0,
+              "profit_rate": 6.643478260869565,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.0171992761898068,
+                "score": 0.5085996380949034
+              }
+            },
+            {
+              "timestamp": "2026-02-13 20:00:00",
+              "buy_price": 2882000.0,
+              "max_price": 3098000.0,
+              "profit_rate": 7.494795281054822,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.3058684992178848,
+                "score": 0.6529342496089424
+              }
+            }
+          ]
+        },
+        "volume_hunter": {
+          "name": "거래량 급증",
+          "total_signals": 26,
+          "winning_trades": 6,
+          "win_rate": 23.076923076923077,
+          "avg_profit": 1.96303962068214,
+          "max_profit": 7.369170523317907,
+          "min_profit": -1.7484868863483525,
+          "signals": [
+            {
+              "timestamp": "2026-02-11 12:00:00",
+              "buy_price": 2974000.0,
+              "max_price": 2922000.0,
+              "profit_rate": -1.7484868863483525,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 67.48904859551128,
+                "score": 1.3497809719102256
+              }
+            },
+            {
+              "timestamp": "2026-02-11 13:00:00",
+              "buy_price": 2916000.0,
+              "max_price": 2922000.0,
+              "profit_rate": 0.205761316872428,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 389.18350179338097,
+                "score": 3
+              }
+            },
+            {
+              "timestamp": "2026-02-11 15:00:00",
+              "buy_price": 2883000.0,
+              "max_price": 2908000.0,
+              "profit_rate": 0.8671522719389525,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 272.1387887576589,
+                "score": 3
+              }
+            },
+            {
+              "timestamp": "2026-02-11 23:00:00",
+              "buy_price": 2883000.0,
+              "max_price": 2922000.0,
+              "profit_rate": 1.352757544224766,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 128.8752047794024,
+                "score": 2.577504095588048
+              }
+            },
+            {
+              "timestamp": "2026-02-12 00:00:00",
+              "buy_price": 2860000.0,
+              "max_price": 2922000.0,
+              "profit_rate": 2.1678321678321675,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 110.59628680480915,
+                "score": 2.211925736096183
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "ticker": "KRW-XRP",
+      "total_candles": 168,
+      "strategies": {
+        "surge_hunter": {
+          "name": "급등 포착",
+          "total_signals": 2,
+          "winning_trades": 0,
+          "win_rate": 0.0,
+          "avg_profit": -1.9657359185412173,
+          "max_profit": -1.7183570829840737,
+          "min_profit": -2.2131147540983607,
+          "signals": [
+            {
+              "timestamp": "2026-02-15 16:00:00",
+              "buy_price": 2440.0,
+              "max_price": 2386.0,
+              "profit_rate": -2.2131147540983607,
+              "pattern": {
+                "pattern": "surge",
+                "change": 8.444444444444445,
+                "score": 1.6888888888888889
+              }
+            },
+            {
+              "timestamp": "2026-02-15 17:00:00",
+              "buy_price": 2386.0,
+              "max_price": 2345.0,
+              "profit_rate": -1.7183570829840737,
+              "pattern": {
+                "pattern": "surge",
+                "change": 6.233303650934995,
+                "score": 1.246660730186999
+              }
+            }
+          ]
+        },
+        "dip_hunter": {
+          "name": "급락 반등",
+          "total_signals": 20,
+          "winning_trades": 13,
+          "win_rate": 65.0,
+          "avg_profit": 5.526306486646943,
+          "max_profit": 13.805970149253731,
+          "min_profit": -2.2131147540983607,
+          "signals": [
+            {
+              "timestamp": "2026-02-14 01:00:00",
+              "buy_price": 2074.0,
+              "max_price": 2175.0,
+              "profit_rate": 4.869816779170685,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 5.081495685522531,
+                "recovery": 4.747474747474747,
+                "score": 2.3737373737373737
+              }
+            },
+            {
+              "timestamp": "2026-02-14 02:00:00",
+              "buy_price": 2070.0,
+              "max_price": 2175.0,
+              "profit_rate": 5.072463768115942,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 5.167464114832536,
+                "recovery": 4.439959636730576,
+                "score": 2.219979818365288
+              }
+            },
+            {
+              "timestamp": "2026-02-14 03:00:00",
+              "buy_price": 2070.0,
+              "max_price": 2186.0,
+              "profit_rate": 5.603864734299517,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 5.023923444976076,
+                "recovery": 4.282115869017632,
+                "score": 2.141057934508816
+              }
+            },
+            {
+              "timestamp": "2026-02-14 21:00:00",
+              "buy_price": 2157.0,
+              "max_price": 2440.0,
+              "profit_rate": 13.120074177097822,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 5.096418732782369,
+                "recovery": 4.354136429608127,
+                "score": 2.1770682148040637
+              }
+            },
+            {
+              "timestamp": "2026-02-14 22:00:00",
+              "buy_price": 2144.0,
+              "max_price": 2440.0,
+              "profit_rate": 13.805970149253731,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 5.357142857142857,
+                "recovery": 3.725205611998065,
+                "score": 1.8626028059990325
+              }
+            }
+          ]
+        },
+        "box_trader": {
+          "name": "박스권 매매",
+          "total_signals": 11,
+          "winning_trades": 2,
+          "win_rate": 18.181818181818183,
+          "avg_profit": 1.979359242585162,
+          "max_profit": 4.37625754527163,
+          "min_profit": 0.6913580246913581,
+          "signals": [
+            {
+              "timestamp": "2026-02-11 15:00:00",
+              "buy_price": 2010.0,
+              "max_price": 2039.0,
+              "profit_rate": 1.4427860696517412,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 20.91503267973856,
+                "score": 0.9084967320261441
+              }
+            },
+            {
+              "timestamp": "2026-02-11 16:00:00",
+              "buy_price": 2024.0,
+              "max_price": 2039.0,
+              "profit_rate": 0.7411067193675889,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 23.41772151898735,
+                "score": 0.6582278481012651
+              }
+            },
+            {
+              "timestamp": "2026-02-11 17:00:00",
+              "buy_price": 2025.0,
+              "max_price": 2039.0,
+              "profit_rate": 0.6913580246913581,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 27.941176470588232,
+                "score": 0.2058823529411768
+              }
+            },
+            {
+              "timestamp": "2026-02-11 18:00:00",
+              "buy_price": 2012.0,
+              "max_price": 2045.0,
+              "profit_rate": 1.6401590457256463,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 26.027397260273972,
+                "score": 0.39726027397260283
+              }
+            },
+            {
+              "timestamp": "2026-02-11 19:00:00",
+              "buy_price": 2009.0,
+              "max_price": 2057.0,
+              "profit_rate": 2.3892483822797415,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 26.3888888888889,
+                "score": 0.36111111111111
+              }
+            }
+          ]
+        },
+        "trend_follower": {
+          "name": "추세 추종",
+          "total_signals": 48,
+          "winning_trades": 41,
+          "win_rate": 85.41666666666666,
+          "avg_profit": 8.01033594824891,
+          "max_profit": 16.85823754789272,
+          "min_profit": -2.2131147540983607,
+          "signals": [
+            {
+              "timestamp": "2026-02-12 19:00:00",
+              "buy_price": 2057.0,
+              "max_price": 2056.0,
+              "profit_rate": -0.04861448711716091,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.4700078926598241,
+                "score": 0.7350039463299121
+              }
+            },
+            {
+              "timestamp": "2026-02-12 20:00:00",
+              "buy_price": 2056.0,
+              "max_price": 2054.0,
+              "profit_rate": -0.09727626459143969,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.3282077819669325,
+                "score": 0.6641038909834662
+              }
+            },
+            {
+              "timestamp": "2026-02-13 22:00:00",
+              "buy_price": 2022.0,
+              "max_price": 2175.0,
+              "profit_rate": 7.566765578635016,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.1379267225209453,
+                "score": 0.5689633612604726
+              }
+            },
+            {
+              "timestamp": "2026-02-13 23:00:00",
+              "buy_price": 2034.0,
+              "max_price": 2175.0,
+              "profit_rate": 6.932153392330384,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.692373072019594,
+                "score": 0.846186536009797
+              }
+            },
+            {
+              "timestamp": "2026-02-14 00:00:00",
+              "buy_price": 2060.0,
+              "max_price": 2175.0,
+              "profit_rate": 5.582524271844661,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 2.9228078940794404,
+                "score": 1.4614039470397202
+              }
+            }
+          ]
+        },
+        "volume_hunter": {
+          "name": "거래량 급증",
+          "total_signals": 26,
+          "winning_trades": 14,
+          "win_rate": 53.84615384615385,
+          "avg_profit": 4.673101004845273,
+          "max_profit": 14.392873886544772,
+          "min_profit": -2.2131147540983607,
+          "signals": [
+            {
+              "timestamp": "2026-02-11 11:00:00",
+              "buy_price": 2089.0,
+              "max_price": 2079.0,
+              "profit_rate": -0.47869794159885115,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 100.70713410373413,
+                "score": 2.0141426820746826
+              }
+            },
+            {
+              "timestamp": "2026-02-11 12:00:00",
+              "buy_price": 2079.0,
+              "max_price": 2047.0,
+              "profit_rate": -1.5392015392015392,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 98.97445267995825,
+                "score": 1.979489053599165
+              }
+            },
+            {
+              "timestamp": "2026-02-11 13:00:00",
+              "buy_price": 2047.0,
+              "max_price": 2039.0,
+              "profit_rate": -0.39081582804103565,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 321.33448392143623,
+                "score": 3
+              }
+            },
+            {
+              "timestamp": "2026-02-11 14:00:00",
+              "buy_price": 2034.0,
+              "max_price": 2039.0,
+              "profit_rate": 0.24582104228121926,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 109.9053467918399,
+                "score": 2.198106935836798
+              }
+            },
+            {
+              "timestamp": "2026-02-11 15:00:00",
+              "buy_price": 2010.0,
+              "max_price": 2039.0,
+              "profit_rate": 1.4427860696517412,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 294.49334059058106,
+                "score": 3
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "ticker": "KRW-SOL",
+      "total_candles": 168,
+      "strategies": {
+        "surge_hunter": {
+          "name": "급등 포착",
+          "total_signals": 1,
+          "winning_trades": 1,
+          "win_rate": 100.0,
+          "avg_profit": 3.8492381716118684,
+          "max_profit": 3.8492381716118684,
+          "min_profit": 3.8492381716118684,
+          "signals": [
+            {
+              "timestamp": "2026-02-14 03:00:00",
+              "buy_price": 124700.0,
+              "max_price": 129500.0,
+              "profit_rate": 3.8492381716118684,
+              "pattern": {
+                "pattern": "surge",
+                "change": 5.857385398981324,
+                "score": 1.1714770797962648
+              }
+            }
+          ]
+        },
+        "dip_hunter": {
+          "name": "급락 반등",
+          "total_signals": 14,
+          "winning_trades": 12,
+          "win_rate": 85.71428571428571,
+          "avg_profit": 4.786968013872035,
+          "max_profit": 8.333333333333332,
+          "min_profit": 1.6891891891891893,
+          "signals": [
+            {
+              "timestamp": "2026-02-12 06:00:00",
+              "buy_price": 118400.0,
+              "max_price": 120400.0,
+              "profit_rate": 1.6891891891891893,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 6.087662337662338,
+                "recovery": 2.33362143474503,
+                "score": 1.166810717372515
+              }
+            },
+            {
+              "timestamp": "2026-02-12 09:00:00",
+              "buy_price": 118100.0,
+              "max_price": 120400.0,
+              "profit_rate": 1.947502116850127,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 6.087662337662338,
+                "recovery": 2.0743301642178045,
+                "score": 1.0371650821089022
+              }
+            },
+            {
+              "timestamp": "2026-02-13 08:00:00",
+              "buy_price": 115200.0,
+              "max_price": 124700.0,
+              "profit_rate": 8.246527777777777,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 6.234413965087282,
+                "recovery": 2.127659574468085,
+                "score": 1.0638297872340425
+              }
+            },
+            {
+              "timestamp": "2026-02-13 10:00:00",
+              "buy_price": 115200.0,
+              "max_price": 124800.0,
+              "profit_rate": 8.333333333333332,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 5.527638190954774,
+                "recovery": 2.127659574468085,
+                "score": 1.0638297872340425
+              }
+            },
+            {
+              "timestamp": "2026-02-14 01:00:00",
+              "buy_price": 123400.0,
+              "max_price": 129500.0,
+              "profit_rate": 4.943273905996758,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 7.679870654810024,
+                "recovery": 8.056042031523642,
+                "score": 4.028021015761821
+              }
+            }
+          ]
+        },
+        "box_trader": {
+          "name": "박스권 매매",
+          "total_signals": 16,
+          "winning_trades": 6,
+          "win_rate": 37.5,
+          "avg_profit": 3.246312001911141,
+          "max_profit": 10.061782877316858,
+          "min_profit": -0.24752475247524752,
+          "signals": [
+            {
+              "timestamp": "2026-02-11 14:00:00",
+              "buy_price": 121200.0,
+              "max_price": 120900.0,
+              "profit_rate": -0.24752475247524752,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 27.906976744186053,
+                "score": 0.20930232558139467
+              }
+            },
+            {
+              "timestamp": "2026-02-11 15:00:00",
+              "buy_price": 119600.0,
+              "max_price": 120900.0,
+              "profit_rate": 1.0869565217391304,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 21.212121212121204,
+                "score": 0.8787878787878796
+              }
+            },
+            {
+              "timestamp": "2026-02-11 16:00:00",
+              "buy_price": 120000.0,
+              "max_price": 120900.0,
+              "profit_rate": 0.75,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 21.212121212121204,
+                "score": 0.8787878787878796
+              }
+            },
+            {
+              "timestamp": "2026-02-11 17:00:00",
+              "buy_price": 120000.0,
+              "max_price": 120900.0,
+              "profit_rate": 0.75,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 28.378378378378386,
+                "score": 0.1621621621621614
+              }
+            },
+            {
+              "timestamp": "2026-02-11 18:00:00",
+              "buy_price": 119400.0,
+              "max_price": 120900.0,
+              "profit_rate": 1.256281407035176,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 24.358974358974365,
+                "score": 0.5641025641025635
+              }
+            }
+          ]
+        },
+        "trend_follower": {
+          "name": "추세 추종",
+          "total_signals": 55,
+          "winning_trades": 43,
+          "win_rate": 78.18181818181819,
+          "avg_profit": 4.239731554198955,
+          "max_profit": 9.608843537414966,
+          "min_profit": -0.9687034277198211,
+          "signals": [
+            {
+              "timestamp": "2026-02-12 18:00:00",
+              "buy_price": 119900.0,
+              "max_price": 120400.0,
+              "profit_rate": 0.4170141784820684,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.5112390466917833,
+                "score": 0.7556195233458917
+              }
+            },
+            {
+              "timestamp": "2026-02-12 19:00:00",
+              "buy_price": 120400.0,
+              "max_price": 120100.0,
+              "profit_rate": -0.24916943521594684,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.9777241350103756,
+                "score": 0.9888620675051878
+              }
+            },
+            {
+              "timestamp": "2026-02-12 20:00:00",
+              "buy_price": 120100.0,
+              "max_price": 120000.0,
+              "profit_rate": -0.08326394671107411,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.6418415707515233,
+                "score": 0.8209207853757616
+              }
+            },
+            {
+              "timestamp": "2026-02-12 22:00:00",
+              "buy_price": 120000.0,
+              "max_price": 119000.0,
+              "profit_rate": -0.8333333333333334,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.3770381008701529,
+                "score": 0.6885190504350764
+              }
+            },
+            {
+              "timestamp": "2026-02-13 17:00:00",
+              "buy_price": 116900.0,
+              "max_price": 127000.0,
+              "profit_rate": 8.639863130881094,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.0546334716459198,
+                "score": 0.5273167358229599
+              }
+            }
+          ]
+        },
+        "volume_hunter": {
+          "name": "거래량 급증",
+          "total_signals": 22,
+          "winning_trades": 10,
+          "win_rate": 45.45454545454545,
+          "avg_profit": 3.0131823680870826,
+          "max_profit": 9.422750424448218,
+          "min_profit": -0.16474464579901155,
+          "signals": [
+            {
+              "timestamp": "2026-02-11 06:00:00",
+              "buy_price": 122600.0,
+              "max_price": 124100.0,
+              "profit_rate": 1.2234910277324633,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 51.77628255547007,
+                "score": 1.0355256511094013
+              }
+            },
+            {
+              "timestamp": "2026-02-11 13:00:00",
+              "buy_price": 121400.0,
+              "max_price": 121200.0,
+              "profit_rate": -0.16474464579901155,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 229.98077427812564,
+                "score": 3
+              }
+            },
+            {
+              "timestamp": "2026-02-11 15:00:00",
+              "buy_price": 119600.0,
+              "max_price": 120900.0,
+              "profit_rate": 1.0869565217391304,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 194.02413909814692,
+                "score": 3
+              }
+            },
+            {
+              "timestamp": "2026-02-11 23:00:00",
+              "buy_price": 118500.0,
+              "max_price": 120400.0,
+              "profit_rate": 1.6033755274261603,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 139.42858890338974,
+                "score": 2.7885717780677948
+              }
+            },
+            {
+              "timestamp": "2026-02-12 00:00:00",
+              "buy_price": 118100.0,
+              "max_price": 120400.0,
+              "profit_rate": 1.947502116850127,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 164.772712518552,
+                "score": 3
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "ticker": "KRW-DOGE",
+      "total_candles": 168,
+      "strategies": {
+        "surge_hunter": {
+          "name": "급등 포착",
+          "total_signals": 7,
+          "winning_trades": 7,
+          "win_rate": 100.0,
+          "avg_profit": 8.148053926882202,
+          "max_profit": 12.418300653594772,
+          "min_profit": 4.242424242424243,
+          "signals": [
+            {
+              "timestamp": "2026-02-15 00:00:00",
+              "buy_price": 153.0,
+              "max_price": 172.0,
+              "profit_rate": 12.418300653594772,
+              "pattern": {
+                "pattern": "surge",
+                "change": 5.517241379310345,
+                "score": 1.103448275862069
+              }
+            },
+            {
+              "timestamp": "2026-02-15 02:00:00",
+              "buy_price": 155.0,
+              "max_price": 172.0,
+              "profit_rate": 10.967741935483872,
+              "pattern": {
+                "pattern": "surge",
+                "change": 5.442176870748299,
+                "score": 1.0884353741496597
+              }
+            },
+            {
+              "timestamp": "2026-02-15 03:00:00",
+              "buy_price": 157.0,
+              "max_price": 172.0,
+              "profit_rate": 9.554140127388536,
+              "pattern": {
+                "pattern": "surge",
+                "change": 6.081081081081082,
+                "score": 1.2162162162162162
+              }
+            },
+            {
+              "timestamp": "2026-02-15 04:00:00",
+              "buy_price": 160.0,
+              "max_price": 172.0,
+              "profit_rate": 7.5,
+              "pattern": {
+                "pattern": "surge",
+                "change": 5.960264900662252,
+                "score": 1.1920529801324504
+              }
+            },
+            {
+              "timestamp": "2026-02-15 05:00:00",
+              "buy_price": 161.0,
+              "max_price": 172.0,
+              "profit_rate": 6.832298136645963,
+              "pattern": {
+                "pattern": "surge",
+                "change": 5.228758169934641,
+                "score": 1.0457516339869282
+              }
+            }
+          ]
+        },
+        "dip_hunter": {
+          "name": "급락 반등",
+          "total_signals": 32,
+          "winning_trades": 14,
+          "win_rate": 43.75,
+          "avg_profit": 5.065008474929517,
+          "max_profit": 17.006802721088434,
+          "min_profit": -1.744186046511628,
+          "signals": [
+            {
+              "timestamp": "2026-02-12 02:00:00",
+              "buy_price": 134.0,
+              "max_price": 138.0,
+              "profit_rate": 2.9850746268656714,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 5.109489051094891,
+                "recovery": 3.076923076923077,
+                "score": 1.5384615384615385
+              }
+            },
+            {
+              "timestamp": "2026-02-12 03:00:00",
+              "buy_price": 134.0,
+              "max_price": 138.0,
+              "profit_rate": 2.9850746268656714,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 5.109489051094891,
+                "recovery": 3.076923076923077,
+                "score": 1.5384615384615385
+              }
+            },
+            {
+              "timestamp": "2026-02-12 04:00:00",
+              "buy_price": 135.0,
+              "max_price": 138.0,
+              "profit_rate": 2.2222222222222223,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 5.109489051094891,
+                "recovery": 3.8461538461538463,
+                "score": 1.9230769230769231
+              }
+            },
+            {
+              "timestamp": "2026-02-12 05:00:00",
+              "buy_price": 134.0,
+              "max_price": 138.0,
+              "profit_rate": 2.9850746268656714,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 5.109489051094891,
+                "recovery": 3.076923076923077,
+                "score": 1.5384615384615385
+              }
+            },
+            {
+              "timestamp": "2026-02-12 06:00:00",
+              "buy_price": 135.0,
+              "max_price": 138.0,
+              "profit_rate": 2.2222222222222223,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 5.109489051094891,
+                "recovery": 3.8461538461538463,
+                "score": 1.9230769230769231
+              }
+            }
+          ]
+        },
+        "box_trader": {
+          "name": "박스권 매매",
+          "total_signals": 18,
+          "winning_trades": 6,
+          "win_rate": 33.33333333333333,
+          "avg_profit": 2.0766954810438745,
+          "max_profit": 4.545454545454546,
+          "min_profit": -0.6493506493506493,
+          "signals": [
+            {
+              "timestamp": "2026-02-11 14:00:00",
+              "buy_price": 135.0,
+              "max_price": 136.0,
+              "profit_rate": 0.7407407407407408,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 28.57142857142857,
+                "score": 0.14285714285714307
+              }
+            },
+            {
+              "timestamp": "2026-02-11 15:00:00",
+              "buy_price": 134.0,
+              "max_price": 136.0,
+              "profit_rate": 1.4925373134328357,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 25.0,
+                "score": 0.5
+              }
+            },
+            {
+              "timestamp": "2026-02-11 16:00:00",
+              "buy_price": 134.0,
+              "max_price": 137.0,
+              "profit_rate": 2.2388059701492535,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 14.285714285714292,
+                "score": 1.5714285714285707
+              }
+            },
+            {
+              "timestamp": "2026-02-11 17:00:00",
+              "buy_price": 133.0,
+              "max_price": 137.0,
+              "profit_rate": 3.007518796992481,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 14.285714285714292,
+                "score": 1.5714285714285707
+              }
+            },
+            {
+              "timestamp": "2026-02-11 18:00:00",
+              "buy_price": 133.0,
+              "max_price": 137.0,
+              "profit_rate": 3.007518796992481,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 0.0,
+                "score": 3.0
+              }
+            }
+          ]
+        },
+        "trend_follower": {
+          "name": "추세 추종",
+          "total_signals": 58,
+          "winning_trades": 39,
+          "win_rate": 67.24137931034483,
+          "avg_profit": 8.29087121796563,
+          "max_profit": 20.422535211267608,
+          "min_profit": -3.614457831325301,
+          "signals": [
+            {
+              "timestamp": "2026-02-12 14:00:00",
+              "buy_price": 136.0,
+              "max_price": 138.0,
+              "profit_rate": 1.4705882352941175,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.4546810891458326,
+                "score": 0.7273405445729163
+              }
+            },
+            {
+              "timestamp": "2026-02-12 15:00:00",
+              "buy_price": 136.0,
+              "max_price": 138.0,
+              "profit_rate": 1.4705882352941175,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.3412816691505303,
+                "score": 0.6706408345752651
+              }
+            },
+            {
+              "timestamp": "2026-02-12 16:00:00",
+              "buy_price": 137.0,
+              "max_price": 138.0,
+              "profit_rate": 0.7299270072992701,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.972459992556759,
+                "score": 0.9862299962783795
+              }
+            },
+            {
+              "timestamp": "2026-02-12 17:00:00",
+              "buy_price": 137.0,
+              "max_price": 138.0,
+              "profit_rate": 0.7299270072992701,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.858736059479554,
+                "score": 0.929368029739777
+              }
+            },
+            {
+              "timestamp": "2026-02-12 18:00:00",
+              "buy_price": 136.0,
+              "max_price": 138.0,
+              "profit_rate": 1.4705882352941175,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.0025993316004413,
+                "score": 0.5012996658002207
+              }
+            }
+          ]
+        },
+        "volume_hunter": {
+          "name": "거래량 급증",
+          "total_signals": 33,
+          "winning_trades": 18,
+          "win_rate": 54.54545454545454,
+          "avg_profit": 6.920053361968425,
+          "max_profit": 20.27972027972028,
+          "min_profit": -1.4598540145985401,
+          "signals": [
+            {
+              "timestamp": "2026-02-11 11:00:00",
+              "buy_price": 137.0,
+              "max_price": 137.0,
+              "profit_rate": 0.0,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 94.32666871410615,
+                "score": 1.8865333742821229
+              }
+            },
+            {
+              "timestamp": "2026-02-11 12:00:00",
+              "buy_price": 137.0,
+              "max_price": 137.0,
+              "profit_rate": 0.0,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 91.8471323608046,
+                "score": 1.836942647216092
+              }
+            },
+            {
+              "timestamp": "2026-02-11 13:00:00",
+              "buy_price": 137.0,
+              "max_price": 135.0,
+              "profit_rate": -1.4598540145985401,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 175.44580083053623,
+                "score": 3
+              }
+            },
+            {
+              "timestamp": "2026-02-11 15:00:00",
+              "buy_price": 134.0,
+              "max_price": 136.0,
+              "profit_rate": 1.4925373134328357,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 274.03610448455055,
+                "score": 3
+              }
+            },
+            {
+              "timestamp": "2026-02-11 22:00:00",
+              "buy_price": 134.0,
+              "max_price": 138.0,
+              "profit_rate": 2.9850746268656714,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 61.926820336834254,
+                "score": 1.238536406736685
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "ticker": "KRW-ADA",
+      "total_candles": 168,
+      "strategies": {
+        "surge_hunter": {
+          "name": "급등 포착",
+          "total_signals": 0
+        },
+        "dip_hunter": {
+          "name": "급락 반등",
+          "total_signals": 13,
+          "winning_trades": 5,
+          "win_rate": 38.46153846153847,
+          "avg_profit": 3.2652847907210134,
+          "max_profit": 6.234413965087282,
+          "min_profit": 1.82648401826484,
+          "signals": [
+            {
+              "timestamp": "2026-02-14 01:00:00",
+              "buy_price": 401.0,
+              "max_price": 426.0,
+              "profit_rate": 6.234413965087282,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 5.486284289276807,
+                "recovery": 5.804749340369393,
+                "score": 2.9023746701846966
+              }
+            },
+            {
+              "timestamp": "2026-02-15 00:00:00",
+              "buy_price": 422.0,
+              "max_price": 446.0,
+              "profit_rate": 5.687203791469194,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 5.213270142180095,
+                "recovery": 5.5,
+                "score": 2.75
+              }
+            },
+            {
+              "timestamp": "2026-02-15 01:00:00",
+              "buy_price": 426.0,
+              "max_price": 446.0,
+              "profit_rate": 4.694835680751173,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 5.213270142180095,
+                "recovery": 6.5,
+                "score": 3.25
+              }
+            },
+            {
+              "timestamp": "2026-02-15 02:00:00",
+              "buy_price": 426.0,
+              "max_price": 446.0,
+              "profit_rate": 4.694835680751173,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 6.074766355140187,
+                "recovery": 5.970149253731343,
+                "score": 2.9850746268656714
+              }
+            },
+            {
+              "timestamp": "2026-02-15 03:00:00",
+              "buy_price": 431.0,
+              "max_price": 446.0,
+              "profit_rate": 3.480278422273782,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 5.813953488372093,
+                "recovery": 6.419753086419753,
+                "score": 3.2098765432098766
+              }
+            }
+          ]
+        },
+        "box_trader": {
+          "name": "박스권 매매",
+          "total_signals": 17,
+          "winning_trades": 6,
+          "win_rate": 35.294117647058826,
+          "avg_profit": 2.9215952705063057,
+          "max_profit": 5.898123324396782,
+          "min_profit": -0.2617801047120419,
+          "signals": [
+            {
+              "timestamp": "2026-02-11 13:00:00",
+              "buy_price": 382.0,
+              "max_price": 382.0,
+              "profit_rate": 0.0,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 26.31578947368422,
+                "score": 0.36842105263157804
+              }
+            },
+            {
+              "timestamp": "2026-02-11 14:00:00",
+              "buy_price": 382.0,
+              "max_price": 381.0,
+              "profit_rate": -0.2617801047120419,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 26.31578947368422,
+                "score": 0.36842105263157804
+              }
+            },
+            {
+              "timestamp": "2026-02-11 15:00:00",
+              "buy_price": 378.0,
+              "max_price": 383.0,
+              "profit_rate": 1.3227513227513228,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 22.727272727272734,
+                "score": 0.7272727272727266
+              }
+            },
+            {
+              "timestamp": "2026-02-11 16:00:00",
+              "buy_price": 379.0,
+              "max_price": 386.0,
+              "profit_rate": 1.8469656992084433,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 22.727272727272734,
+                "score": 0.7272727272727266
+              }
+            },
+            {
+              "timestamp": "2026-02-11 17:00:00",
+              "buy_price": 379.0,
+              "max_price": 386.0,
+              "profit_rate": 1.8469656992084433,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 26.31578947368422,
+                "score": 0.36842105263157804
+              }
+            }
+          ]
+        },
+        "trend_follower": {
+          "name": "추세 추종",
+          "total_signals": 53,
+          "winning_trades": 31,
+          "win_rate": 58.490566037735846,
+          "avg_profit": 4.992633342302044,
+          "max_profit": 9.852216748768473,
+          "min_profit": -2.0179372197309418,
+          "signals": [
+            {
+              "timestamp": "2026-02-12 15:00:00",
+              "buy_price": 383.0,
+              "max_price": 395.0,
+              "profit_rate": 3.1331592689295036,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.2022724270048915,
+                "score": 0.6011362135024457
+              }
+            },
+            {
+              "timestamp": "2026-02-12 16:00:00",
+              "buy_price": 386.0,
+              "max_price": 395.0,
+              "profit_rate": 2.33160621761658,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.8604037471962032,
+                "score": 0.9302018735981016
+              }
+            },
+            {
+              "timestamp": "2026-02-12 17:00:00",
+              "buy_price": 385.0,
+              "max_price": 395.0,
+              "profit_rate": 2.5974025974025974,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.4893897456174976,
+                "score": 0.7446948728087488
+              }
+            },
+            {
+              "timestamp": "2026-02-12 18:00:00",
+              "buy_price": 390.0,
+              "max_price": 395.0,
+              "profit_rate": 1.282051282051282,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 2.6856240126382276,
+                "score": 1.3428120063191138
+              }
+            },
+            {
+              "timestamp": "2026-02-12 19:00:00",
+              "buy_price": 395.0,
+              "max_price": 392.0,
+              "profit_rate": -0.7594936708860759,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 3.8653694451748586,
+                "score": 1.9326847225874293
+              }
+            }
+          ]
+        },
+        "volume_hunter": {
+          "name": "거래량 급증",
+          "total_signals": 28,
+          "winning_trades": 16,
+          "win_rate": 57.14285714285714,
+          "avg_profit": 4.151567024719645,
+          "max_profit": 9.45273631840796,
+          "min_profit": -1.5463917525773196,
+          "signals": [
+            {
+              "timestamp": "2026-02-11 12:00:00",
+              "buy_price": 388.0,
+              "max_price": 382.0,
+              "profit_rate": -1.5463917525773196,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 68.0005791004456,
+                "score": 1.360011582008912
+              }
+            },
+            {
+              "timestamp": "2026-02-11 13:00:00",
+              "buy_price": 382.0,
+              "max_price": 382.0,
+              "profit_rate": 0.0,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 314.9102469141967,
+                "score": 3
+              }
+            },
+            {
+              "timestamp": "2026-02-11 14:00:00",
+              "buy_price": 382.0,
+              "max_price": 381.0,
+              "profit_rate": -0.2617801047120419,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 87.19910210881865,
+                "score": 1.743982042176373
+              }
+            },
+            {
+              "timestamp": "2026-02-11 15:00:00",
+              "buy_price": 378.0,
+              "max_price": 383.0,
+              "profit_rate": 1.3227513227513228,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 236.71244875433638,
+                "score": 3
+              }
+            },
+            {
+              "timestamp": "2026-02-11 19:00:00",
+              "buy_price": 373.0,
+              "max_price": 395.0,
+              "profit_rate": 5.898123324396782,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 52.71611876275014,
+                "score": 1.0543223752550028
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "ticker": "KRW-AVAX",
+      "total_candles": 168,
+      "strategies": {
+        "surge_hunter": {
+          "name": "급등 포착",
+          "total_signals": 0
+        },
+        "dip_hunter": {
+          "name": "급락 반등",
+          "total_signals": 1,
+          "winning_trades": 0,
+          "win_rate": 0.0,
+          "avg_profit": 2.0249221183800623,
+          "max_profit": 2.0249221183800623,
+          "min_profit": 2.0249221183800623,
+          "signals": [
+            {
+              "timestamp": "2026-02-11 22:00:00",
+              "buy_price": 12840.0,
+              "max_price": 13100.0,
+              "profit_rate": 2.0249221183800623,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 5.718585402558315,
+                "recovery": 2.4740622505985637,
+                "score": 1.2370311252992818
+              }
+            }
+          ]
+        },
+        "box_trader": {
+          "name": "박스권 매매",
+          "total_signals": 6,
+          "winning_trades": 0,
+          "win_rate": 0.0,
+          "avg_profit": 1.5907357838493217,
+          "max_profit": 2.1323529411764706,
+          "min_profit": 1.1653313911143481,
+          "signals": [
+            {
+              "timestamp": "2026-02-11 06:00:00",
+              "buy_price": 12890.0,
+              "max_price": 13130.0,
+              "profit_rate": 1.8619084561675718,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 27.65957446808511,
+                "score": 0.23404255319148887
+              }
+            },
+            {
+              "timestamp": "2026-02-15 21:00:00",
+              "buy_price": 13710.0,
+              "max_price": 13890.0,
+              "profit_rate": 1.312910284463895,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 27.35849056603773,
+                "score": 0.26415094339622697
+              }
+            },
+            {
+              "timestamp": "2026-02-15 22:00:00",
+              "buy_price": 13720.0,
+              "max_price": 13890.0,
+              "profit_rate": 1.239067055393586,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 29.702970297029694,
+                "score": 0.029702970297030618
+              }
+            },
+            {
+              "timestamp": "2026-02-16 04:00:00",
+              "buy_price": 13600.0,
+              "max_price": 13890.0,
+              "profit_rate": 2.1323529411764706,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 20.0,
+                "score": 1.0
+              }
+            },
+            {
+              "timestamp": "2026-02-16 05:00:00",
+              "buy_price": 13640.0,
+              "max_price": 13890.0,
+              "profit_rate": 1.8328445747800588,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 24.10714285714286,
+                "score": 0.5892857142857139
+              }
+            }
+          ]
+        },
+        "trend_follower": {
+          "name": "추세 추종",
+          "total_signals": 51,
+          "winning_trades": 27,
+          "win_rate": 52.94117647058824,
+          "avg_profit": 2.896869506263572,
+          "max_profit": 5.974607916355489,
+          "min_profit": -1.1180992313067784,
+          "signals": [
+            {
+              "timestamp": "2026-02-12 10:00:00",
+              "buy_price": 12890.0,
+              "max_price": 13100.0,
+              "profit_rate": 1.6291698991466252,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.1257992390067861,
+                "score": 0.5628996195033931
+              }
+            },
+            {
+              "timestamp": "2026-02-12 15:00:00",
+              "buy_price": 12950.0,
+              "max_price": 13100.0,
+              "profit_rate": 1.1583011583011582,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.2549356894327377,
+                "score": 0.6274678447163688
+              }
+            },
+            {
+              "timestamp": "2026-02-12 16:00:00",
+              "buy_price": 12960.0,
+              "max_price": 13100.0,
+              "profit_rate": 1.0802469135802468,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.1986100808183344,
+                "score": 0.5993050404091672
+              }
+            },
+            {
+              "timestamp": "2026-02-12 17:00:00",
+              "buy_price": 12950.0,
+              "max_price": 13100.0,
+              "profit_rate": 1.1583011583011582,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.014040561622465,
+                "score": 0.5070202808112325
+              }
+            },
+            {
+              "timestamp": "2026-02-12 18:00:00",
+              "buy_price": 13030.0,
+              "max_price": 13100.0,
+              "profit_rate": 0.5372217958557176,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.546974243073686,
+                "score": 0.773487121536843
+              }
+            }
+          ]
+        },
+        "volume_hunter": {
+          "name": "거래량 급증",
+          "total_signals": 26,
+          "winning_trades": 11,
+          "win_rate": 42.30769230769231,
+          "avg_profit": 2.5995279002313008,
+          "max_profit": 6.3028439661798625,
+          "min_profit": -1.5993907083015995,
+          "signals": [
+            {
+              "timestamp": "2026-02-11 09:00:00",
+              "buy_price": 13000.0,
+              "max_price": 13130.0,
+              "profit_rate": 1.0,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 68.4852070877841,
+                "score": 1.3697041417556821
+              }
+            },
+            {
+              "timestamp": "2026-02-11 10:00:00",
+              "buy_price": 13000.0,
+              "max_price": 13130.0,
+              "profit_rate": 1.0,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 487.3383308670941,
+                "score": 3
+              }
+            },
+            {
+              "timestamp": "2026-02-11 11:00:00",
+              "buy_price": 13110.0,
+              "max_price": 13130.0,
+              "profit_rate": 0.15255530129672007,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 515.5552125006705,
+                "score": 3
+              }
+            },
+            {
+              "timestamp": "2026-02-11 12:00:00",
+              "buy_price": 13130.0,
+              "max_price": 12920.0,
+              "profit_rate": -1.5993907083015995,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 162.22626630131484,
+                "score": 3
+              }
+            },
+            {
+              "timestamp": "2026-02-11 16:00:00",
+              "buy_price": 12710.0,
+              "max_price": 12960.0,
+              "profit_rate": 1.9669551534225018,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 72.31932222327781,
+                "score": 1.446386444465556
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "ticker": "KRW-DOT",
+      "total_candles": 168,
+      "strategies": {
+        "surge_hunter": {
+          "name": "급등 포착",
+          "total_signals": 0
+        },
+        "dip_hunter": {
+          "name": "급락 반등",
+          "total_signals": 12,
+          "winning_trades": 3,
+          "win_rate": 25.0,
+          "avg_profit": 3.353395144296158,
+          "max_profit": 7.231404958677685,
+          "min_profit": 0.9555661729574774,
+          "signals": [
+            {
+              "timestamp": "2026-02-12 02:00:00",
+              "buy_price": 1856.0,
+              "max_price": 1907.0,
+              "profit_rate": 2.747844827586207,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 5.413846954711088,
+                "recovery": 2.1463951568519537,
+                "score": 1.0731975784259769
+              }
+            },
+            {
+              "timestamp": "2026-02-12 03:00:00",
+              "buy_price": 1866.0,
+              "max_price": 1907.0,
+              "profit_rate": 2.197213290460879,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 5.413846954711088,
+                "recovery": 2.6967528893780957,
+                "score": 1.3483764446890478
+              }
+            },
+            {
+              "timestamp": "2026-02-12 04:00:00",
+              "buy_price": 1860.0,
+              "max_price": 1907.0,
+              "profit_rate": 2.5268817204301075,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 5.413846954711088,
+                "recovery": 2.3665382498624106,
+                "score": 1.1832691249312053
+              }
+            },
+            {
+              "timestamp": "2026-02-12 05:00:00",
+              "buy_price": 1858.0,
+              "max_price": 1907.0,
+              "profit_rate": 2.63724434876211,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 5.413846954711088,
+                "recovery": 2.2564667033571824,
+                "score": 1.1282333516785912
+              }
+            },
+            {
+              "timestamp": "2026-02-12 06:00:00",
+              "buy_price": 1883.0,
+              "max_price": 1907.0,
+              "profit_rate": 1.2745618693574083,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 5.413846954711088,
+                "recovery": 3.632361034672537,
+                "score": 1.8161805173362684
+              }
+            }
+          ]
+        },
+        "box_trader": {
+          "name": "박스권 매매",
+          "total_signals": 17,
+          "winning_trades": 12,
+          "win_rate": 70.58823529411765,
+          "avg_profit": 3.2544018023209196,
+          "max_profit": 4.550438596491229,
+          "min_profit": 1.996007984031936,
+          "signals": [
+            {
+              "timestamp": "2026-02-11 15:00:00",
+              "buy_price": 1837.0,
+              "max_price": 1893.0,
+              "profit_rate": 3.0484485574305933,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 25.619834710743802,
+                "score": 0.43801652892561976
+              }
+            },
+            {
+              "timestamp": "2026-02-11 16:00:00",
+              "buy_price": 1837.0,
+              "max_price": 1897.0,
+              "profit_rate": 3.26619488296135,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 23.728813559322035,
+                "score": 0.6271186440677965
+              }
+            },
+            {
+              "timestamp": "2026-02-11 17:00:00",
+              "buy_price": 1835.0,
+              "max_price": 1897.0,
+              "profit_rate": 3.3787465940054497,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 27.18446601941747,
+                "score": 0.2815533980582529
+              }
+            },
+            {
+              "timestamp": "2026-02-11 18:00:00",
+              "buy_price": 1826.0,
+              "max_price": 1897.0,
+              "profit_rate": 3.888280394304491,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 19.23076923076924,
+                "score": 1.076923076923076
+              }
+            },
+            {
+              "timestamp": "2026-02-11 19:00:00",
+              "buy_price": 1824.0,
+              "max_price": 1907.0,
+              "profit_rate": 4.550438596491229,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 14.85148514851484,
+                "score": 1.514851485148516
+              }
+            }
+          ]
+        },
+        "trend_follower": {
+          "name": "추세 추종",
+          "total_signals": 57,
+          "winning_trades": 26,
+          "win_rate": 45.614035087719294,
+          "avg_profit": 3.552762685239077,
+          "max_profit": 8.302485457429931,
+          "min_profit": -1.0884997633696167,
+          "signals": [
+            {
+              "timestamp": "2026-02-12 06:00:00",
+              "buy_price": 1883.0,
+              "max_price": 1907.0,
+              "profit_rate": 1.2745618693574083,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.6738660907127432,
+                "score": 0.8369330453563716
+              }
+            },
+            {
+              "timestamp": "2026-02-12 09:00:00",
+              "buy_price": 1869.0,
+              "max_price": 1907.0,
+              "profit_rate": 2.0331728196896734,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.1856423582913806,
+                "score": 0.5928211791456903
+              }
+            },
+            {
+              "timestamp": "2026-02-12 10:00:00",
+              "buy_price": 1873.0,
+              "max_price": 1907.0,
+              "profit_rate": 1.8152696209289907,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.3829873609569923,
+                "score": 0.6914936804784961
+              }
+            },
+            {
+              "timestamp": "2026-02-12 11:00:00",
+              "buy_price": 1881.0,
+              "max_price": 1907.0,
+              "profit_rate": 1.3822434875066454,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.7691933127739028,
+                "score": 0.8845966563869514
+              }
+            },
+            {
+              "timestamp": "2026-02-12 12:00:00",
+              "buy_price": 1882.0,
+              "max_price": 1907.0,
+              "profit_rate": 1.3283740701381508,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.7022426371251014,
+                "score": 0.8511213185625507
+              }
+            }
+          ]
+        },
+        "volume_hunter": {
+          "name": "거래량 급증",
+          "total_signals": 26,
+          "winning_trades": 15,
+          "win_rate": 57.692307692307686,
+          "avg_profit": 3.899921608951525,
+          "max_profit": 7.905544147843943,
+          "min_profit": -0.05263157894736842,
+          "signals": [
+            {
+              "timestamp": "2026-02-11 06:00:00",
+              "buy_price": 1893.0,
+              "max_price": 1908.0,
+              "profit_rate": 0.7923930269413629,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 118.61811885703821,
+                "score": 2.3723623771407643
+              }
+            },
+            {
+              "timestamp": "2026-02-11 13:00:00",
+              "buy_price": 1862.0,
+              "max_price": 1883.0,
+              "profit_rate": 1.1278195488721803,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 300.94231254653187,
+                "score": 3
+              }
+            },
+            {
+              "timestamp": "2026-02-11 15:00:00",
+              "buy_price": 1837.0,
+              "max_price": 1893.0,
+              "profit_rate": 3.0484485574305933,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 159.58195667154314,
+                "score": 3
+              }
+            },
+            {
+              "timestamp": "2026-02-11 16:00:00",
+              "buy_price": 1837.0,
+              "max_price": 1897.0,
+              "profit_rate": 3.26619488296135,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 158.1507847508971,
+                "score": 3
+              }
+            },
+            {
+              "timestamp": "2026-02-11 22:00:00",
+              "buy_price": 1853.0,
+              "max_price": 1907.0,
+              "profit_rate": 2.914193200215866,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 83.02196193480258,
+                "score": 1.6604392386960516
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "ticker": "KRW-SHIB",
+      "total_candles": 168,
+      "strategies": {
+        "surge_hunter": {
+          "name": "급등 포착",
+          "total_signals": 2,
+          "winning_trades": 1,
+          "win_rate": 50.0,
+          "avg_profit": 1.5318512983373807,
+          "max_profit": 4.950495049504955,
+          "min_profit": -1.8867924528301934,
+          "signals": [
+            {
+              "timestamp": "2026-02-15 03:00:00",
+              "buy_price": 0.0101,
+              "max_price": 0.0106,
+              "profit_rate": 4.950495049504955,
+              "pattern": {
+                "pattern": "surge",
+                "change": 6.092436974789904,
+                "score": 1.2184873949579809
+              }
+            },
+            {
+              "timestamp": "2026-02-15 07:00:00",
+              "buy_price": 0.0106,
+              "max_price": 0.0104,
+              "profit_rate": -1.8867924528301934,
+              "pattern": {
+                "pattern": "surge",
+                "change": 5.999999999999998,
+                "score": 1.1999999999999997
+              }
+            }
+          ]
+        },
+        "dip_hunter": {
+          "name": "급락 반등",
+          "total_signals": 26,
+          "winning_trades": 12,
+          "win_rate": 46.15384615384615,
+          "avg_profit": 3.890700284843298,
+          "max_profit": 13.733905579399138,
+          "min_profit": -1.8867924528301934,
+          "signals": [
+            {
+              "timestamp": "2026-02-14 01:00:00",
+              "buy_price": 0.0093,
+              "max_price": 0.00996,
+              "profit_rate": 7.096774193548397,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 7.1352502662406865,
+                "recovery": 6.651376146788978,
+                "score": 3.325688073394489
+              }
+            },
+            {
+              "timestamp": "2026-02-14 02:00:00",
+              "buy_price": 0.00926,
+              "max_price": 0.01,
+              "profit_rate": 7.99136069114472,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 6.389776357827492,
+                "recovery": 5.346985210466439,
+                "score": 2.6734926052332195
+              }
+            },
+            {
+              "timestamp": "2026-02-14 03:00:00",
+              "buy_price": 0.00927,
+              "max_price": 0.0101,
+              "profit_rate": 8.95361380798273,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 5.96379126730566,
+                "recovery": 4.983012457531157,
+                "score": 2.4915062287655787
+              }
+            },
+            {
+              "timestamp": "2026-02-14 04:00:00",
+              "buy_price": 0.00926,
+              "max_price": 0.0102,
+              "profit_rate": 10.151187904967621,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 5.218317358892447,
+                "recovery": 4.04494382022471,
+                "score": 2.022471910112355
+              }
+            },
+            {
+              "timestamp": "2026-02-14 05:00:00",
+              "buy_price": 0.00928,
+              "max_price": 0.0102,
+              "profit_rate": 9.913793103448283,
+              "pattern": {
+                "pattern": "dip",
+                "dip_percent": 5.111821086261994,
+                "recovery": 4.152637485970826,
+                "score": 2.076318742985413
+              }
+            }
+          ]
+        },
+        "box_trader": {
+          "name": "박스권 매매",
+          "total_signals": 23,
+          "winning_trades": 14,
+          "win_rate": 60.86956521739131,
+          "avg_profit": 3.2942862928475605,
+          "max_profit": 5.724299065420571,
+          "min_profit": 0.9132420091324225,
+          "signals": [
+            {
+              "timestamp": "2026-02-11 14:00:00",
+              "buy_price": 0.00876,
+              "max_price": 0.00884,
+              "profit_rate": 0.9132420091324225,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 29.787234042553195,
+                "score": 0.02127659574468055
+              }
+            },
+            {
+              "timestamp": "2026-02-11 15:00:00",
+              "buy_price": 0.00866,
+              "max_price": 0.00895,
+              "profit_rate": 3.34872979214781,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 24.56140350877186,
+                "score": 0.5438596491228139
+              }
+            },
+            {
+              "timestamp": "2026-02-11 16:00:00",
+              "buy_price": 0.00866,
+              "max_price": 0.00895,
+              "profit_rate": 3.34872979214781,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 21.818181818181614,
+                "score": 0.8181818181818385
+              }
+            },
+            {
+              "timestamp": "2026-02-11 17:00:00",
+              "buy_price": 0.00867,
+              "max_price": 0.00895,
+              "profit_rate": 3.229527104959619,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 27.659574468085097,
+                "score": 0.2340425531914903
+              }
+            },
+            {
+              "timestamp": "2026-02-11 18:00:00",
+              "buy_price": 0.0086,
+              "max_price": 0.00896,
+              "profit_rate": 4.1860465116278975,
+              "pattern": {
+                "pattern": "box",
+                "rsi": 19.60784313725506,
+                "score": 1.0392156862744941
+              }
+            }
+          ]
+        },
+        "trend_follower": {
+          "name": "추세 추종",
+          "total_signals": 62,
+          "winning_trades": 35,
+          "win_rate": 56.451612903225815,
+          "avg_profit": 5.947698029912669,
+          "max_profit": 14.470842332613401,
+          "min_profit": -1.8867924528301934,
+          "signals": [
+            {
+              "timestamp": "2026-02-12 06:00:00",
+              "buy_price": 0.0088,
+              "max_price": 0.00905,
+              "profit_rate": 2.840909090909093,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.1436124360668998,
+                "score": 0.5718062180334499
+              }
+            },
+            {
+              "timestamp": "2026-02-12 09:00:00",
+              "buy_price": 0.0088,
+              "max_price": 0.00905,
+              "profit_rate": 2.840909090909093,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.4467692662401361,
+                "score": 0.7233846331200681
+              }
+            },
+            {
+              "timestamp": "2026-02-12 10:00:00",
+              "buy_price": 0.00881,
+              "max_price": 0.00905,
+              "profit_rate": 2.724177071509655,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.562049685860859,
+                "score": 0.7810248429304295
+              }
+            },
+            {
+              "timestamp": "2026-02-12 11:00:00",
+              "buy_price": 0.0088,
+              "max_price": 0.00905,
+              "profit_rate": 2.840909090909093,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.4175406246398505,
+                "score": 0.7087703123199253
+              }
+            },
+            {
+              "timestamp": "2026-02-12 12:00:00",
+              "buy_price": 0.0088,
+              "max_price": 0.00905,
+              "profit_rate": 2.840909090909093,
+              "pattern": {
+                "pattern": "trend",
+                "strength": 1.335789958544447,
+                "score": 0.6678949792722235
+              }
+            }
+          ]
+        },
+        "volume_hunter": {
+          "name": "거래량 급증",
+          "total_signals": 27,
+          "winning_trades": 12,
+          "win_rate": 44.44444444444444,
+          "avg_profit": 3.483816500958997,
+          "max_profit": 12.8860489882854,
+          "min_profit": -1.0112359550561776,
+          "signals": [
+            {
+              "timestamp": "2026-02-11 09:00:00",
+              "buy_price": 0.00895,
+              "max_price": 0.00895,
+              "profit_rate": 0.0,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 329.55678506579835,
+                "score": 3
+              }
+            },
+            {
+              "timestamp": "2026-02-11 10:00:00",
+              "buy_price": 0.00895,
+              "max_price": 0.00893,
+              "profit_rate": -0.2234636871508289,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 119.93949681403086,
+                "score": 2.3987899362806173
+              }
+            },
+            {
+              "timestamp": "2026-02-11 12:00:00",
+              "buy_price": 0.0089,
+              "max_price": 0.00881,
+              "profit_rate": -1.0112359550561776,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 117.34933792781557,
+                "score": 2.3469867585563113
+              }
+            },
+            {
+              "timestamp": "2026-02-11 13:00:00",
+              "buy_price": 0.0088,
+              "max_price": 0.00881,
+              "profit_rate": 0.11363636363635898,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 234.47821900328924,
+                "score": 3
+              }
+            },
+            {
+              "timestamp": "2026-02-11 14:00:00",
+              "buy_price": 0.00876,
+              "max_price": 0.00884,
+              "profit_rate": 0.9132420091324225,
+              "pattern": {
+                "pattern": "volume",
+                "volume_change": 58.344660510011494,
+                "score": 1.1668932102002298
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "strategy_summary": {
+    "surge_hunter": {
+      "name": "급등 포착",
+      "total_signals": 12,
+      "win_rate": 75.0,
+      "avg_profit": 5.025394978431732
+    },
+    "dip_hunter": {
+      "name": "급락 반등",
+      "total_signals": 129,
+      "win_rate": 49.6124031007752,
+      "avg_profit": 4.821153961460176
+    },
+    "box_trader": {
+      "name": "박스권 매매",
+      "total_signals": 142,
+      "win_rate": 33.80281690140845,
+      "avg_profit": 1.705077591246705
+    },
+    "trend_follower": {
+      "name": "추세 추종",
+      "total_signals": 442,
+      "win_rate": 59.95475113122172,
+      "avg_profit": 2.390893129214406
+    },
+    "volume_hunter": {
+      "name": "거래량 급증",
+      "total_signals": 239,
+      "win_rate": 44.35146443514644,
+      "avg_profit": 0.7024483308018658
+    }
+  }
+}

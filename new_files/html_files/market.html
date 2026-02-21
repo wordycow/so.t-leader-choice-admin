@@ -1,0 +1,1201 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <title>UNIQUE MARKET</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <!-- ✅ Link Preview (Open Graph / Twitter Card) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta property="og:site_name" content="THE UNIQUE" />
+
+  <meta property="og:title" content="UNIQUE MARKET" />
+  <meta property="og:description" content="THE UNIQUE 공식 마켓" />
+  <meta property="og:url" content="https://wordycow.github.io/so.t-leader-choice/market.html" />
+
+  <!-- ✅ 미리보기 이미지 (절대 URL 필수) -->
+  <meta property="og:image" content="https://wordycow.github.io/so.t-leader-choice/img/og-market.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="UNIQUE MARKET" />
+  <meta name="twitter:description" content="THE UNIQUE 공식 마켓" />
+  <meta name="twitter:image" content="https://wordycow.github.io/so.t-leader-choice/img/og-market.jpg" />
+
+  <link rel="canonical" href="https://wordycow.github.io/so.t-leader-choice/market.html" />
+
+  <link rel="icon" href="data:,">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --gold-text: linear-gradient(135deg, #FDE68A 0%, #D4AF37 50%, #B48E25 100%);
+      --gold-border: rgba(212, 175, 55, 0.3);
+      --lime: #d9f99d;
+      --lime-accent: #84cc16;
+      --card-bg: rgba(6, 78, 59, 0.45);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-shine: rgba(255, 255, 255, 0.03);
+      --input-bg: rgba(0, 0, 0, 0.3);
+      --input-focus: rgba(0, 0, 0, 0.5);
+      --ink: #f1f5f9;
+      --sub: #94a3b8;
+      --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.4);
+      --shadow-glow: 0 0 15px rgba(180, 142, 37, 0.15);
+      --r: 24px;
+      --r2: 14px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+
+    body {
+      margin: 0;
+      font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      color: var(--ink);
+      background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed; inset: 0;
+      background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed;
+      backdrop-filter: blur(2px);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
+
+    .topbar {
+      display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap;
+      margin-bottom: 24px;
+      padding: 12px 20px;
+      background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed;
+      border-radius: 999px;
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+
+    .brand {
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      font-size: 20px;
+      background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 2px 20px rgba(212, 175, 55, 0.3);
+    }
+
+    .who { font-size: 13px; color: var(--sub); margin-top: 2px; font-weight: 500; }
+    .btns { display: flex; gap: 8px; align-items: center; }
+    button { cursor: pointer; user-select: none; }
+
+    .btn {
+      padding: 10px 18px;
+      border-radius: 99px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed;
+      color: #fff;
+      font-weight: 600;
+      font-size: 13px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      backdrop-filter: blur(4px);
+    }
+    .btn:hover { background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed; transform: translateY(-2px); }
+    .btn:active { transform: translateY(0); }
+
+    .btn.primary {
+      background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed;
+      border: none;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+      color: #fff;
+    }
+    .btn.primary:hover { box-shadow: 0 6px 16px rgba(16, 185, 129, 0.6); }
+
+    .btn.danger {
+      background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed;
+      border-color: rgba(239, 68, 68, 0.5);
+      color: #fca5a5;
+    }
+    .btn.danger:hover { background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed; }
+
+    .btn.bell { position: relative; padding-right: 18px; padding-left: 18px; }
+    .badge {
+      position: absolute; top: -2px; right: -2px;
+      min-width: 18px; height: 18px; padding: 0 5px;
+      border-radius: 10px;
+      background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed;
+      color: #fff; font-size: 10px; font-weight: bold;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+
+    .pill {
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #6ee7b7;
+      font-size: 13px; font-weight: 500;
+      margin-bottom: 20px;
+      display: none;
+      backdrop-filter: blur(4px);
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn { from{opacity:0; transform:translateY(-5px);} to{opacity:1; transform:translateY(0);} }
+
+    .stack { display: flex; flex-direction: column; gap: 24px; }
+
+    .card {
+      border-radius: var(--r);
+      border: 1px solid var(--card-border);
+      background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 24px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .muted { color: var(--sub); font-size: 13px; line-height: 1.5; }
+
+    input, textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: var(--r2);
+      border: 1px solid rgba(255,255,255,0.1);
+      background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      transition: 0.2s;
+    }
+    input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.3); }
+    input:focus, textarea:focus {
+      background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed;
+      border-color: rgba(16, 185, 129, 0.5);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+    }
+    textarea { min-height: 120px; resize: vertical; line-height: 1.6; }
+
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media(max-width: 720px) { .row { grid-template-columns: 1fr; } }
+
+    .thumbs { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+    .thumb {
+      width: 100px; height: 100px; border-radius: 16px;
+      overflow: hidden; border: 1px solid rgba(255,255,255,0.1);
+      position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .thumb .x {
+      position: absolute; top: 6px; right: 6px;
+      background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed; color: #fff;
+      border: none; width: 20px; height: 20px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; cursor: pointer;
+    }
+
+    input[type="file"] {
+      padding: 10px; background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed; cursor: pointer;
+    }
+    input[type="file"]::file-selector-button {
+      margin-right: 12px; border: none; background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed;
+      padding: 6px 12px; border-radius: 6px; color: #fff; cursor: pointer;
+    }
+
+    .feedWrap { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 16px; }
+    .feed {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px;
+    }
+
+    .post {
+      border-radius: 20px;
+      background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed;
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      display: flex; flex-direction: column;
+    }
+    .post:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+      border-color: rgba(255,255,255,0.2);
+    }
+
+    .postImg {
+      width: 100%; aspect-ratio: 16/9; background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed;
+      display: block; object-fit: cover;
+    }
+    .postTop { padding: 16px; flex: 1; display: flex; flex-direction: column; }
+    .postTitle {
+      font-weight: 700; font-size: 16px; margin-bottom: 8px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      color: #fff;
+    }
+    .postMeta { font-size: 13px; color: var(--sub); line-height: 1.6; }
+
+    .chip {
+      display: inline-flex; align-items: center;
+      padding: 2px 8px; border-radius: 6px;
+      background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed;
+      border: 1px solid rgba(255,255,255,0.05);
+      margin-right: 4px; margin-bottom: 4px;
+      font-size: 11px; color: #e2e8f0;
+    }
+
+    .postActions {
+      position: absolute; top: 12px; right: 12px;
+      display: flex; gap: 6px; z-index: 2;
+    }
+    .miniBtn {
+      font-size: 11px; padding: 5px 10px; border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed; color: #fff; backdrop-filter: blur(4px);
+    }
+    .miniBtn:hover { background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed; }
+    .miniBtn.danger { color: #fca5a5; border-color: rgba(239,68,68,0.4); }
+    .miniBtn.danger:hover { background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed; color: #fff; }
+
+    .previewBox {
+      margin-top: 8px; padding: 12px; border-radius: 12px;
+      background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed; border: 1px dashed rgba(255,255,255,0.15);
+      font-size: 13px; color: #cbd5e1;
+    }
+    .rich-text a { color: #fbbf24; text-decoration: none; border-bottom: 1px solid rgba(251, 191, 36, 0.4); }
+    .rich-text a:hover { color: #fcd34d; border-bottom-color: #fcd34d; }
+
+    .notiPanel {
+      position: fixed; top: 80px; right: 20px; width: 340px;
+      max-height: calc(100vh - 100px); overflow-y: auto;
+      border-radius: 20px;
+      background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      padding: 16px; z-index: 100;
+      backdrop-filter: blur(12px);
+      display: none;
+      animation: slideIn 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .notiHead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .notiItem {
+      border-radius: 12px; background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed;
+      padding: 12px; margin-top: 8px; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .notiItem:hover { background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed; }
+    .notiItem.unread {
+      background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed;
+      border-left: 3px solid #10b981;
+    }
+    .notiTitle { font-weight: 600; font-size: 13px; color: #fff; }
+    .notiTime { font-size: 11px; color: #64748b; margin-top: 4px; }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed; }
+    ::-webkit-scrollbar-thumb { background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #0a0e27 url('img/market-background.png') center/cover no-repeat fixed; }
+  </style>
+
+  
+  
+  
+
+
+  <!-- Medieval Magic Theme (골드 + 딥블루) -->
+  <link rel="stylesheet" href="css/medieval-magic.css">
+  <link rel="stylesheet" href="css/medieval-override.css">
+
+</head>
+
+<body>
+
+  <a href="#main-content" class="skip-to-content">Skip to main content</a>
+
+<div class="wrap">
+  <div class="topbar">
+    <div>
+      <div class="brand">UNIQUE 마켓</div>
+      <div id="who" class="who">로그인 확인 중...</div>
+    </div>
+
+    <div class="btns">
+      <button class="btn bell" id="btnBell" type="button" style="display:none;">
+        🔔 알림 <span id="badge" class="badge" style="display:none;">0</span>
+      </button>
+
+      <button class="btn danger" id="btnExit" type="button">나가기</button>
+      <button class="btn primary" id="btnLogin" type="button">구글 로그인</button>
+      <button class="btn" id="btnReset" type="button" title="로그인/토큰 초기화">초기화</button>
+    </div>
+  </div>
+
+  <div id="status" class="pill"></div>
+
+  <div class="stack">
+
+    <!-- ✅ (변경) 게시글을 위로 -->
+    <div class="card">
+      <div class="feedWrap">
+        <div style="font-weight:900;">게시글</div>
+        <button class="btn" id="btnRefresh" type="button">새로고침</button>
+      </div>
+      <div id="feed" class="feed"></div>
+    </div>
+
+    <!-- ✅ (변경) 등록/수정을 아래로 -->
+    <div class="card">
+      <div style="font-weight:900;margin-bottom:8px;">등록 / 수정</div>
+      <div class="muted" style="margin-bottom:10px;">
+        이미지 1~3장 (JPG/PNG/GIF).<br>
+        ✅ 수정 시: 새 이미지를 선택하면 기존 이미지는 “교체”됩니다.
+      </div>
+
+      <div class="row">
+        <div>
+          <div class="muted" style="margin:0 0 6px;">제목</div>
+          <input id="fTitle" placeholder="예: 미개봉 단백질 2통" />
+        </div>
+        <div>
+          <div class="muted" style="margin:0 0 6px;">수량</div>
+          <input id="fQty" type="number" placeholder="예: 2" />
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:10px;">
+        <div>
+          <div class="muted" style="margin:0 0 6px;">연락처</div>
+          <input id="fContact" placeholder="예: 010-xxxx-xxxx / 오픈채팅 링크" />
+          <div class="muted" style="margin-top:6px;">※ 입력창은 링크 클릭이 안 됩니다. 아래 미리보기에서 클릭하세요.</div>
+          <div id="contactPreview" class="previewBox rich-text" style="display:none;"></div>
+        </div>
+        <div>
+          <div class="muted" style="margin:0 0 6px;">지역</div>
+          <input id="fRegion" placeholder="예: 서울 강남 / 부산 해운대" />
+        </div>
+      </div>
+
+      <div style="margin-top:10px;">
+        <div class="muted" style="margin:0 0 6px;">설명</div>
+        <textarea id="fDesc" placeholder="상태/사용감/전달 방식 등"></textarea>
+        <div class="muted" style="margin-top:6px;">※ 입력창은 링크 클릭이 안 됩니다. 아래 미리보기에서 클릭하세요.</div>
+        <div id="descPreview" class="previewBox rich-text" style="display:none;"></div>
+      </div>
+
+      <div style="margin-top:10px;">
+        <div class="muted" style="margin:0 0 6px;">이미지(최대 3개)</div>
+        <input id="fImages" type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple />
+        <div id="imgPreview" class="thumbs"></div>
+      </div>
+
+      <div class="btns" style="margin-top:10px;">
+        <button class="btn primary" id="btnSave" type="button">등록하기</button>
+        <button class="btn" id="btnCancelEdit" type="button" style="display:none;">수정 취소</button>
+      </div>
+
+      <div id="inlineStatus" class="muted" style="margin-top:8px;"></div>
+      <div id="loginNote" class="muted" style="margin-top:8px;">로그인 확인 중...</div>
+    </div>
+
+  </div>
+</div>
+
+<aside id="notiPanel" class="notiPanel"></aside>
+
+<script>
+(() => {
+  const SUPABASE_URL = "https://lrpscubricemcgfssjgg.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_8mMA4oEsuB9j0rc6KsLmtQ_UkJo0Zaq";
+  const BUCKET = "market";
+
+  const VIEW_PAGE = "market-view.html";
+  const REDIRECT_TO = location.origin + location.pathname;
+
+  const TOKEN_KEY = "market_access_token";
+  const REFRESH_KEY = "market_refresh_token";
+  const RETURN_TO_KEY = "market_return_to";
+  const NOTI_LAST_ALERT_KEY_PREFIX = "market_noti_last_alert_";
+
+  const $ = (id) => document.getElementById(id);
+  const statusEl = $("status");
+  const inlineEl = $("inlineStatus");
+  const feedEl = $("feed");
+  const notiPanel = $("notiPanel");
+  const badge = $("badge");
+  const btnBell = $("btnBell");
+
+  const contactPreview = $("contactPreview");
+  const descPreview = $("descPreview");
+
+  let accessToken = null;
+  let refreshToken = null;
+  let user = null;
+
+  let isAdmin = false;
+
+  const postsMap = new Map();
+  let editId = null;
+  let editOldImages = [];
+
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    global: {
+      fetch: async (url, init = {}) => {
+        const headers = new Headers(init.headers || {});
+        if (!headers.has("apikey")) headers.set("apikey", SUPABASE_ANON_KEY);
+
+        const u = String(url);
+        if (accessToken && (u.includes("/rest/v1/") || u.includes("/storage/v1/") || u.includes("/auth/v1/"))) {
+          headers.set("Authorization", "Bearer " + accessToken);
+        }
+        return fetch(url, { ...init, headers });
+      }
+    },
+    auth: {
+      flowType: "implicit",
+      detectSessionInUrl: false,
+      persistSession: false,
+      autoRefreshToken: false,
+      storageKey: "sb-market-single"
+    }
+  });
+
+  async function loadIsAdmin(){
+    try{
+      const { data, error } = await sb
+        .from("market_admins")
+        .select("user_id")
+        .eq("user_id", user.id)
+        .limit(1);
+      if (error) return false;
+      return Array.isArray(data) && data.length > 0;
+    }catch(e){
+      return false;
+    }
+  }
+
+  function setStatus(msg, isErr=false){
+    if (!msg){
+      statusEl.style.display="none";
+    } else {
+      statusEl.style.display="";
+      statusEl.textContent = msg;
+      statusEl.style.borderColor = isErr ? "rgba(248,113,113,.6)" : "rgba(255,255,255,.18)";
+      statusEl.style.background = isErr ? "rgba(127,29,29,.25)" : "rgba(0,0,0,.18)";
+    }
+    inlineEl.textContent = msg || "";
+    inlineEl.style.color = isErr ? "#fecaca" : "#e5e7eb";
+  }
+
+  function safeLSSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+  function safeLSGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  function safeLSRemove(k){ try{ localStorage.removeItem(k); }catch(e){} }
+
+  function cleanUrlAll(){
+    const u = new URL(location.href);
+    u.searchParams.delete("autologin");
+    u.searchParams.delete("code");
+    u.searchParams.delete("state");
+    history.replaceState({}, document.title, u.pathname + u.search);
+  }
+
+  function escapeHtml(s){
+    return (s||"").toString()
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#39;");
+  }
+
+  function escapeAndLinkify(s){
+    const safe = escapeHtml(s || "");
+    const re = /((https?:\/\/|www\.)[^\s<]+)/gi;
+
+    return safe.replace(re, (m) => {
+      let url = m;
+      let trail = "";
+      while (/[.,!?)}\]]$/.test(url)) {
+        trail = url.slice(-1) + trail;
+        url = url.slice(0, -1);
+      }
+      const href = url.startsWith("http") ? url : `https://${url}`;
+      return `<a href="${href}" target="_blank" rel="noopener noreferrer nofollow" aria-label="${url} (새 창)">${url}</a>${trail}`;
+    });
+  }
+
+  function renderPreview(el, text){
+    if (!el) return;
+    const v = (text || "").trim();
+    if (!v){
+      el.style.display = "none";
+      el.innerHTML = "";
+      return;
+    }
+    el.style.display = "";
+    el.innerHTML = escapeAndLinkify(v);
+  }
+
+  function refreshFormPreviews(){
+    renderPreview(contactPreview, $("fContact").value);
+    renderPreview(descPreview, $("fDesc").value);
+  }
+
+  function base64UrlToJson(b64url){
+    const b64 = b64url.replace(/-/g, "+").replace(/_/g, "/");
+    const pad = "=".repeat((4 - (b64.length % 4)) % 4);
+    const binary = atob(b64 + pad);
+    const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
+    const json = new TextDecoder().decode(bytes);
+    return JSON.parse(json);
+  }
+
+  function decodeJwtPayload(token){
+    try{
+      const parts = (token || "").split(".");
+      if (parts.length < 2) return null;
+      return base64UrlToJson(parts[1]);
+    }catch(e){ return null; }
+  }
+
+  function decodeUserFromAccessToken(token){
+    const payload = decodeJwtPayload(token);
+    if (!payload) return null;
+    return {
+      id: payload.sub || "",
+      email: payload.email || "",
+      name: payload.user_metadata?.full_name || payload.user_metadata?.name || payload.name || ""
+    };
+  }
+
+  function tokenExpiringSoon(token, skewSec = 120){
+    const payload = decodeJwtPayload(token);
+    const exp = payload?.exp ? payload.exp * 1000 : 0;
+    if (!exp) return true;
+    return Date.now() > (exp - skewSec*1000);
+  }
+
+  async function refreshTokens(){
+    if (!refreshToken) return false;
+
+    try{
+      setStatus("로그인 갱신 중...");
+      const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
+        method: "POST",
+        headers: {
+          "apikey": SUPABASE_ANON_KEY,
+          "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ refresh_token: refreshToken })
+      });
+
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok){
+        const msg = json?.error_description || json?.error || ("HTTP " + res.status);
+        throw new Error(msg);
+      }
+
+      accessToken = json.access_token;
+      refreshToken = json.refresh_token || refreshToken;
+      safeLSSet(TOKEN_KEY, accessToken);
+      safeLSSet(REFRESH_KEY, refreshToken);
+
+      user = decodeUserFromAccessToken(accessToken);
+      isAdmin = user?.id ? await loadIsAdmin() : false;
+      setLoggedInUI();
+      setStatus("");
+      return true;
+    }catch(e){
+      setStatus("로그인 만료: 다시 '구글 로그인' 해주세요.\n(" + (e?.message || e) + ")", true);
+      return false;
+    }
+  }
+
+  async function ensureValidAuth(){
+    if (!accessToken || !refreshToken) return false;
+    if (tokenExpiringSoon(accessToken, 120)) return await refreshTokens();
+    return true;
+  }
+
+  function autologinOn(){
+    return new URL(location.href).searchParams.get("autologin") === "1";
+  }
+
+  function loadTokenFromHashOrStorage(){
+    let fromHash = false;
+    const hash = (location.hash || "").replace(/^#/, "");
+    if (hash.includes("access_token=")){
+      const p = new URLSearchParams(hash);
+      const at = p.get("access_token");
+      const rt = p.get("refresh_token");
+      if (at){
+        fromHash = true;
+        accessToken = at;
+        refreshToken = rt || null;
+        safeLSSet(TOKEN_KEY, accessToken);
+        if (refreshToken) safeLSSet(REFRESH_KEY, refreshToken);
+        cleanUrlAll();
+      }
+    }
+    if (!accessToken){
+      accessToken = safeLSGet(TOKEN_KEY);
+      refreshToken = safeLSGet(REFRESH_KEY);
+    }
+    return fromHash;
+  }
+
+  function handleReturnToAfterOAuth(){
+    const returnTo = safeLSGet(RETURN_TO_KEY);
+    if (!returnTo) return false;
+    safeLSRemove(RETURN_TO_KEY);
+    try{
+      if (returnTo && returnTo !== location.href) {
+        location.replace(returnTo);
+        return true;
+      }
+    }catch(e){}
+    return false;
+  }
+
+  function setLoggedOutUI(){
+    $("who").textContent = "익명(열람)";
+    $("loginNote").textContent = "게시글은 열람 가능 / 등록·수정·삭제·알림은 로그인 후 가능합니다.";
+    btnBell.style.display = "none";
+  }
+
+  function setLoggedInUI(){
+    const label = user?.name || user?.email || (user?.id ? user.id.slice(0,8) : "");
+    $("who").textContent = `로그인: ${label}${isAdmin ? " (관리자)" : ""}`;
+    $("loginNote").textContent = "로그인 완료 ✅";
+    btnBell.style.display = "";
+  }
+
+  $("btnExit").addEventListener("click", () => location.replace("the-unique-gate.html"));
+  $("btnReset").addEventListener("click", () => {
+    safeLSRemove(TOKEN_KEY);
+    safeLSRemove(REFRESH_KEY);
+    safeLSRemove(RETURN_TO_KEY);
+    try{
+      for (let i = localStorage.length - 1; i >= 0; i--){
+        const k = localStorage.key(i);
+        if (k && k.startsWith("sb-")) localStorage.removeItem(k);
+      }
+      sessionStorage.clear();
+    }catch(e){}
+    location.replace("market.html?autologin=1");
+  });
+
+  $("btnLogin").addEventListener("click", async () => {
+    setStatus("구글 로그인 이동 중...");
+    const { data, error } = await sb.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: REDIRECT_TO, skipBrowserRedirect: true }
+    });
+    if (error) return setStatus("구글 로그인 시작 실패: " + error.message, true);
+    if (data?.url) location.assign(data.url);
+    else setStatus("로그인 URL 생성 실패", true);
+  });
+
+  $("fContact").addEventListener("input", refreshFormPreviews);
+  $("fDesc").addEventListener("input", refreshFormPreviews);
+
+  let selectedFiles = [];
+  let previewUrls = [];
+
+  function clearPreviews(){
+    previewUrls.forEach(u => URL.revokeObjectURL(u));
+    previewUrls = [];
+    selectedFiles = [];
+    $("fImages").value = "";
+    $("imgPreview").innerHTML = "";
+  }
+
+  function renderPreviews(){
+    const box = $("imgPreview");
+    box.innerHTML = "";
+    selectedFiles.slice(0,3).forEach((file, idx) => {
+      const url = URL.createObjectURL(file);
+      previewUrls.push(url);
+      const d = document.createElement("div");
+      d.className = "thumb";
+      d.innerHTML = `<img src="${url}" alt="" loading="lazy" decoding="async"><button class="x" type="button">X</button>`;
+      d.querySelector(".x").onclick = () => {
+        selectedFiles.splice(idx, 1);
+        renderPreviews();
+      };
+      box.appendChild(d);
+    });
+  }
+
+  $("fImages").addEventListener("change", (e) => {
+    previewUrls.forEach(u => URL.revokeObjectURL(u));
+    previewUrls = [];
+    selectedFiles = Array.from(e.target.files || []).slice(0,3);
+    renderPreviews();
+  });
+
+  function fileExt(file){
+    const n = file.name || "";
+    const dot = n.lastIndexOf(".");
+    return dot >= 0 ? n.slice(dot+1).toLowerCase() : "png";
+  }
+
+  function toPublicUrl(path){
+    return sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
+  }
+
+  function storagePathFromPublicUrl(url){
+    try{
+      const marker = `/storage/v1/object/public/${BUCKET}/`;
+      const idx = url.indexOf(marker);
+      if (idx < 0) return null;
+      return url.slice(idx + marker.length);
+    }catch(e){ return null; }
+  }
+
+  async function removeOldImages(urls){
+    const paths = (urls || []).map(storagePathFromPublicUrl).filter(Boolean);
+    if (!paths.length) return;
+    await sb.storage.from(BUCKET).remove(paths);
+  }
+
+  async function uploadImages(postId){
+    if (!selectedFiles.length) return null;
+    const ok = await ensureValidAuth();
+    if (!ok) throw new Error("로그인 필요");
+
+    const urls = [];
+    for (let i=0; i<Math.min(3, selectedFiles.length); i++){
+      const f = selectedFiles[i];
+      const ext = fileExt(f);
+      const path = `posts/${postId}/${Date.now()}_${i}.${ext}`;
+      const { error } = await sb.storage.from(BUCKET).upload(path, f, { upsert:false, contentType:f.type });
+      if (error) throw new Error(error.message);
+      urls.push(toPublicUrl(path));
+    }
+    return urls;
+  }
+
+  function enterEditMode(p){
+    editId = p.id;
+    editOldImages = Array.isArray(p.images) ? p.images : [];
+
+    $("fTitle").value = p.title || "";
+    $("fQty").value = (p.qty ?? "");
+    $("fContact").value = p.contact || "";
+    $("fRegion").value = p.region || "";
+    $("fDesc").value = p.description || "";
+
+    clearPreviews();
+    $("btnSave").textContent = "수정 저장";
+    $("btnCancelEdit").style.display = "";
+    setStatus("수정 모드: 내용 수정 후 ‘수정 저장’");
+
+    refreshFormPreviews();
+  }
+
+  function exitEditMode(){
+    editId = null;
+    editOldImages = [];
+    $("fTitle").value=""; $("fQty").value=""; $("fContact").value=""; $("fRegion").value=""; $("fDesc").value="";
+    clearPreviews();
+    $("btnSave").textContent = "등록하기";
+    $("btnCancelEdit").style.display = "none";
+    setStatus("");
+    refreshFormPreviews();
+  }
+
+  $("btnCancelEdit").addEventListener("click", () => exitEditMode());
+
+  async function upsertPost(){
+    const ok = await ensureValidAuth();
+    if (!ok) return setStatus("등록/수정은 로그인 후 가능합니다.", true);
+
+    user = decodeUserFromAccessToken(accessToken);
+    if (!user?.id) return setStatus("유저 정보를 못 읽었습니다. ‘초기화’ 후 재로그인", true);
+
+    const title = ($("fTitle").value || "").trim();
+    if (!title) return setStatus("제목은 필수입니다.", true);
+
+    const qty = $("fQty").value ? parseInt($("fQty").value, 10) : null;
+    const contact = ($("fContact").value || "").trim();
+    const region = ($("fRegion").value || "").trim();
+    const description = ($("fDesc").value || "").trim();
+    const owner_name = user.name || user.email || "";
+
+    if (!editId){
+      setStatus("등록 중...");
+      const { data, error } = await sb
+        .from("market_posts")
+        .insert({ owner: user.id, owner_name, title, qty, contact, region, description, images: [] })
+        .select("id")
+        .single();
+
+      if (error) return setStatus("등록 실패: " + error.message, true);
+
+      try{
+        const urls = await uploadImages(data.id);
+        if (Array.isArray(urls) && urls.length){
+          const { error: e2 } = await sb.from("market_posts").update({ images: urls }).eq("id", data.id);
+          if (e2) return setStatus("이미지 링크 저장 실패: " + e2.message, true);
+        }
+        setStatus("등록 완료!");
+        exitEditMode();
+        await renderFeed();
+      }catch(e){
+        setStatus("이미지 업로드 실패: " + (e?.message || e), true);
+      }
+      return;
+    }
+
+    setStatus("수정 중...");
+    const { error: e1 } = await sb
+      .from("market_posts")
+      .update({ title, qty, contact, region, description })
+      .eq("id", editId);
+
+    if (e1) return setStatus("수정 실패: " + e1.message, true);
+
+    try{
+      const urls = await uploadImages(editId);
+      if (urls !== null) {
+        try{ await removeOldImages(editOldImages); }catch(e){}
+        const { error: e2 } = await sb.from("market_posts").update({ images: urls }).eq("id", editId);
+        if (e2) return setStatus("이미지 갱신 실패: " + e2.message, true);
+      }
+      setStatus("수정 완료!");
+      exitEditMode();
+      await renderFeed();
+    }catch(e){
+      setStatus("이미지 업로드 실패: " + (e?.message || e), true);
+    }
+  }
+
+  async function deletePost(postId){
+    const ok = await ensureValidAuth();
+    if (!ok) return setStatus("삭제는 로그인 후 가능합니다.", true);
+
+    const p = postsMap.get(postId);
+    if (!p) return;
+    if (!confirm("정말 삭제할까요?")) return;
+
+    setStatus("삭제 중...");
+
+    const { error } = await sb.from("market_posts").delete().eq("id", postId);
+    if (error){
+      return setStatus(
+        "삭제 실패: " + error.message +
+        "\n(댓글 때문에 막히면 DB에 post_id ON DELETE CASCADE가 필요합니다.)",
+        true
+      );
+    }
+
+    try{ await removeOldImages(Array.isArray(p.images)?p.images:[]); }catch(e){}
+
+    setStatus("삭제 완료!");
+    if (editId === postId) exitEditMode();
+    await renderFeed();
+  }
+
+  function postCardHtml(p){
+    const imgs = Array.isArray(p.images) ? p.images : [];
+    const cover = imgs[0] || "";
+    const canManage = user?.id && (p.owner === user.id || isAdmin);
+
+    return `
+      <div class="post" data-postid="${p.id}">
+        ${cover ? `<img class="postImg" src="${cover}" alt="" loading="lazy" decoding="async">` : `<div class="postImg"></div>`}
+
+        ${canManage ? `
+          <div class="postActions">
+            <button class="miniBtn" data-act="edit" data-id="${p.id}" type="button">수정</button>
+            <button class="miniBtn danger" data-act="del" data-id="${p.id}" type="button">삭제</button>
+          </div>
+        ` : ``}
+
+        <div class="postTop">
+          <div>
+            <div class="postTitle">${escapeHtml(p.title || "")}</div>
+            <div class="postMeta">
+              <span class="chip">수량 ${escapeHtml(p.qty ?? "-")}</span>
+              <span class="chip">${escapeHtml(p.region || "-")}</span><br>
+              <span class="muted rich-text">연락: ${escapeAndLinkify(p.contact || "-")}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // ✅ 로그인 없어도 게시글 열람 가능 (여기서 ensureValidAuth() 체크 제거)
+  async function renderFeed(){
+    const { data, error } = await sb.from("market_posts").select("*").order("created_at", { ascending:false });
+    if (error) return setStatus("게시글 불러오기 실패: " + error.message, true);
+
+    const posts = data || [];
+    postsMap.clear();
+    posts.forEach(p => postsMap.set(p.id, p));
+    feedEl.innerHTML = posts.map(postCardHtml).join("") || `<div class="muted">아직 글이 없습니다.</div>`;
+  }
+
+  feedEl.addEventListener("click", (e) => {
+    const link = e.target.closest("a");
+    if (link){
+      e.stopPropagation();
+      return;
+    }
+
+    const actBtn = e.target.closest("[data-act]");
+    if (actBtn){
+      e.preventDefault();
+      e.stopPropagation();
+      const act = actBtn.getAttribute("data-act");
+      const id = actBtn.getAttribute("data-id");
+      if (!id) return;
+
+      const p = postsMap.get(id);
+      if (!p) return;
+
+      if (!(p.owner === user?.id || isAdmin)) return setStatus("권한이 없습니다.", true);
+
+      if (act === "edit") enterEditMode(p);
+      if (act === "del") deletePost(id);
+      return;
+    }
+
+    const card = e.target.closest(".post");
+    if (!card) return;
+    const id = card.getAttribute("data-postid");
+    if (!id) return;
+
+    location.href = `${VIEW_PAGE}?id=${encodeURIComponent(id)}#comments`;
+  });
+
+  $("btnSave").addEventListener("click", (e) => { e.preventDefault(); upsertPost(); });
+  $("btnRefresh").addEventListener("click", (e) => { e.preventDefault(); renderFeed(); });
+
+  function fmtTime(iso){
+    try{ return new Date(iso).toLocaleString(); }catch(e){ return iso || ""; }
+  }
+
+  function notiText(n){
+    const who = n.actor_name || "누군가";
+    if (n.type === "post_comment") return `${who}님이 내 게시물에 댓글을 달았어요`;
+    if (n.type === "comment_reply") return `${who}님이 내 댓글에 답글을 달았어요`;
+    return `${who}님의 알림`;
+  }
+
+  function toggleNotiPanel(show){
+    const isOpen = notiPanel.style.display !== "none" && notiPanel.style.display !== "";
+    const next = (show === undefined) ? !isOpen : show;
+    notiPanel.style.display = next ? "" : "none";
+  }
+
+  async function getUnreadCount(){
+    const { count, error } = await sb
+      .from("market_notifications")
+      .select("id", { count: "exact", head: true })
+      .eq("recipient", user.id)
+      .eq("read", false);
+
+    if (error) return null;
+    return (typeof count === "number") ? count : null;
+  }
+
+  async function loadNotiList(limit=30){
+    const { data, error } = await sb
+      .from("market_notifications")
+      .select("*")
+      .eq("recipient", user.id)
+      .order("created_at", { ascending:false })
+      .limit(limit);
+
+    if (error) {
+      setStatus("알림 불러오기 실패: " + error.message, true);
+      return [];
+    }
+    return data || [];
+  }
+
+  async function markAllRead(){
+    await sb
+      .from("market_notifications")
+      .update({ read: true })
+      .eq("recipient", user.id)
+      .eq("read", false);
+  }
+
+  async function markRead(id){
+    await sb.from("market_notifications").update({ read:true }).eq("id", id);
+  }
+
+  async function refreshBadge(){
+    const c = await getUnreadCount();
+    if (c === null) return;
+    if (c <= 0) badge.style.display = "none";
+    else { badge.style.display = ""; badge.textContent = String(c); }
+  }
+
+  function renderNotiPanel(list){
+    const items = list.length
+      ? list.map(n => `
+        <div class="notiItem ${n.read ? "" : "unread"}" data-id="${n.id}"
+             data-post="${n.post_id}" data-comment="${n.comment_id}">
+          <div class="notiTitle">${escapeHtml(notiText(n))}</div>
+          <div class="notiTime">${escapeHtml(fmtTime(n.created_at))}</div>
+          <div class="notiBody rich-text">${escapeAndLinkify(n.snippet || "")}</div>
+        </div>
+      `).join("")
+      : `<div class="muted">알림이 없습니다.</div>`;
+
+    notiPanel.innerHTML = `
+      <div class="notiHead">
+        <div style="font-weight:900;">알림</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
+          <button class="miniBtn" id="btnAllowNoti" type="button">알림 허용</button>
+          <button class="miniBtn" id="btnReadAll" type="button">모두 읽음</button>
+          <button class="miniBtn" id="btnCloseNoti" type="button">닫기</button>
+        </div>
+      </div>
+      ${items}
+    `;
+
+    notiPanel.querySelector("#btnCloseNoti").onclick = () => toggleNotiPanel(false);
+    notiPanel.querySelector("#btnReadAll").onclick = async () => {
+      await markAllRead();
+      await refreshBadge();
+      const again = await loadNotiList();
+      renderNotiPanel(again);
+    };
+
+    notiPanel.querySelector("#btnAllowNoti").onclick = async () => {
+      if (!("Notification" in window)) return setStatus("이 브라우저는 알림을 지원하지 않습니다.", true);
+      const p = await Notification.requestPermission();
+      if (p === "granted") setStatus("브라우저 알림 허용 완료!");
+      else setStatus("브라우저 알림이 허용되지 않았습니다.", true);
+    };
+
+    notiPanel.querySelectorAll(".notiItem").forEach(el => {
+      el.addEventListener("click", async () => {
+        const id = el.getAttribute("data-id");
+        const postId = el.getAttribute("data-post");
+        const cId = el.getAttribute("data-comment");
+        if (id) await markRead(id);
+        await refreshBadge();
+        toggleNotiPanel(false);
+        location.href = `${VIEW_PAGE}?id=${encodeURIComponent(postId)}#c_${cId}`;
+      });
+    });
+
+    notiPanel.querySelectorAll("a").forEach(a => {
+      a.addEventListener("click", (e) => e.stopPropagation());
+    });
+  }
+
+  function maybeBrowserNotify(n){
+    if (!("Notification" in window)) return;
+    if (Notification.permission !== "granted") return;
+    try{
+      new Notification("UNIQUE 마켓", { body: notiText(n) + (n.snippet ? "\n" + n.snippet : "") });
+    }catch(e){}
+  }
+
+  async function checkNewNotiAlert(){
+    const key = NOTI_LAST_ALERT_KEY_PREFIX + user.id;
+    const last = safeLSGet(key);
+
+    const { data } = await sb
+      .from("market_notifications")
+      .select("*")
+      .eq("recipient", user.id)
+      .eq("read", false)
+      .order("created_at", { ascending:false })
+      .limit(1);
+
+    const top = (data && data[0]) ? data[0] : null;
+    if (!top) return;
+
+    const topAt = top.created_at || "";
+    if (last && topAt <= last) return;
+
+    safeLSSet(key, topAt);
+    setStatus("🔔 새 알림: " + notiText(top));
+    maybeBrowserNotify(top);
+    setTimeout(() => setStatus(""), 3500);
+  }
+
+  btnBell.addEventListener("click", async () => {
+    const ok = await ensureValidAuth();
+    if (!ok) return setStatus("알림은 로그인 후 가능합니다.", true);
+
+    toggleNotiPanel();
+    if (notiPanel.style.display !== "none" && notiPanel.style.display !== ""){
+      const list = await loadNotiList();
+      renderNotiPanel(list);
+      await refreshBadge();
+    }
+  });
+
+  // Boot
+  (async () => {
+    $("who").textContent = "로그인 확인 중...";
+    $("loginNote").textContent = "로그인 확인 중...";
+
+    const fromHash = loadTokenFromHashOrStorage();
+    if (fromHash){
+      if (handleReturnToAfterOAuth()) return;
+    }
+
+    // ✅ 일단 게시글은 무조건 렌더(익명 열람 가능)
+    await renderFeed();
+    refreshFormPreviews();
+
+    if (!accessToken || !refreshToken){
+      setLoggedOutUI();
+      setStatus("");
+      if (autologinOn()) $("btnLogin").click();
+      return;
+    }
+
+    await ensureValidAuth();
+    user = decodeUserFromAccessToken(accessToken);
+
+    if (!user?.id){
+      setLoggedOutUI();
+      return setStatus("유저 정보를 못 읽었습니다. ‘초기화’ 후 재로그인", true);
+    }
+
+    isAdmin = await loadIsAdmin();
+    setLoggedInUI();
+
+    setStatus("");
+    await refreshBadge();
+    await checkNewNotiAlert();
+
+    setInterval(async () => {
+      if (!accessToken || !refreshToken) return;
+      if (tokenExpiringSoon(accessToken, 120)) await refreshTokens();
+      if (user?.id){
+        await refreshBadge();
+        await checkNewNotiAlert();
+      }
+    }, 15000);
+  })();
+})();
+</script>
+</body>
+</html>

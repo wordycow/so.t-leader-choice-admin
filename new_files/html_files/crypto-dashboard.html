@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🚀 실전 트레이더 대시보드</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-dark: #0a0d14;
+      --bg-card: #151921;
+      --border: #1f2937;
+      --text-primary: #f9fafb;
+      --text-secondary: #9ca3af;
+      --green: #10b981;
+      --red: #ef4444;
+      --blue: #3b82f6;
+      --yellow: #f59e0b;
+      --purple: #8b5cf6;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #0a0d14 0%, #151921 100%);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 1800px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* 헤더 */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      padding: 20px;
+      background: var(--bg-card);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .header-left h1 {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 4px;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header-left p {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .header-right {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .live-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--red);
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--red);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .refresh-btn {
+      padding: 10px 20px;
+      background: var(--blue);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .refresh-btn:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
+    }
+
+    /* 그리드 레이아웃 */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    /* 카드 공통 스타일 */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-badge {
+      padding: 4px 12px;
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--blue);
+    }
+
+    /* 급등/급락 코인 */
+    .movers-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .mover-section {
+      padding: 16px;
+      background: rgba(16, 185, 129, 0.05);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 8px;
+    }
+
+    .mover-section.down {
+      background: rgba(239, 68, 68, 0.05);
+      border-color: rgba(239, 68, 68, 0.2);
+    }
+
+    .mover-section h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .coin-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      background: var(--bg-dark);
+      border-radius: 6px;
+      margin-bottom: 8px;
+      transition: all 0.2s;
+    }
+
+    .coin-item:hover {
+      background: rgba(59, 130, 246, 0.1);
+      transform: translateX(4px);
+    }
+
+    .coin-name {
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .coin-change {
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .coin-change.up { color: var(--green); }
+    .coin-change.down { color: var(--red); }
+
+    /* 비트코인 vs 알트코인 */
+    .dominance-chart {
+      display: flex;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .dominance-item {
+      flex: 1;
+      padding: 16px;
+      background: var(--bg-dark);
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .dominance-label {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .dominance-value {
+      font-size: 32px;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .dominance-item:nth-child(1) .dominance-value { color: #f7931a; }
+    .dominance-item:nth-child(2) .dominance-value { color: var(--purple); }
+
+    /* 롱/숏 포지션 */
+    .position-bar {
+      display: flex;
+      height: 40px;
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 16px 0;
+    }
+
+    .position-long {
+      background: var(--green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+    }
+
+    .position-short {
+      background: var(--red);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+    }
+
+    .position-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .position-detail {
+      padding: 12px;
+      background: var(--bg-dark);
+      border-radius: 6px;
+    }
+
+    .position-detail-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .position-detail-value {
+      font-size: 20px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* 청산 데이터 */
+    .liquidation-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px;
+      background: var(--bg-dark);
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+
+    .liquidation-label {
+      font-weight: 600;
+    }
+
+    .liquidation-value {
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* 거래소 주도권 */
+    .exchange-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      background: var(--bg-dark);
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+
+    .exchange-logo {
+      width: 48px;
+      height: 48px;
+      background: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 20px;
+    }
+
+    .exchange-info {
+      flex: 1;
+    }
+
+    .exchange-name {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .exchange-volume {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .exchange-share {
+      font-size: 24px;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--blue);
+    }
+
+    /* 김프/역프 */
+    .premium-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .premium-item {
+      padding: 16px;
+      background: var(--bg-dark);
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .premium-country {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .premium-value {
+      font-size: 20px;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .premium-value.positive { color: var(--green); }
+    .premium-value.negative { color: var(--red); }
+
+    /* 반응형 */
+    @media (max-width: 1400px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .movers-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .premium-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 헤더 -->
+    <div class="header">
+      <div class="header-left">
+        <h1>🚀 실전 트레이더 대시보드</h1>
+        <p>프로 트레이더를 위한 핵심 시장 데이터</p>
+      </div>
+      <div class="header-right">
+        <div class="live-badge">
+          <span class="live-dot"></span>
+          LIVE
+        </div>
+        <button class="refresh-btn" onclick="refreshData()">🔄 새로고침</button>
+      </div>
+    </div>
+
+    <!-- 대시보드 그리드 -->
+    <div class="dashboard-grid">
+      <!-- 왼쪽: 급등/급락 코인 -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">
+            ⚡ 급등/급락 코인
+          </h2>
+          <span class="card-badge">24시간</span>
+        </div>
+        <div class="movers-grid">
+          <!-- 급등 -->
+          <div class="mover-section">
+            <h3>🚀 급등 TOP 5</h3>
+            <div class="coin-item">
+              <span class="coin-name">BTC/USDT</span>
+              <span class="coin-change up">+12.45%</span>
+            </div>
+            <div class="coin-item">
+              <span class="coin-name">ETH/USDT</span>
+              <span class="coin-change up">+8.32%</span>
+            </div>
+            <div class="coin-item">
+              <span class="coin-name">SOL/USDT</span>
+              <span class="coin-change up">+15.67%</span>
+            </div>
+            <div class="coin-item">
+              <span class="coin-name">AVAX/USDT</span>
+              <span class="coin-change up">+11.23%</span>
+            </div>
+            <div class="coin-item">
+              <span class="coin-name">MATIC/USDT</span>
+              <span class="coin-change up">+9.88%</span>
+            </div>
+          </div>
+
+          <!-- 급락 -->
+          <div class="mover-section down">
+            <h3>📉 급락 TOP 5</h3>
+            <div class="coin-item">
+              <span class="coin-name">DOGE/USDT</span>
+              <span class="coin-change down">-8.92%</span>
+            </div>
+            <div class="coin-item">
+              <span class="coin-name">XRP/USDT</span>
+              <span class="coin-change down">-6.45%</span>
+            </div>
+            <div class="coin-item">
+              <span class="coin-name">ADA/USDT</span>
+              <span class="coin-change down">-7.23%</span>
+            </div>
+            <div class="coin-item">
+              <span class="coin-name">DOT/USDT</span>
+              <span class="coin-change down">-5.67%</span>
+            </div>
+            <div class="coin-item">
+              <span class="coin-name">LINK/USDT</span>
+              <span class="coin-change down">-4.89%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 오른쪽: BTC vs ALT 비중 -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">
+            📊 시장 비중
+          </h2>
+          <span class="card-badge">실시간</span>
+        </div>
+        <div class="dominance-chart">
+          <div class="dominance-item">
+            <div class="dominance-label">비트코인</div>
+            <div class="dominance-value">52.3%</div>
+          </div>
+          <div class="dominance-item">
+            <div class="dominance-label">알트코인</div>
+            <div class="dominance-value">47.7%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 롱/숏 포지션 & 청산 -->
+    <div class="dashboard-grid">
+      <!-- 롱/숏 포지션 -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">
+            💹 롱/숏 포지션
+          </h2>
+          <span class="card-badge">24시간</span>
+        </div>
+        <div class="position-bar">
+          <div class="position-long" style="width: 58%">
+            롱 58%
+          </div>
+          <div class="position-short" style="width: 42%">
+            숏 42%
+          </div>
+        </div>
+        <div class="position-details">
+          <div class="position-detail">
+            <div class="position-detail-label">롱 포지션</div>
+            <div class="position-detail-value" style="color: var(--green)">$2.8B</div>
+          </div>
+          <div class="position-detail">
+            <div class="position-detail-label">숏 포지션</div>
+            <div class="position-detail-value" style="color: var(--red)">$2.1B</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 청산 데이터 -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">
+            💥 청산 현황
+          </h2>
+          <span class="card-badge">24시간</span>
+        </div>
+        <div class="liquidation-item">
+          <span class="liquidation-label">롱 청산</span>
+          <span class="liquidation-value" style="color: var(--red)">$245.6M</span>
+        </div>
+        <div class="liquidation-item">
+          <span class="liquidation-label">숏 청산</span>
+          <span class="liquidation-value" style="color: var(--green)">$178.3M</span>
+        </div>
+        <div class="liquidation-item">
+          <span class="liquidation-label">총 청산</span>
+          <span class="liquidation-value" style="color: var(--yellow)">$423.9M</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 거래소 주도권 -->
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">
+          🏢 거래소 주도권
+        </h2>
+        <span class="card-badge">24시간 거래량</span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+        <div class="exchange-item">
+          <div class="exchange-logo" style="background: #F0B90B;">B</div>
+          <div class="exchange-info">
+            <div class="exchange-name">Binance</div>
+            <div class="exchange-volume">$45.2B 거래량</div>
+          </div>
+          <div class="exchange-share">42%</div>
+        </div>
+        <div class="exchange-item">
+          <div class="exchange-logo" style="background: #0052FF;">C</div>
+          <div class="exchange-info">
+            <div class="exchange-name">Coinbase</div>
+            <div class="exchange-volume">$18.7B 거래량</div>
+          </div>
+          <div class="exchange-share">18%</div>
+        </div>
+        <div class="exchange-item">
+          <div class="exchange-logo" style="background: #0062DF;">U</div>
+          <div class="exchange-info">
+            <div class="exchange-name">Upbit (한국)</div>
+            <div class="exchange-volume">$12.3B 거래량</div>
+          </div>
+          <div class="exchange-share">12%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 김프/역프 & USDT 프리미엄 -->
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">
+          💰 김프/역프 & USDT 프리미엄
+        </h2>
+        <span class="card-badge">실시간</span>
+      </div>
+      <div class="premium-grid">
+        <div class="premium-item">
+          <div class="premium-country">🇰🇷 한국</div>
+          <div class="premium-value positive">+2.8%</div>
+        </div>
+        <div class="premium-item">
+          <div class="premium-country">🇯🇵 일본</div>
+          <div class="premium-value positive">+1.2%</div>
+        </div>
+        <div class="premium-item">
+          <div class="premium-country">🇮🇳 인도</div>
+          <div class="premium-value positive">+3.5%</div>
+        </div>
+        <div class="premium-item">
+          <div class="premium-country">🇻🇳 베트남</div>
+          <div class="premium-value negative">-0.5%</div>
+        </div>
+        <div class="premium-item">
+          <div class="premium-country">🇹🇭 태국</div>
+          <div class="premium-value positive">+1.9%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="upbit-trend-enhanced.js"></script>
+</body>
+</html>

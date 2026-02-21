@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🏆 Upbit AI Trading Bot v8.0</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #F5F7FA;
+      color: #1F2937;
+      overflow: hidden;
+    }
+
+    /* 3-컬럼 레이아웃 */
+    .main-container {
+      display: grid;
+      grid-template-columns: 300px 1fr 420px;
+      height: 100vh;
+      gap: 0;
+    }
+
+    /* 왼쪽 패널 - 최근 거래 내역 */
+    .left-panel {
+      background: white;
+      border-right: 1px solid #E5E7EB;
+      overflow-y: auto;
+      padding: 20px 16px;
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 16px;
+      padding: 0 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .coin-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .coin-item {
+      background: #F9FAFB;
+      border: 1px solid #E5E7EB;
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .coin-item:hover {
+      border-color: #3B82F6;
+      background: #EFF6FF;
+    }
+
+    .coin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .coin-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .coin-price {
+      font-size: 13px;
+      color: #6B7280;
+    }
+
+    .coin-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: #9CA3AF;
+    }
+
+    .coin-status {
+      display: flex;
+      gap: 4px;
+    }
+
+    .status-badge {
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .watching { background: #DBEAFE; color: #1E40AF; }
+    .waiting { background: #FEF3C7; color: #92400E; }
+    .volume-btn {
+      padding: 2px 8px;
+      background: #EEF2FF;
+      color: #4F46E5;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    /* 중앙 패널 - 메인 대시보드 */
+    .center-panel {
+      overflow-y: auto;
+      padding: 20px 24px;
+      background: #FAFBFC;
+    }
+
+    /* 상단 헤더 */
+    .top-header {
+      background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-title {
+      font-size: 24px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 13px;
+    }
+
+    .btn-primary { background: white; color: #667EEA; }
+    .btn-outline { background: transparent; border: 2px solid white; color: white; }
+    
+    .btn:hover { transform: translateY(-2px); opacity: 0.9; }
+
+    /* KPI 카드 */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .kpi-card {
+      background: white;
+      border: 1px solid #E5E7EB;
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .kpi-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #6B7280;
+      text-transform: uppercase;
+    }
+
+    .kpi-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .kpi-change {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .positive { color: #10B981; }
+    .negative { color: #EF4444; }
+
+    /* 전략 카드 */
+    .strategies-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .strategy-card {
+      background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+      border-radius: 12px;
+      padding: 16px;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .strategy-card.active::before {
+      content: '● LIVE';
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      font-size: 9px;
+      font-weight: 700;
+      color: #10B981;
+      background: white;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .strategy-icon {
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+
+    .strategy-name {
+      font-size: 12px;
+      font-weight: 600;
+      opacity: 0.9;
+    }
+
+    .strategy-win-rate {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .strategy-change {
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .strategy-count {
+      font-size: 11px;
+      opacity: 0.8;
+    }
+
+    /* 전략별 색상 */
+    .strategy-surge { background: linear-gradient(135deg, #F093FB 0%, #F5576C 100%); }
+    .strategy-dip { background: linear-gradient(135deg, #4FACFE 0%, #00F2FE 100%); }
+    .strategy-box { background: linear-gradient(135deg, #43E97B 0%, #38F9D7 100%); }
+    .strategy-trend { background: linear-gradient(135deg, #FA709A 0%, #FEE140 100%); }
+    .strategy-volume { background: linear-gradient(135deg, #30CFD0 0%, #330867 100%); }
+
+    /* 컨트롤 패널 */
+    .control-panel {
+      background: white;
+      border: 1px solid #E5E7EB;
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .control-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .toggle-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .toggle-btn {
+      padding: 8px 16px;
+      border: 2px solid #E5E7EB;
+      background: white;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .toggle-btn.active {
+      background: #3B82F6;
+      color: white;
+      border-color: #3B82F6;
+    }
+
+    .action-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .btn-start {
+      background: #3B82F6;
+      color: white;
+      padding: 14px 24px;
+      font-size: 15px;
+      font-weight: 700;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-stop {
+      background: #EF4444;
+      color: white;
+      padding: 14px 24px;
+      font-size: 15px;
+      font-weight: 700;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-start:hover, .btn-stop:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .secondary-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-secondary {
+      flex: 1;
+      padding: 10px;
+      background: #F3F4F6;
+      border: 1px solid #E5E7EB;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .btn-referral {
+      background: #FEF3C7;
+      border-color: #FDE68A;
+      color: #92400E;
+    }
+
+    .btn-copy { color: #6B7280; }
+    .btn-chat { background: #3B82F6; color: white; border-color: #3B82F6; }
+
+    /* 오른쪽 패널 - 보유 코인 + IMEI */
+    .right-panel {
+      background: white;
+      border-left: 1px solid #E5E7EB;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .right-section {
+      padding: 20px 16px;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .right-section:last-child {
+      border-bottom: none;
+      flex: 1;
+    }
+
+    /* API 설정 */
+    .api-section {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .api-input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .api-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #6B7280;
+      text-transform: uppercase;
+    }
+
+    .api-input {
+      padding: 10px 12px;
+      border: 1px solid #E5E7EB;
+      border-radius: 6px;
+      font-size: 13px;
+      width: 100%;
+      font-family: 'Courier New', monospace;
+    }
+
+    /* 급등/급락 카드 */
+    .surge-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .surge-card {
+      background: #F9FAFB;
+      border: 1px solid #E5E7EB;
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .surge-card:hover {
+      border-color: #3B82F6;
+      background: #EFF6FF;
+    }
+
+    .surge-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .surge-subtitle {
+      font-size: 11px;
+      color: #6B7280;
+    }
+
+    /* IMEI 채팅 */
+    .imei-chat {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .imei-header {
+      padding: 16px;
+      background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .imei-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 3px solid white;
+    }
+
+    .imei-info h3 {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .imei-info p {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .chat-message {
+      max-width: 80%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .message-user {
+      align-self: flex-end;
+      background: #3B82F6;
+      color: white;
+    }
+
+    .message-bot {
+      align-self: flex-start;
+      background: #F3F4F6;
+      color: #111827;
+    }
+
+    .chat-input-area {
+      padding: 16px;
+      background: white;
+      border-top: 1px solid #E5E7EB;
+      display: flex;
+      gap: 8px;
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid #E5E7EB;
+      border-radius: 8px;
+      font-size: 13px;
+    }
+
+    .chat-send {
+      padding: 10px 20px;
+      background: #3B82F6;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+  </style>
+</head>
+<body>
+  
+  <div class="main-container">
+    
+    <!-- 왼쪽 패널: 최근 거래 내역 -->
+    <div class="left-panel">
+      <div class="panel-title">📊 최근 거래 내역</div>
+      <div class="coin-list" id="recentTrades">
+        <!-- 동적 로드 -->
+      </div>
+    </div>
+
+    <!-- 중앙 패널: 메인 대시보드 -->
+    <div class="center-panel">
+      
+      <!-- 상단 헤더 -->
+      <div class="top-header">
+        <div class="header-title">
+          🏆 Upbit AI Trading Bot
+        </div>
+        <div class="user-controls">
+          <button class="btn btn-outline" onclick="location.href='/admin'">👤 관리자</button>
+          <button class="btn btn-primary" onclick="location.href='/history'">📈 거래내역</button>
+          <button class="btn btn-outline" onclick="logout()">🚪 로그아웃</button>
+        </div>
+      </div>
+
+      <!-- KPI 카드 -->
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-label">Total</div>
+          <div class="kpi-value" id="totalKRW">₩0</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Profit</div>
+          <div class="kpi-value" id="profitKRW">₩0</div>
+          <div class="kpi-change positive" id="profitChange">+0%</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Win Rate</div>
+          <div class="kpi-value" id="winRate">0%</div>
+        </div>
+      </div>
+
+      <!-- 전략 카드 -->
+      <div class="strategies-row">
+        <div class="strategy-card strategy-surge">
+          <div class="strategy-icon">🚀</div>
+          <div class="strategy-name">Surge Hunter</div>
+          <div class="strategy-win-rate" id="surge-winrate">0%</div>
+          <div class="strategy-change" id="surge-change">+0.0%</div>
+          <div class="strategy-count" id="surge-count">0</div>
+        </div>
+        
+        <div class="strategy-card strategy-dip">
+          <div class="strategy-icon">📉</div>
+          <div class="strategy-name">Dip Hunter</div>
+          <div class="strategy-win-rate" id="dip-winrate">0%</div>
+          <div class="strategy-change" id="dip-change">+0.0%</div>
+          <div class="strategy-count" id="dip-count">0</div>
+        </div>
+        
+        <div class="strategy-card strategy-box">
+          <div class="strategy-icon">📦</div>
+          <div class="strategy-name">Box Trader</div>
+          <div class="strategy-win-rate" id="box-winrate">0%</div>
+          <div class="strategy-change" id="box-change">+0.0%</div>
+          <div class="strategy-count" id="box-count">0</div>
+        </div>
+        
+        <div class="strategy-card strategy-trend">
+          <div class="strategy-icon">📈</div>
+          <div class="strategy-name">Trend Follower</div>
+          <div class="strategy-win-rate" id="trend-winrate">0%</div>
+          <div class="strategy-change" id="trend-change">+0.0%</div>
+          <div class="strategy-count" id="trend-count">0</div>
+        </div>
+        
+        <div class="strategy-card strategy-volume">
+          <div class="strategy-icon">📊</div>
+          <div class="strategy-name">Volume Hunter</div>
+          <div class="strategy-win-rate" id="volume-winrate">0%</div>
+          <div class="strategy-change" id="volume-change">+0.0%</div>
+          <div class="strategy-count" id="volume-count">0</div>
+        </div>
+      </div>
+
+      <!-- 컨트롤 패널 -->
+      <div class="control-panel">
+        <div class="control-row">
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="toggle-all-strategies">모든 전략</button>
+            <button class="toggle-btn" id="toggle-real-mode">실전 모드</button>
+          </div>
+        </div>
+        
+        <div class="action-buttons">
+          <button class="btn-start" onclick="startBot()">🛡️ 봇 시작</button>
+          <button class="btn-stop" onclick="stopBot()">🛑 봇 정지</button>
+        </div>
+        
+        <div class="secondary-actions">
+          <button class="btn-secondary btn-referral">🎁 전국 추천하기</button>
+          <button class="btn-secondary btn-copy">복사</button>
+          <button class="btn-secondary btn-chat">채팅</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 오른쪽 패널: 보유 코인 + API + IMEI -->
+    <div class="right-panel">
+      
+      <!-- 보유 코인 -->
+      <div class="right-section">
+        <div class="panel-title">💰 보유 코인</div>
+        <div class="coin-list" id="holdingCoins">
+          <!-- 동적 로드 -->
+        </div>
+      </div>
+
+      <!-- API 설정 -->
+      <div class="right-section">
+        <div class="panel-title">🔑 API 설정</div>
+        <div class="api-section">
+          <div class="api-input-group">
+            <label class="api-label">ACCESS KEY</label>
+            <input type="text" class="api-input" id="accessKey" placeholder="업비트 Access Key">
+          </div>
+          <div class="api-input-group">
+            <label class="api-label">SECRET KEY</label>
+            <input type="password" class="api-input" id="secretKey" placeholder="업비트 Secret Key">
+          </div>
+        </div>
+      </div>
+
+      <!-- 최근 급등/급락 -->
+      <div class="right-section">
+        <div class="panel-title">⚡ 최근 급등/급락</div>
+        <div class="surge-cards">
+          <div class="surge-card">
+            <div class="surge-title">최근 급등</div>
+            <div class="surge-subtitle">신호를 기다리는 중...</div>
+          </div>
+          <div class="surge-card">
+            <div class="surge-title">최근 급락</div>
+            <div class="surge-subtitle">신호를 기다리는 중...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- IMEI 채팅 -->
+      <div class="right-section">
+        <div class="imei-chat">
+          <div class="imei-header">
+            <img class="imei-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Ccircle cx='24' cy='24' r='24' fill='%23667EEA'/%3E%3Ctext x='24' y='32' text-anchor='middle' font-size='20' fill='white' font-family='Arial'%3E🤖%3C/text%3E%3C/svg%3E" alt="IMEI">
+            <div class="imei-info">
+              <h3>IMEI (아메이)</h3>
+              <p>AI Trading Assistant</p>
+            </div>
+          </div>
+          <div class="chat-messages" id="chatMessages">
+            <div class="chat-message message-bot">
+              안녕하세요! 무엇을 도와드릴까요? 🤖
+            </div>
+          </div>
+          <div class="chat-input-area">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Ask me anything...">
+            <button class="chat-send" onclick="sendMessage()">Send</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    // API 호출 및 데이터 로드 함수들
+    
+    async function loadStatus() {
+      try {
+        const response = await fetch('/api/status');
+        const data = await response.json();
+        updateKPIs(data);
+        updateStrategies(data);
+      } catch (error) {
+        console.error('Status load error:', error);
+      }
+    }
+
+    function updateKPIs(data) {
+      const totalKRW = data.simulation_krw || 0;
+      const seedKRW = data.simulation_start_seed || 1000000;
+      const profitKRW = totalKRW - seedKRW;
+      const profitPercent = ((profitKRW / seedKRW) * 100).toFixed(2);
+      
+      document.getElementById('totalKRW').textContent = `₩${totalKRW.toLocaleString()}`;
+      document.getElementById('profitKRW').textContent = `₩${profitKRW.toLocaleString()}`;
+      document.getElementById('profitChange').textContent = `${profitPercent >= 0 ? '+' : ''}${profitPercent}%`;
+      document.getElementById('profitChange').className = profitPercent >= 0 ? 'kpi-change positive' : 'kpi-change negative';
+      
+      // 승률 계산
+      const totalTrades = (data.win_count || 0) + (data.lose_count || 0);
+      const winRate = totalTrades > 0 ? ((data.win_count / totalTrades) * 100).toFixed(1) : 0;
+      document.getElementById('winRate').textContent = `${winRate}%`;
+    }
+
+    function updateStrategies(data) {
+      // 전략별 통계 업데이트 (실제 데이터가 있으면 여기서 처리)
+      // 예시로 임의 데이터
+    }
+
+    async function loadRecentTrades() {
+      try {
+        const response = await fetch('/api/history');
+        const data = await response.json();
+        const tradesHtml = data.slice(0, 10).map(trade => `
+          <div class="coin-item">
+            <div class="coin-header">
+              <span class="coin-name">${trade.ticker}</span>
+              <span class="coin-price">${trade.side}</span>
+            </div>
+            <div class="coin-footer">
+              <div class="coin-status">
+                <span class="status-badge watching">WATCHING</span>
+                <span class="volume-btn">VOLUME</span>
+              </div>
+              <span>${new Date(trade.timestamp).toLocaleDateString()}</span>
+            </div>
+          </div>
+        `).join('');
+        document.getElementById('recentTrades').innerHTML = tradesHtml || '<p style="text-align:center;color:#9CA3AF;font-size:13px;">거래 내역 없음</p>';
+      } catch (error) {
+        console.error('Trades load error:', error);
+      }
+    }
+
+    async function startBot() {
+      const accessKey = document.getElementById('accessKey').value;
+      const secretKey = document.getElementById('secretKey').value;
+      
+      if (!accessKey || !secretKey) {
+        alert('API 키를 입력해주세요!');
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/start', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ access: accessKey, secret: secretKey, mode: 'PRACTICE' })
+        });
+        const result = await response.json();
+        alert(result.message || '봇이 시작되었습니다!');
+        loadStatus();
+      } catch (error) {
+        console.error('Start bot error:', error);
+        alert('봇 시작 중 오류가 발생했습니다.');
+      }
+    }
+
+    async function stopBot() {
+      try {
+        const response = await fetch('/api/stop', { method: 'POST' });
+        const result = await response.json();
+        alert(result.message || '봇이 중지되었습니다!');
+        loadStatus();
+      } catch (error) {
+        console.error('Stop bot error:', error);
+        alert('봇 중지 중 오류가 발생했습니다.');
+      }
+    }
+
+    async function logout() {
+      try {
+        await fetch('/api/logout', { method: 'POST' });
+        location.href = '/login';
+      } catch (error) {
+        console.error('Logout error:', error);
+      }
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('chatInput');
+      const message = input.value.trim();
+      if (!message) return;
+
+      // 사용자 메시지 표시
+      const messagesDiv = document.getElementById('chatMessages');
+      messagesDiv.innerHTML += `<div class="chat-message message-user">${message}</div>`;
+      input.value = '';
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+      // IMEI API 호출 (나중에 연동)
+      setTimeout(() => {
+        messagesDiv.innerHTML += `<div class="chat-message message-bot">답변을 준비 중입니다...</div>`;
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      }, 500);
+    }
+
+    // 초기 로드
+    loadStatus();
+    loadRecentTrades();
+    
+    // 주기적 업데이트
+    setInterval(loadStatus, 5000);
+    setInterval(loadRecentTrades, 10000);
+
+    // Enter 키로 채팅 전송
+    document.getElementById('chatInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+  </script>
+
+</body>
+</html>

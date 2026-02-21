@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>사주 운세 보기 - THE UNIQUE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Serif+KR:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #1a0f0a;
+      --bg-paper: #f9f5e8;
+      --gold: #d4af37;
+      --gold-light: #f0d98c;
+      --red: #c41e3a;
+      --blue: #2e5090;
+      --text-dark: #2a1810;
+      --text-light: #6b5545;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif KR', 'Nanum Myeongjo', serif;
+      background: #1a0f0a url('img/saju-old-backup-background.png') center/cover no-repeat fixed;
+      min-height: 100vh;
+      color: var(--text-dark);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* 배경 장식 */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(212,175,55,0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(196,30,58,0.1) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    /* 헤더 */
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeInDown 0.8s ease;
+    }
+
+    .header-title {
+      font-size: 42px;
+      font-weight: 900;
+      color: var(--gold);
+      text-shadow: 
+        0 0 20px rgba(212,175,55,0.5),
+        0 2px 4px rgba(0,0,0,0.8);
+      letter-spacing: 0.15em;
+      margin-bottom: 12px;
+    }
+
+    .header-subtitle {
+      font-size: 16px;
+      color: var(--gold-light);
+      letter-spacing: 0.3em;
+      opacity: 0.85;
+    }
+
+    /* 메인 카드 */
+    .main-card {
+      background: var(--bg-paper);
+      border-radius: 16px;
+      padding: 50px 40px;
+      box-shadow: 
+        0 20px 60px rgba(0,0,0,0.6),
+        0 0 0 1px rgba(212,175,55,0.2),
+        inset 0 1px 0 rgba(255,255,255,0.3);
+      position: relative;
+      animation: fadeInUp 0.8s ease 0.2s both;
+    }
+
+    /* 테두리 장식 */
+    .main-card::before,
+    .main-card::after {
+      content: '✦';
+      position: absolute;
+      font-size: 24px;
+      color: var(--gold);
+      opacity: 0.4;
+    }
+
+    .main-card::before {
+      top: 15px;
+      left: 15px;
+    }
+
+    .main-card::after {
+      bottom: 15px;
+      right: 15px;
+    }
+
+    /* 섹션 타이틀 */
+    .section-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--red);
+      text-align: center;
+      margin-bottom: 30px;
+      letter-spacing: 0.1em;
+      position: relative;
+      padding-bottom: 15px;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--red), transparent);
+    }
+
+    /* 입력 폼 */
+    .input-group {
+      margin-bottom: 25px;
+    }
+
+    .input-label {
+      display: block;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+      letter-spacing: 0.05em;
+    }
+
+    .input-label .required {
+      color: var(--red);
+      margin-left: 4px;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 14px 18px;
+      font-size: 15px;
+      font-family: 'Noto Serif KR', serif;
+      border: 2px solid #d0c4a8;
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--text-dark);
+      transition: all 0.3s ease;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.15);
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .input-small {
+      text-align: center;
+    }
+
+    /* 비용 정보 */
+    .cost-info {
+      background: linear-gradient(135deg, #fff9e6 0%, #fff5d6 100%);
+      border: 2px solid var(--gold);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 30px 0;
+      text-align: center;
+    }
+
+    .cost-label {
+      font-size: 14px;
+      color: var(--text-light);
+      margin-bottom: 8px;
+      letter-spacing: 0.05em;
+    }
+
+    .cost-amount {
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--red);
+      letter-spacing: 0.05em;
+    }
+
+    .cost-amount .unit {
+      font-size: 20px;
+      color: var(--gold);
+      margin-left: 8px;
+    }
+
+    /* 버튼 */
+    .btn-submit {
+      width: 100%;
+      padding: 18px;
+      font-size: 18px;
+      font-weight: 700;
+      font-family: 'Noto Serif KR', serif;
+      letter-spacing: 0.15em;
+      color: #ffffff;
+      background: linear-gradient(135deg, var(--red) 0%, #8b1028 100%);
+      border: 2px solid var(--gold);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 
+        0 8px 20px rgba(196,30,58,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-submit::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .btn-submit:hover::before {
+      left: 100%;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        0 12px 30px rgba(196,30,58,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.3);
+    }
+
+    .btn-submit:active {
+      transform: translateY(0);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* 돌아가기 버튼 */
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gold-light);
+      background: rgba(42,24,16,0.4);
+      border: 1px solid rgba(212,175,55,0.3);
+      border-radius: 8px;
+      text-decoration: none;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-back:hover {
+      background: rgba(42,24,16,0.6);
+      border-color: rgba(212,175,55,0.5);
+      transform: translateX(-4px);
+    }
+
+    /* 안내 텍스트 */
+    .info-text {
+      font-size: 13px;
+      color: var(--text-light);
+      text-align: center;
+      margin-top: 20px;
+      line-height: 1.6;
+    }
+
+    .info-text strong {
+      color: var(--red);
+    }
+
+    /* 결과 화면 */
+    .result-card {
+      display: none;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    .result-card.show {
+      display: block;
+    }
+
+    .result-header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid var(--gold);
+    }
+
+    .result-title {
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--red);
+      margin-bottom: 15px;
+      letter-spacing: 0.1em;
+    }
+
+    .result-name {
+      font-size: 20px;
+      color: var(--text-dark);
+      font-weight: 600;
+    }
+
+    .result-birthdate {
+      font-size: 15px;
+      color: var(--text-light);
+      margin-top: 8px;
+    }
+
+    /* 사주 팔자 */
+    .saju-table {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin: 30px 0;
+    }
+
+    .saju-pillar {
+      background: linear-gradient(135deg, #ffffff 0%, #faf8f0 100%);
+      border: 2px solid var(--gold);
+      border-radius: 10px;
+      padding: 20px 10px;
+      text-align: center;
+    }
+
+    .saju-pillar-title {
+      font-size: 13px;
+      color: var(--text-light);
+      margin-bottom: 12px;
+      letter-spacing: 0.1em;
+    }
+
+    .saju-char {
+      font-size: 32px;
+      font-weight: 900;
+      margin: 10px 0;
+    }
+
+    .saju-char.heaven {
+      color: var(--blue);
+    }
+
+    .saju-char.earth {
+      color: var(--red);
+    }
+
+    /* 운세 섹션 */
+    .fortune-section {
+      margin: 35px 0;
+      padding: 25px;
+      background: linear-gradient(135deg, #ffffff 0%, #faf8f0 100%);
+      border-radius: 12px;
+      border-left: 4px solid var(--gold);
+    }
+
+    .fortune-section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--red);
+      margin-bottom: 15px;
+      letter-spacing: 0.05em;
+    }
+
+    .fortune-text {
+      font-size: 15px;
+      line-height: 1.9;
+      color: var(--text-dark);
+      letter-spacing: 0.02em;
+    }
+
+    /* 별점 */
+    .rating {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .rating-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-light);
+    }
+
+    .stars {
+      display: flex;
+      gap: 4px;
+    }
+
+    .star {
+      color: var(--gold);
+      font-size: 18px;
+    }
+
+    .star.empty {
+      opacity: 0.3;
+    }
+
+    /* 이메일 전송 섹션 */
+    .email-section {
+      margin-top: 40px;
+      padding-top: 30px;
+      border-top: 2px dashed var(--gold);
+    }
+
+    .email-section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .email-input-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .email-input {
+      flex: 1;
+    }
+
+    .btn-send-email {
+      padding: 14px 28px;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: 'Noto Serif KR', serif;
+      color: #ffffff;
+      background: linear-gradient(135deg, var(--blue) 0%, #1a3866 100%);
+      border: 2px solid var(--gold);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .btn-send-email:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(46,80,144,0.4);
+    }
+
+    /* 애니메이션 */
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* 반응형 */
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px 15px;
+      }
+
+      .main-card {
+        padding: 35px 25px;
+      }
+
+      .header-title {
+        font-size: 32px;
+      }
+
+      .saju-table {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      .input-row {
+        grid-template-columns: 1fr;
+      }
+
+      .email-input-group {
+        flex-direction: column;
+      }
+
+      .btn-send-email {
+        width: 100%;
+      }
+    }
+
+    /* 로딩 스피너 */
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .loading.show {
+      display: block;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(212,175,55,0.2);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      font-size: 16px;
+      color: var(--text-light);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="the-unique-main.html" class="btn-back">
+      ← 돌아가기
+    </a>
+
+    <div class="header">
+      <h1 class="header-title">四柱命理</h1>
+      <p class="header-subtitle">사주 운세 감정</p>
+    </div>
+
+    <!-- 입력 폼 -->
+    <div class="main-card" id="inputCard">
+      <h2 class="section-title">생년월일 입력</h2>
+
+      <form id="sajuForm">
+        <div class="input-group">
+          <label class="input-label">
+            성명 <span class="required">*</span>
+          </label>
+          <input type="text" class="input-field" id="userName" placeholder="홍길동" required>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">
+            생년월일 <span class="required">*</span>
+          </label>
+          <div class="input-row">
+            <input type="number" class="input-field input-small" id="birthYear" placeholder="1990" min="1900" max="2025" required>
+            <input type="number" class="input-field input-small" id="birthMonth" placeholder="1" min="1" max="12" required>
+            <input type="number" class="input-field input-small" id="birthDay" placeholder="1" min="1" max="31" required>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">
+            출생 시각 <span class="required">*</span>
+          </label>
+          <div class="input-row">
+            <input type="number" class="input-field input-small" id="birthHour" placeholder="시 (0-23)" min="0" max="23" required>
+            <input type="number" class="input-field input-small" id="birthMinute" placeholder="분 (0-59)" min="0" max="59" required>
+            <select class="input-field" id="gender" required>
+              <option value="">성별 선택</option>
+              <option value="M">남성</option>
+              <option value="F">여성</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="cost-info">
+          <p class="cost-label">사주 감정 비용</p>
+          <p class="cost-amount">
+            1,000
+            <span class="unit">UT</span>
+          </p>
+        </div>
+
+        <button type="submit" class="btn-submit">
+          사주 운세 보기
+        </button>
+
+        <p class="info-text">
+          * 입력하신 정보는 사주 분석에만 사용되며 <strong>안전하게 보호</strong>됩니다.<br>
+          * 결과는 이메일로도 받아보실 수 있습니다.
+        </p>
+      </form>
+    </div>
+
+    <!-- 로딩 -->
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <p class="loading-text">사주를 분석하고 있습니다...</p>
+    </div>
+
+    <!-- 결과 화면 -->
+    <div class="main-card result-card" id="resultCard">
+      <div class="result-header">
+        <h2 class="result-title">✦ 사주 운세 결과 ✦</h2>
+        <p class="result-name" id="resultName"></p>
+        <p class="result-birthdate" id="resultBirthdate"></p>
+      </div>
+
+      <!-- 사주 팔자 -->
+      <h3 class="section-title">사주 팔자</h3>
+      <div class="saju-table">
+        <div class="saju-pillar">
+          <div class="saju-pillar-title">年柱 (년주)</div>
+          <div class="saju-char heaven" id="yearHeaven">甲</div>
+          <div class="saju-char earth" id="yearEarth">子</div>
+        </div>
+        <div class="saju-pillar">
+          <div class="saju-pillar-title">月柱 (월주)</div>
+          <div class="saju-char heaven" id="monthHeaven">乙</div>
+          <div class="saju-char earth" id="monthEarth">丑</div>
+        </div>
+        <div class="saju-pillar">
+          <div class="saju-pillar-title">日柱 (일주)</div>
+          <div class="saju-char heaven" id="dayHeaven">丙</div>
+          <div class="saju-char earth" id="dayEarth">寅</div>
+        </div>
+        <div class="saju-pillar">
+          <div class="saju-pillar-title">時柱 (시주)</div>
+          <div class="saju-char heaven" id="hourHeaven">丁</div>
+          <div class="saju-char earth" id="hourEarth">卯</div>
+        </div>
+      </div>
+
+      <!-- 운세 분석 -->
+      <div class="fortune-section">
+        <h3 class="fortune-section-title">🌟 종합 운세</h3>
+        <p class="fortune-text" id="generalFortune"></p>
+        <div class="rating">
+          <span class="rating-label">운세 지수:</span>
+          <div class="stars" id="generalStars"></div>
+        </div>
+      </div>
+
+      <div class="fortune-section">
+        <h3 class="fortune-section-title">💰 재물운</h3>
+        <p class="fortune-text" id="wealthFortune"></p>
+        <div class="rating">
+          <span class="rating-label">재물 지수:</span>
+          <div class="stars" id="wealthStars"></div>
+        </div>
+      </div>
+
+      <div class="fortune-section">
+        <h3 class="fortune-section-title">❤️ 연애운</h3>
+        <p class="fortune-text" id="loveFortune"></p>
+        <div class="rating">
+          <span class="rating-label">애정 지수:</span>
+          <div class="stars" id="loveStars"></div>
+        </div>
+      </div>
+
+      <div class="fortune-section">
+        <h3 class="fortune-section-title">🏆 사업운</h3>
+        <p class="fortune-text" id="careerFortune"></p>
+        <div class="rating">
+          <span class="rating-label">성공 지수:</span>
+          <div class="stars" id="careerStars"></div>
+        </div>
+      </div>
+
+      <div class="fortune-section">
+        <h3 class="fortune-section-title">🏥 건강운</h3>
+        <p class="fortune-text" id="healthFortune"></p>
+        <div class="rating">
+          <span class="rating-label">건강 지수:</span>
+          <div class="stars" id="healthStars"></div>
+        </div>
+      </div>
+
+      <!-- 이메일 전송 -->
+      <div class="email-section">
+        <h3 class="email-section-title">📧 이메일로 결과 받기</h3>
+        <div class="email-input-group">
+          <input type="email" class="input-field email-input" id="emailAddress" placeholder="example@email.com">
+          <button type="button" class="btn-send-email" onclick="sendEmail()">
+            이메일 전송
+          </button>
+        </div>
+        <p class="info-text">
+          * 입력하신 이메일로 상세한 사주 분석 결과를 보내드립니다.
+        </p>
+      </div>
+
+      <button type="button" class="btn-submit" onclick="resetForm()" style="margin-top: 40px;">
+        다시 보기
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // 천간 (天干)
+    const HEAVENLY_STEMS = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
+    
+    // 지지 (地支)
+    const EARTHLY_BRANCHES = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
+
+    // 사주 결과 저장
+    let currentResult = null;
+
+    // 폼 제출
+    document.getElementById('sajuForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const name = document.getElementById('userName').value.trim();
+      const year = parseInt(document.getElementById('birthYear').value);
+      const month = parseInt(document.getElementById('birthMonth').value);
+      const day = parseInt(document.getElementById('birthDay').value);
+      const hour = parseInt(document.getElementById('birthHour').value);
+      const minute = parseInt(document.getElementById('birthMinute').value);
+      const gender = document.getElementById('gender').value;
+
+      if (!name || !year || !month || !day || hour === '' || minute === '' || !gender) {
+        alert('모든 항목을 입력해주세요.');
+        return;
+      }
+
+      // 날짜 유효성 검사
+      if (month < 1 || month > 12 || day < 1 || day > 31) {
+        alert('올바른 날짜를 입력해주세요.');
+        return;
+      }
+
+      // 로딩 표시
+      document.getElementById('inputCard').style.display = 'none';
+      document.getElementById('loading').classList.add('show');
+
+      // 사주 계산 시뮬레이션 (실제로는 서버에서 처리)
+      setTimeout(() => {
+        const result = calculateSaju(name, year, month, day, hour, minute, gender);
+        currentResult = result;
+        displayResult(result);
+
+        document.getElementById('loading').classList.remove('show');
+        document.getElementById('resultCard').classList.add('show');
+      }, 2000);
+    });
+
+    // 사주 계산 (간단한 시뮬레이션)
+    function calculateSaju(name, year, month, day, hour, minute, gender) {
+      // 천간지지 계산 (간단한 알고리즘)
+      const yearStem = HEAVENLY_STEMS[year % 10];
+      const yearBranch = EARTHLY_BRANCHES[year % 12];
+      
+      const monthStem = HEAVENLY_STEMS[(year * 12 + month) % 10];
+      const monthBranch = EARTHLY_BRANCHES[(month - 1) % 12];
+      
+      const dayStem = HEAVENLY_STEMS[(year * 365 + month * 30 + day) % 10];
+      const dayBranch = EARTHLY_BRANCHES[(year * 365 + month * 30 + day) % 12];
+      
+      const hourStem = HEAVENLY_STEMS[(hour) % 10];
+      const hourBranch = EARTHLY_BRANCHES[Math.floor(hour / 2) % 12];
+
+      // 운세 텍스트 생성 (AI 스타일)
+      const fortunes = generateFortunes(name, gender, year, month, day);
+
+      return {
+        name,
+        birthdate: `${year}년 ${month}월 ${day}일 ${hour}시 ${minute}분`,
+        gender,
+        pillars: {
+          year: { heaven: yearStem, earth: yearBranch },
+          month: { heaven: monthStem, earth: monthBranch },
+          day: { heaven: dayStem, earth: dayBranch },
+          hour: { heaven: hourStem, earth: hourBranch }
+        },
+        fortunes
+      };
+    }
+
+    // 운세 생성
+    function generateFortunes(name, gender, year, month, day) {
+      const seed = year + month * 100 + day * 10000;
+      const rand = (min, max) => Math.floor((Math.sin(seed * (min + max)) * 10000) % (max - min + 1)) + min;
+
+      const generalScore = rand(3, 5);
+      const wealthScore = rand(2, 5);
+      const loveScore = rand(2, 5);
+      const careerScore = rand(3, 5);
+      const healthScore = rand(3, 5);
+
+      return {
+        general: {
+          text: `${name}님의 사주는 천간과 지지가 조화롭게 배치되어 있어 전반적으로 길한 운세를 타고나셨습니다. 특히 일주가 강하게 형성되어 있어 자신의 주관이 뚜렷하고 의지력이 강한 편입니다. 금년에는 귀인의 도움을 받을 기회가 많으니 인연을 소중히 하시면 큰 발전을 이룰 수 있습니다.`,
+          score: generalScore
+        },
+        wealth: {
+          text: wealthScore >= 4 
+            ? '재성이 왕성하여 재물운이 매우 좋습니다. 특히 부동산이나 투자 방면에서 좋은 기회가 올 것으로 보입니다. 다만 재물이 들어올 때 너무 욕심을 부리지 말고 적절히 저축하는 지혜가 필요합니다.'
+            : '재성이 약한 편이나 근면 성실함으로 꾸준히 재물을 모을 수 있습니다. 큰 투자보다는 안정적인 저축이 유리하며, 주변 사람들과의 신뢰 관계가 재물운 상승의 열쇠가 될 것입니다.',
+          score: wealthScore
+        },
+        love: {
+          text: loveScore >= 4
+            ? '관성과 재성이 조화를 이루어 연애운이 왕성합니다. 올해 좋은 인연을 만날 가능성이 높으며, 기존 관계도 더욱 깊어질 것입니다. 솔직하고 진심 어린 태도가 사랑을 키우는 비결입니다.'
+            : '연애운은 평범한 편이나 꾸준한 노력으로 좋은 결과를 얻을 수 있습니다. 너무 서두르지 말고 천천히 상대를 알아가는 시간을 가지세요. 진정한 인연은 때가 되면 자연스럽게 찾아옵니다.',
+          score: loveScore
+        },
+        career: {
+          text: careerScore >= 4
+            ? '관성이 강하여 사업운과 직장운이 매우 좋습니다. 승진이나 사업 확장의 기회가 올 것이며, 리더십을 발휘할 기회가 많습니다. 과감한 도전도 좋지만 주변의 조언에도 귀 기울이세요.'
+            : '사업운은 안정적이나 큰 변화는 적은 시기입니다. 현재 하는 일에 최선을 다하며 내실을 다지는 것이 중요합니다. 새로운 기술이나 지식을 익히면 미래에 큰 자산이 될 것입니다.',
+          score: careerScore
+        },
+        health: {
+          text: healthScore >= 4
+            ? '건강운이 좋아 큰 질병 없이 건강한 한 해를 보낼 수 있습니다. 다만 과로는 피하고 규칙적인 운동과 충분한 휴식을 취하세요. 소화기 계통을 특히 조심하시고 규칙적인 식사가 중요합니다.'
+            : '건강에 주의가 필요한 시기입니다. 특히 스트레스 관리가 중요하며, 충분한 수면과 균형 잡힌 식사를 하세요. 정기적인 건강검진을 받고 작은 증상도 방치하지 마세요.',
+          score: healthScore
+        }
+      };
+    }
+
+    // 결과 표시
+    function displayResult(result) {
+      document.getElementById('resultName').textContent = `${result.name} ${result.gender === 'M' ? '(男)' : '(女)'}`;
+      document.getElementById('resultBirthdate').textContent = result.birthdate;
+
+      // 사주 팔자
+      document.getElementById('yearHeaven').textContent = result.pillars.year.heaven;
+      document.getElementById('yearEarth').textContent = result.pillars.year.earth;
+      document.getElementById('monthHeaven').textContent = result.pillars.month.heaven;
+      document.getElementById('monthEarth').textContent = result.pillars.month.earth;
+      document.getElementById('dayHeaven').textContent = result.pillars.day.heaven;
+      document.getElementById('dayEarth').textContent = result.pillars.day.earth;
+      document.getElementById('hourHeaven').textContent = result.pillars.hour.heaven;
+      document.getElementById('hourEarth').textContent = result.pillars.hour.earth;
+
+      // 운세
+      document.getElementById('generalFortune').textContent = result.fortunes.general.text;
+      displayStars('generalStars', result.fortunes.general.score);
+
+      document.getElementById('wealthFortune').textContent = result.fortunes.wealth.text;
+      displayStars('wealthStars', result.fortunes.wealth.score);
+
+      document.getElementById('loveFortune').textContent = result.fortunes.love.text;
+      displayStars('loveStars', result.fortunes.love.score);
+
+      document.getElementById('careerFortune').textContent = result.fortunes.career.text;
+      displayStars('careerStars', result.fortunes.career.score);
+
+      document.getElementById('healthFortune').textContent = result.fortunes.health.text;
+      displayStars('healthStars', result.fortunes.health.score);
+    }
+
+    // 별점 표시
+    function displayStars(elementId, score) {
+      const container = document.getElementById(elementId);
+      container.innerHTML = '';
+      for (let i = 1; i <= 5; i++) {
+        const star = document.createElement('span');
+        star.className = i <= score ? 'star' : 'star empty';
+        star.textContent = '★';
+        container.appendChild(star);
+      }
+    }
+
+    // 이메일 전송
+    async function sendEmail() {
+      const email = document.getElementById('emailAddress').value.trim();
+      
+      if (!email) {
+        alert('이메일 주소를 입력해주세요.');
+        return;
+      }
+
+      // 이메일 형식 검증
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        alert('올바른 이메일 주소를 입력해주세요.');
+        return;
+      }
+
+      // 실제로는 서버로 전송
+      alert(`📧 ${email}로 사주 결과를 전송했습니다!\n\n메일함을 확인해주세요.`);
+      
+      // TODO: 실제 이메일 전송 API 호출
+      // await fetch('/api/send-saju-email', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ email, result: currentResult })
+      // });
+    }
+
+    // 폼 리셋
+    function resetForm() {
+      document.getElementById('sajuForm').reset();
+      document.getElementById('resultCard').classList.remove('show');
+      document.getElementById('inputCard').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>

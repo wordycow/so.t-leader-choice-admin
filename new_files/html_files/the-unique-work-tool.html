@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Unique – 일하기 도구 (THE UNIQUE CORE)</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* =========================================
+       DESIGN SYSTEM: Premium Dark & Gold
+       ========================================= */
+    :root {
+      --bg-dark: #020617;
+      --card-bg: rgba(30, 41, 59, 0.6);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --accent-gold: #fbbf24;
+      --text-main: #f3f4f6;
+      --text-sub: #9ca3af;
+      --input-bg: rgba(0, 0, 0, 0.3);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans KR", sans-serif;
+      color: var(--text-main);
+      background: #0a0e27 url('img/work-tool-v2-background.png') center/cover no-repeat fixed;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .page-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 20px 60px;
+    }
+
+    /* === Header === */
+    header { text-align: center; margin-bottom: 40px; }
+    header h1 {
+      font-family: "Cinzel", serif; font-weight: 700; font-size: 32px;
+      margin: 0 0 10px; color: var(--accent-gold);
+      text-transform: uppercase; letter-spacing: 2px;
+      text-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
+    }
+    header p { font-size: 15px; color: var(--text-sub); margin: 0; }
+    .tagline {
+      margin-top: 12px; font-size: 14px; color: #cbd5e1;
+      background: rgba(255,255,255,0.05); padding: 6px 16px;
+      border-radius: 99px; border: 1px solid rgba(255,255,255,0.1);
+    }
+    .tagline strong { color: var(--accent-gold); }
+
+    /* === Card Style === */
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 20px; padding: 24px; margin-top: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      position: relative; overflow: hidden;
+    }
+    .card::before {
+      content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    }
+    .card h2 {
+      margin: 0 0 16px; font-size: 18px; font-weight: 700; color: #fff;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .card h2::before {
+      content: ""; display: block; width: 4px; height: 18px;
+      background: var(--accent-gold); border-radius: 2px;
+    }
+    .card p { font-size: 14px; color: #cbd5e1; margin-bottom: 12px; }
+
+    /* === Intro Layout === */
+    .intro-layout { display: flex; gap: 24px; align-items: stretch; }
+    .intro-left { flex: 1; }
+    /* 우측 영상 영역 스타일은 삭제됨 */
+
+    @media (max-width: 768px) {
+      .intro-layout { flex-direction: column; }
+    }
+
+    /* === Level & Phase Styles === */
+    .level-select {
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 16px 0;
+      background: rgba(0,0,0,0.2); padding: 10px; border-radius: 12px;
+    }
+    .level-label { font-size: 13px; color: var(--text-sub); margin-right: 4px; }
+    .level-btn {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2);
+      color: var(--text-main); padding: 8px 16px; border-radius: 8px;
+      font-size: 12px; cursor: pointer; transition: all 0.2s;
+    }
+    .level-btn:hover { background: rgba(255,255,255,0.1); }
+    .level-btn.level-active {
+      background: linear-gradient(135deg, #10b981, #059669);
+      border-color: transparent; color: #fff; font-weight: 700;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    }
+    #levelDesc {
+      margin-top: 10px; padding: 12px;
+      background: rgba(251, 191, 36, 0.1); border-left: 3px solid var(--accent-gold);
+      color: #fde68a; font-size: 14px; border-radius: 0 8px 8px 0;
+    }
+
+    .phase-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 16px; }
+    @media (max-width: 900px) { .phase-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px) { .phase-grid { grid-template-columns: 1fr; } }
+    .phase {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px; padding: 16px; transition: transform 0.2s;
+    }
+    .phase:hover { background: rgba(255,255,255,0.06); transform: translateY(-2px); }
+    .phase-tag {
+      font-size: 10px; color: #94a3b8; border: 1px solid #334155;
+      padding: 2px 8px; border-radius: 10px; display: inline-block; margin-bottom: 8px;
+    }
+    .phase h3 { margin: 0 0 8px; color: #fff; font-size: 15px; }
+    .phase p { font-size: 12px; color: #cbd5e1; margin: 0; line-height: 1.5; }
+
+    /* === Input & Buttons === */
+    .field-row { display: flex; gap: 16px; margin-top: 16px; flex-wrap: wrap; }
+    .field { flex: 1; min-width: 200px; }
+    .field label { display: block; font-size: 12px; color: var(--text-sub); margin-bottom: 6px; }
+    .field input, textarea {
+      width: 100%; background: var(--input-bg);
+      border: 1px solid rgba(255,255,255,0.15); padding: 12px; border-radius: 10px;
+      color: #fff; font-size: 14px; transition: all 0.3s;
+    }
+    .input-editable { border-color: rgba(99, 102, 241, 0.5); background: rgba(99, 102, 241, 0.05); }
+    .input-editable:focus {
+      outline: none; border-color: #818cf8;
+      box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.2); background: rgba(0,0,0,0.5);
+    }
+    .readonly-link { background: rgba(0,0,0,0.4); color: #64748b; cursor: default; }
+
+    .btn-row { margin-top: 24px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button { border: none; font-family: inherit; }
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6, #6366f1); color: white;
+      padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 14px;
+      cursor: pointer; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6); }
+    .btn-secondary {
+      background: transparent; border: 1px solid rgba(255,255,255,0.2);
+      color: #e5e7eb; padding: 12px 20px; border-radius: 12px;
+      font-size: 14px; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+    .biz-switch { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
+    .biz-btn {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text-sub); padding: 6px 14px; border-radius: 20px;
+      font-size: 12px; cursor: pointer; transition: all 0.2s;
+    }
+    .biz-btn:hover { color: var(--accent-gold); border-color: var(--accent-gold); }
+    .biz-btn.active {
+      background: var(--accent-gold); color: #000; font-weight: 700;
+      border-color: var(--accent-gold); box-shadow: 0 0 10px rgba(251, 191, 36, 0.4);
+    }
+    footer {
+      text-align: center; margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 20px; color: #64748b; font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page-wrap">
+    
+    <header>
+     <div class="biz-switch">
+  <button class="biz-btn active">THE UNIQUE</button>
+
+  <button class="biz-btn" onclick="location.href='https://wordycow.github.io/so.t-leader-choice/sot.html'">
+    So.t
+  </button>
+
+  <button class="biz-btn" onclick="location.href='https://wordycow.github.io/so.t-leader-choice/linkon.html'">
+    Linkon
+  </button>
+
+  <button class="biz-btn" onclick="window.close()">
+    Close
+  </button>
+</div>
+      <h1>The Unique Core</h1>
+      <p>“일하기 도구” – 디지털 초대문 + 오늘 일의 기준</p>
+      <div class="tagline">
+        명단을 쓰고, 정보를 전달하고, 그 횟수로 일했는지를 본다.<br/>
+        감정이 아니라 <strong>“오늘 몇 번 설명했는가”</strong>로 판단한다.
+      </div>
+    </header>
+
+    <section class="card">
+      <div class="intro-layout">
+        
+        <div class="intro-left">
+          <h2>오늘 나는 실제로 일을 했는가?</h2>
+          <p>
+            THE UNIQUE에서 “일했다”의 기준은 감정이 아니라 <strong>설명 횟수</strong>다.<br />
+            아래에서 오늘 내가 적용할 기준(레벨)을 고르면, 그 레벨에 맞는 <strong>하루 기본 목표</strong>가 나온다.
+          </p>
+
+          <div class="level-select">
+            <span class="level-label">기준 선택:</span>
+            <button type="button" class="level-btn" data-level="basic">정회원 ~ 스타3</button>
+            <button type="button" class="level-btn" data-level="mid">Pro1 ~ Pro3</button>
+            <button type="button" class="level-btn" data-level="high">Pro4 이상 도전자</button>
+          </div>
+
+          <div id="levelDesc">
+            (위 버튼 중 하나를 누르면, 오늘 목표가 여기 표시됩니다.)
+          </div>
+          <div style="font-size: 12px; color:#64748b; margin-top:8px;">
+            ※ 실제 숫자 기록은 노트·엑셀·리포트방에서 자유롭게 적고, 여기서는 레벨별 기준만 확인하세요.
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>1단계 – 사업설명의 조건</h2>
+      <p>네트워크에 가입하고 1년 동안 사업설명을 하지 않았다면, 사실상 <strong>단 한 번도 일을 하지 않은 것</strong>과 같다. 사업설명은 한 번에 잘 되는 게 아니라, 아래 네 단계를 거쳐야 한다.</p>
+      <div class="phase-grid">
+        <div class="phase"><span class="phase-tag">기초 준비</span><h3>줄넘기</h3><p>· 기본 개념 이해<br />· 필수 요소 확인<br />· 10줄/5줄/3줄 요약<br />→ “내가 뭘 설명하려는지” 아는 단계</p></div>
+        <div class="phase"><span class="phase-tag">연습</span><h3>센드백</h3><p>· 오프닝 멘트 연습<br />· 스크립트 소리 내 읽기<br />· 초대문 버전 만들기<br />→ “틀리지 않고 끝까지 말하는” 단계</p></div>
+        <div class="phase"><span class="phase-tag">실전 같은 연습</span><h3>스파링</h3><p>· 스폰서 앞에서 설명<br />· 파트너 설명 같이 듣기<br />· 피드백 및 수정<br />→ “상대 귀에 어떻게 들리는지” 확인</p></div>
+        <div class="phase"><span class="phase-tag">실제 일</span><h3>실전</h3><p>· 매일 설명 횟수 채우기<br />· 디지털 초대 꾸준히<br />· 실제 참여가 나오는 단계<br />→ <strong>진짜 “일을 하는 것”</strong></p></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>2단계 – 디지털 초대문 입력</h2>
+      <p>상대 이름과 키워드를 넣고 <strong>“초대문 만들기”</strong>를 누르면, 바로 보낼 수 있는 문장이 완성됩니다.</p>
+      <div class="field-row">
+        <div class="field"><label>상대 이름</label><input id="inputName" class="input-editable" type="text" placeholder="예: 영희" /></div>
+        <div class="field"><label>내 이름</label><input id="inputMyName" class="input-editable" type="text" placeholder="예: 지민" /></div>
+        <div class="field"><label>관심 키워드</label><input id="inputTopic" class="input-editable" type="text" placeholder="예: 부업, 노후대책" /></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>디스코드 (고정)</label><input id="inputDiscord" class="readonly-link" type="text" readonly /></div>
+        <div class="field"><label>유튜브 (고정)</label><input id="inputYoutube1" class="readonly-link" type="text" readonly /></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-primary" id="btnBuildText" type="button">✨ 디지털 초대문 만들기</button>
+        <button class="btn-secondary" id="btnClearInputs" type="button">초기화</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>3단계 – 완성 초대문 (복사해서 바로 사용)</h2>
+      <textarea id="resultText" placeholder="위에서 버튼을 누르면 여기에 완성된 글이 나타납니다."></textarea>
+      <div class="btn-row">
+        <button class="btn-primary" id="btnCopyResult" type="button">📋 전체 복사하기</button>
+        <button class="btn-secondary" id="btnClearResult" type="button">내용 비우기</button>
+      </div>
+    </section>
+
+    <footer>
+      <strong>일의 기준</strong> · 명단 + 설명 + 초대 횟수로 나의 일을 판단한다.
+    </footer>
+  </div>
+
+  <script>
+  (function () {
+    const DEFAULT_DISCORD = 'https://discord.gg/3cUN7QXMSY';
+    const DEFAULT_YOUTUBE_1 = 'https://www.youtube.com/@%EC%8F%98%EB%8B%BSo.T';
+    const DEFAULT_YOUTUBE_2 = 'https://www.youtube.com/@%EC%96%B4%EC%8A%AC%EB%A0%81%EB%A1%9C%EB%93%9C';
+    const DEFAULT_SITE = 'https://wordycow.github.io/so.t-leader-choice/the-unique-main.html';
+    const STORAGE_LEVEL_KEY = 'tu_work_level_v2';
+    const LEVELS = {
+      basic: { name:'정회원 ~ 스타3', subtitle:'습관 만드는 단계', leadsTarget:3, pitchesTarget:1, invitesTarget:3 },
+      mid:   { name:'Pro1 ~ Pro3',  subtitle:'성과가 나고 사람이 붙는 단계', leadsTarget:3, pitchesTarget:3, invitesTarget:6 },
+      high:  { name:'Pro4 이상 도전자', subtitle:'리더십 단계, 깊이 들어간 사람들', leadsTarget:1, pitchesTarget:2, invitesTarget:10 }
+    };
+
+    // DOM Elements
+    const inputName = document.getElementById('inputName');
+    const inputTopic = document.getElementById('inputTopic');
+    const inputMyName = document.getElementById('inputMyName');
+    const inputDiscord = document.getElementById('inputDiscord');
+    const inputYoutube1 = document.getElementById('inputYoutube1');
+    const btnBuildText = document.getElementById('btnBuildText');
+    const btnClearInputs = document.getElementById('btnClearInputs');
+    const btnCopyResult = document.getElementById('btnCopyResult');
+    const btnClearResult = document.getElementById('btnClearResult');
+    const resultText = document.getElementById('resultText');
+    const levelDesc = document.getElementById('levelDesc');
+    const levelButtons = Array.from(document.querySelectorAll('.level-btn'));
+
+    if (inputDiscord) inputDiscord.value = DEFAULT_DISCORD;
+    if (inputYoutube1) inputYoutube1.value = DEFAULT_YOUTUBE_1;
+
+    function applyLevel(levelKey) {
+      const cfg = LEVELS[levelKey] || LEVELS.basic;
+      levelButtons.forEach(btn => btn.classList.toggle('level-active', btn.dataset.level === levelKey));
+      if (levelDesc) {
+        levelDesc.innerHTML = `
+          <strong style="color:#fff; font-size:15px;">${cfg.name}</strong> <span style="opacity:0.8">(${cfg.subtitle})</span><br/>
+          <div style="margin-top:4px;">
+            🔥 신규 설명 <strong>${cfg.leadsTarget}회</strong> · 
+            🎤 후원 설명 <strong>${cfg.pitchesTarget}회</strong> · 
+            💌 디지털 초대 <strong>${cfg.invitesTarget}회</strong>
+          </div>
+        `;
+      }
+      try { localStorage.setItem(STORAGE_LEVEL_KEY, levelKey); } catch (e) {}
+    }
+
+    function buildText() {
+      if (!resultText) return;
+      const name = (inputName && inputName.value.trim()) || 'OO';
+      const topic = (inputTopic && inputTopic.value.trim()) || '관심사';
+      const myName = (inputMyName && inputMyName.value.trim()) || '나';
+      const lines = [
+        `${name}, 요즘 ${topic} 이야기 자주 했잖아.`, '',
+        '나는 지금 THE UNIQUE라는 시스템으로', '시간·돈·자유를 같이 만드는 일을 준비하고 있어.', '',
+        '혼자서 버티는 게 아니라,', '나랑 맞는 사람들과 같이 구조를 타고 올라가는 쪽을 선택한 거야.', '',
+        '내가 하고 싶은 건,', '너한테 이 구조를 한 번 보여주고,', '너한테 맞는지 아닌지를 네 입으로 판단하게 해주는 거야.', '',
+        '그래서 10분 정도만 구조를 간단히 설명해 볼게.', '아니다 싶으면 편하게 "난 패스"라고 해도 돼.', '',
+        '자세한 내용은 우리가 쓰는 공식 채널에서 볼 수 있어:',
+        `- 디스코드 : ${DEFAULT_DISCORD}`, `- 유튜브(so.t) : ${DEFAULT_YOUTUBE_1}`,
+        `- 유튜브(어슬렁로드) : ${DEFAULT_YOUTUBE_2}`, `- THE UNIQUE 사이트 : ${DEFAULT_SITE}`, '',
+        '한 번만 쭉 보고 느낌을 솔직하게 말해줘.', '', `– ${myName}`
+      ];
+      resultText.value = lines.join('\n');
+    }
+
+    function copyResult() {
+      if (!resultText || !resultText.value.trim()) return alert('먼저 디지털 초대문을 만들어 주세요.');
+      navigator.clipboard.writeText(resultText.value)
+        .then(() => alert('복사되었습니다! 카톡/DM에 붙여넣으세요.'))
+        .catch(() => { resultText.select(); document.execCommand('copy'); alert('복사되었습니다 (수동 모드).'); });
+    }
+
+    if (btnBuildText) btnBuildText.addEventListener('click', buildText);
+    if (btnClearInputs) btnClearInputs.addEventListener('click', () => { if(confirm('초기화할까요?')) { inputName.value=''; inputTopic.value=''; inputMyName.value=''; }});
+    if (btnCopyResult) btnCopyResult.addEventListener('click', copyResult);
+    if (btnClearResult) btnClearResult.addEventListener('click', () => resultText.value = '');
+    levelButtons.forEach(btn => btn.addEventListener('click', () => applyLevel(btn.dataset.level)));
+
+    let savedLevel = 'basic';
+    try { savedLevel = localStorage.getItem(STORAGE_LEVEL_KEY) || 'basic'; } catch(e) {}
+    applyLevel(savedLevel);
+    buildText();
+  })();
+  </script>
+</body>
+</html>

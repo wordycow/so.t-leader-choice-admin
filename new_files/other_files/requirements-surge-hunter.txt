@@ -1,0 +1,6 @@
+flask
+flask-cors
+pyupbit
+pandas
+numpy
+requests

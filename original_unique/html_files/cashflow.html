@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>THE UNIQUE – Cashflow Calculator</title>
+  <style>
+    :root{--bg:#070b18;--panel:#0b1224;--line:#223055;--text:#e7ecff;--muted:#aab4da;--gold:#ffcc00;}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    .wrap{max-width:1100px;margin:0 auto;padding:18px}
+    h1{margin:6px 0 2px;font-size:20px}
+    .sub{color:var(--muted);font-size:13px;margin-bottom:14px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .card{background:rgba(255,255,255,0.03);border:1px solid var(--line);border-radius:14px;padding:14px}
+    .card h2{margin:0 0 10px;font-size:15px}
+    label{display:block;font-size:12px;color:var(--muted);margin:10px 0 6px}
+    input,select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:rgba(0,0,0,0.25);color:var(--text)}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{border-bottom:1px solid rgba(255,255,255,0.08);padding:8px;font-size:12px;text-align:right}
+    th:first-child,td:first-child{text-align:left}
+    .pill{display:inline-block;padding:2px 8px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:11px}
+    .out{font-size:14px}
+    .big{font-size:18px;color:var(--gold);font-weight:700}
+    .hint{color:var(--muted);font-size:12px;line-height:1.4}
+    .full{grid-column:1 / -1}
+    .danger{color:#ff6b6b}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>현금흐름 계산기 (신규/갱신 분리 + 직급수당 + 여행정산)</h1>
+  <div class="sub">입력값만 바꾸면 “들어온 USDT / 나갈 USDT / 현재 사용가능 자금(추정)”이 자동 계산됩니다.</div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>기본 입력</h2>
+      <div class="row">
+        <div>
+          <label>구독 금액(USDT)</label>
+          <input id="price" type="number" value="400" step="1" />
+        </div>
+        <div>
+          <label>포인트 배수(예: 2배 = 800/400)</label>
+          <input id="ptMult" type="number" value="2" step="0.01" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>신규 1회차 구독 수(이번 60일)</label>
+          <input id="newSubs" type="number" value="0" step="1" />
+        </div>
+        <div>
+          <label>갱신(2회차+) 구독 수(이번 60일)</label>
+          <input id="renewSubs" type="number" value="0" step="1" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>직추(추천) 수당 비율 (1회차만)</label>
+          <input id="refRate" type="number" value="0.30" step="0.01" />
+        </div>
+        <div>
+          <label>출금 수수료 수익률 (선택)</label>
+          <input id="wdFeeRate" type="number" value="0.01" step="0.001" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>이번 기간 유저 총 출금액(USDT) (선택)</label>
+          <input id="wdAmount" type="number" value="0" step="1" />
+        </div>
+        <div>
+          <label>기타 운영비/마케팅비(USDT)</label>
+          <input id="ops" type="number" value="0" step="1" />
+        </div>
+      </div>
+
+      <div class="hint">
+        <span class="pill">참고</span>
+        신규 1회차만 추천수당이 나간다면, “newSubs”에만 추천수당이 적용됩니다.
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>여행 정산(현금) 추정</h2>
+      <div class="row">
+        <div>
+          <label>여행 정산 실현률 u (예: 20% = 0.2)</label>
+          <input id="uRate" type="number" value="0.20" step="0.01" />
+        </div>
+        <div>
+          <label>이번 60일에 “실제로” 여행 다녀온 인원(선택)</label>
+          <input id="travelers" type="number" value="0" step="1" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>연차별 최대 사용(상한) – 표시용</label>
+          <select id="yearCap">
+            <option value="0.30">1년차 30%</option>
+            <option value="0.60">2년차 60%</option>
+            <option value="1.00" selected>3년차 100%</option>
+          </select>
+        </div>
+        <div>
+          <label>여행 1인당 “실제 지급” 기준액(USDT) (선택)</label>
+          <input id="travelPayPer" type="number" value="800" step="1" />
+        </div>
+      </div>
+
+      <div class="hint">
+        <div>① <b>예상 지급(준비금)</b>: u로 계산 (운영 안전용)</div>
+        <div>② <b>실제 지급(현금유출)</b>: 여행 다녀온 인원×1인 지급액(선택)</div>
+      </div>
+    </div>
+
+    <div class="card full">
+      <h2>직급수당 (2회차+ 기준: 60일 / 신규는 선택적으로 53일 적용)</h2>
+
+      <div class="row3">
+        <div>
+          <label>신규(1회차) 직급수당 지급일수</label>
+          <input id="daysNewRank" type="number" value="53" step="1" />
+        </div>
+        <div>
+          <label>갱신(2회차+) 직급수당 지급일수</label>
+          <input id="daysRenewRank" type="number" value="60" step="1" />
+        </div>
+        <div>
+          <label>120일 이후 “성장 없으면 1단계 하향” 적용?</label>
+          <select id="applyDowngrade">
+            <option value="no" selected>미적용</option>
+            <option value="yes">적용</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="hint" style="margin-top:8px">
+        <span class="pill">입력 방법</span>
+        아래 표의 “수령자 수”는 <b>직급수당을 실제로 받는 사람 수</b>를 넣으면 됩니다.
+        “하향 적용 인원”은 3회차(120일+) 시작 시점에 성장 없어서 한 단계 낮게 받는 사람 수(갱신쪽에만 보통 적용)를 넣으세요.
+      </div>
+
+      <table id="rankTable">
+        <thead>
+          <tr>
+            <th>직급</th>
+            <th>일 지급액</th>
+            <th>신규 수령자(1회차)</th>
+            <th>갱신 수령자(2회차+)</th>
+            <th>하향 적용(갱신 중)</th>
+            <th>이번 기간 직급수당 합계</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <div class="hint">
+        ※ “하향 적용”은 해당 직급에서 빼고(원직급 지급 제거), 한 단계 아래 직급 지급으로 자동 이동 계산됩니다.
+      </div>
+    </div>
+
+    <div class="card full">
+      <h2>결과</h2>
+      <div class="row">
+        <div class="out">
+          <div>총 유입(구독) = <span class="big" id="inSubs">0</span></div>
+          <div>출금수수료 수익(선택) = <span class="big" id="inFees">0</span></div>
+          <div>총 유입 합계 = <span class="big" id="inTotal">0</span></div>
+        </div>
+        <div class="out">
+          <div>추천수당(신규 1회차만) = <span class="big" id="outRef">0</span></div>
+          <div>직급수당(이번 기간) = <span class="big" id="outRank">0</span></div>
+          <div>여행 실제지급(선택) = <span class="big" id="outTravelActual">0</span></div>
+          <div class="danger">운영비/기타 = <span class="big" id="outOps">0</span></div>
+        </div>
+      </div>
+
+      <hr style="border:0;border-top:1px solid rgba(255,255,255,0.08);margin:12px 0"/>
+
+      <div class="row">
+        <div class="out">
+          <div><span class="pill">운영 안전용</span> 여행 예상지급(준비금) = <span class="big" id="travelReserve">0</span></div>
+          <div class="hint">= (이번 기간 적립포인트 가치) × u × (연차 상한 선택값)</div>
+        </div>
+        <div class="out">
+          <div>총 유출(실제) = <span class="big" id="outTotal">0</span></div>
+          <div>현재 사용가능 자금(추정) = <span class="big" id="cashAvail">0</span></div>
+          <div class="hint">= 총 유입 − (추천수당+직급수당+여행실제지급+운영비)</div>
+        </div>
+      </div>
+
+      <div class="hint" style="margin-top:10px">
+        <b>주의:</b> 여행은 “실제 지급”이 없더라도 포인트 부채가 누적됩니다. 그래서 운영은 “예상지급(준비금)”을 별도로 보는 게 안전합니다.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const ranks = [
+    {key:"STAR1", name:"스타I",  daily:10},
+    {key:"STAR2", name:"스타II", daily:20},
+    {key:"STAR3", name:"스타III",daily:45},
+    {key:"PRO1",  name:"프로I",  daily:120},
+    {key:"PRO2",  name:"프로II", daily:200},
+    {key:"PRO3",  name:"프로III",daily:300},
+    {key:"PRO4",  name:"프로IV", daily:500},
+    {key:"PRO5",  name:"프로V",  daily:800},
+    {key:"PRO6",  name:"프로VI", daily:1300},
+    {key:"PRO7",  name:"프로VII",daily:2000},
+    {key:"PRO8",  name:"프로VIII",daily:3000},
+    {key:"PRO9",  name:"프로IX", daily:4000},
+    {key:"PRO10", name:"프로X",  daily:5000},
+  ];
+
+  const $ = (id)=>document.getElementById(id);
+  const fmt = (n)=> (isFinite(n) ? n.toLocaleString("en-US",{maximumFractionDigits:2}) : "0");
+
+  // Build rank table
+  const tbody = $("rankTable").querySelector("tbody");
+  function buildTable(){
+    tbody.innerHTML = "";
+    ranks.forEach((r, idx)=>{
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${r.name}</td>
+        <td><input data-type="daily" data-key="${r.key}" type="number" value="${r.daily}" step="1" style="text-align:right"></td>
+        <td><input data-type="nNew" data-key="${r.key}" type="number" value="0" step="1" style="text-align:right"></td>
+        <td><input data-type="nRenew" data-key="${r.key}" type="number" value="0" step="1" style="text-align:right"></td>
+        <td><input data-type="nDown" data-key="${r.key}" type="number" value="0" step="1" style="text-align:right"></td>
+        <td id="sum-${r.key}">0</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function getNum(id){
+    const v = parseFloat($(id).value);
+    return isFinite(v) ? v : 0;
+  }
+
+  function readRankInputs(){
+    const inputs = tbody.querySelectorAll("input");
+    const map = {};
+    inputs.forEach(inp=>{
+      const k = inp.dataset.key;
+      const t = inp.dataset.type;
+      if(!map[k]) map[k] = {daily:0,nNew:0,nRenew:0,nDown:0};
+      map[k][t] = parseFloat(inp.value)||0;
+    });
+    return map;
+  }
+
+  function compute(){
+    const price = getNum("price");
+    const ptMult = getNum("ptMult");
+    const newSubs = getNum("newSubs");
+    const renewSubs = getNum("renewSubs");
+    const refRate = getNum("refRate");
+    const wdFeeRate = getNum("wdFeeRate");
+    const wdAmount = getNum("wdAmount");
+    const ops = getNum("ops");
+
+    const uRate = getNum("uRate");
+    const travelers = getNum("travelers");
+    const travelPayPer = getNum("travelPayPer");
+    const yearCap = parseFloat($("yearCap").value) || 1;
+
+    const daysNewRank = getNum("daysNewRank");
+    const daysRenewRank = getNum("daysRenewRank");
+    const applyDowngrade = $("applyDowngrade").value === "yes";
+
+    // Inflows
+    const inSubs = price * (newSubs + renewSubs);
+    const inFees = wdAmount * wdFeeRate;
+    const inTotal = inSubs + inFees;
+
+    // Outflows - referral only on new
+    const outRef = price * newSubs * refRate;
+
+    // Rank payouts
+    const rankMap = readRankInputs();
+    // Create helper to get daily of lower rank (one step down)
+    const idxByKey = Object.fromEntries(ranks.map((r,i)=>[r.key,i]));
+    const dailyByKey = (key)=> (rankMap[key]?.daily ?? ranks[idxByKey[key]]?.daily ?? 0);
+    const lowerKey = (key)=>{
+      const i = idxByKey[key];
+      if(i<=0) return null;
+      return ranks[i-1].key;
+    };
+
+    let outRank = 0;
+    ranks.forEach(r=>{
+      const x = rankMap[r.key] || {daily:r.daily,nNew:0,nRenew:0,nDown:0};
+      const daily = x.daily;
+      const nNew = x.nNew;
+      const nRenew = x.nRenew;
+      const nDown = Math.min(x.nDown, nRenew); // downgrade applies to renew side
+      // base payout
+      let sum = (nNew * daily * daysNewRank) + (nRenew * daily * daysRenewRank);
+      // apply downgrade: remove original for downgraded renew, add lower rank daily
+      if(applyDowngrade && nDown > 0){
+        const lk = lowerKey(r.key);
+        const lowerDaily = lk ? dailyByKey(lk) : 0;
+        sum -= (nDown * daily * daysRenewRank);
+        sum += (nDown * lowerDaily * daysRenewRank);
+      }
+      outRank += sum;
+      $("sum-"+r.key).textContent = fmt(sum);
+    });
+
+    // Travel
+    const pointValuePerSub = price * ptMult; // 400*2=800
+    // Expected reserve (management view): new+renew accrue point-value, uRate realized, capped by selected yearCap
+    const travelReserve = (newSubs + renewSubs) * pointValuePerSub * uRate * yearCap;
+    // Actual payout (cash out) for this period: optional, user inputs travelers and pay per
+    const outTravelActual = travelers * travelPayPer;
+
+    const outOps = ops;
+
+    const outTotal = outRef + outRank + outTravelActual + outOps;
+    const cashAvail = inTotal - outTotal;
+
+    // Outputs
+    $("inSubs").textContent = fmt(inSubs);
+    $("inFees").textContent = fmt(inFees);
+    $("inTotal").textContent = fmt(inTotal);
+
+    $("outRef").textContent = fmt(outRef);
+    $("outRank").textContent = fmt(outRank);
+    $("outTravelActual").textContent = fmt(outTravelActual);
+    $("outOps").textContent = fmt(outOps);
+
+    $("travelReserve").textContent = fmt(travelReserve);
+    $("outTotal").textContent = fmt(outTotal);
+    $("cashAvail").textContent = fmt(cashAvail);
+  }
+
+  buildTable();
+  compute();
+  document.addEventListener("input", (e)=>{
+    if(e.target && (e.target.tagName === "INPUT" || e.target.tagName === "SELECT")) compute();
+  });
+</script>
+</body>
+</html>

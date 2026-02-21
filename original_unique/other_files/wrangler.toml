@@ -1,0 +1,10 @@
+name = "unique-slot-worker"
+main = "src/index.js"
+compatibility_date = "2026-01-01"
+
+kv_namespaces = [
+  { binding = "DONATIONS_KV", id = "YOUR_KV_NAMESPACE_ID_HERE" }
+]
+
+[vars]
+GS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxtdOVoV2PtB_UbCLu2OzZHo6JjNks-0gk4s2fci52HjuuBNy3uwuf7DP7ePTK7S6VI/exec"

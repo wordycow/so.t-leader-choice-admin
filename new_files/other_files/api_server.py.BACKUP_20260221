@@ -1,0 +1,849 @@
+# -*- coding: utf-8 -*-
+"""
+🤖 Lee May Training Center - 완전 통합 API 서버
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+4대 핵심 모듈 유기적 통합:
+1. 🎭 Emotion Engine (페르소나-감정-이미지)
+2. 📚 Knowledge RAG (유튜브 자막 추출 및 지식 저장)
+3. 📊 Live Telemetry (실시간 시스템/트레이딩 데이터)
+4. 🔗 Central Command (모든 봇 중앙 관리)
++ 🛠️ OPS API (Allowlist + Admin Key)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"""
+
+from flask import Flask, request, jsonify, send_file, send_from_directory
+from flask_cors import CORS
+import os
+import sys
+import json
+import psutil
+import subprocess
+import threading
+import time
+import socket
+from datetime import datetime
+from pathlib import Path
+
+# ============================================================
+# 🔧 경로 설정
+# ============================================================
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+WEB_DIR = os.path.join(BASE_DIR, "web")
+STATIC_DIR = os.path.join(WEB_DIR, "static")
+
+LEEMAY_DIR = os.path.join(BASE_DIR, "leemay")
+IMAGES_DIR = os.path.join(LEEMAY_DIR, "images")
+PERSONAS_DIR = os.path.join(LEEMAY_DIR, "personas")
+
+KNOWLEDGE_DIR = os.path.join(BASE_DIR, "knowledge_base")
+
+OPS_DIR = os.path.join(BASE_DIR, "ops")
+LOGS_DIR = os.path.join(BASE_DIR, "logs")
+SECRETS_DIR = os.path.join(BASE_DIR, "secrets")
+
+# 폴더 생성
+for folder in [WEB_DIR, STATIC_DIR, LEEMAY_DIR, IMAGES_DIR, PERSONAS_DIR, KNOWLEDGE_DIR, OPS_DIR, LOGS_DIR, SECRETS_DIR]:
+    os.makedirs(folder, exist_ok=True)
+
+# 모듈 경로 추가
+sys.path.append(BASE_DIR)
+sys.path.append(LEEMAY_DIR)
+sys.path.append(os.path.join(LEEMAY_DIR, "core"))
+
+# ============================================================
+# 📦 모듈 임포트 (있으면 사용 / 없으면 안전 폴백)
+# ============================================================
+EMAY_AVAILABLE = False
+YOUTUBE_AVAILABLE = False
+
+# emotion_mapper 폴백
+def _fallback_detect_emotion(_: str) -> str:
+    return "neutral"
+
+def _fallback_get_emotion_image_path(emotion: str) -> str:
+    # leemay/images/{emotion}.png 형태를 기대
+    # 없으면 neutral.png
+    p = os.path.join(IMAGES_DIR, f"{emotion}.png")
+    if os.path.exists(p):
+        return p
+    return os.path.join(IMAGES_DIR, "neutral.png")
+
+EMOTION_KEYWORDS = {
+    "neutral": []
+}
+detect_emotion = _fallback_detect_emotion
+get_emotion_image_path = _fallback_get_emotion_image_path
+
+try:
+    from leemay.core.emay_brain import EmayBrain
+    from leemay.core.memory import EmayMemory  # 현재 직접 사용은 안 해도, 축 유지용
+    from emotion_mapper import detect_emotion, get_emotion_image_path, EMOTION_KEYWORDS
+    EMAY_AVAILABLE = True
+except Exception as e:
+    print(f"⚠️ Emay/Emotion 모듈 로드 실패(폴백 사용): {e}")
+    EMAY_AVAILABLE = False
+
+# YouTube 자막 추출
+try:
+    from youtube_transcript_api import YouTubeTranscriptApi
+    import re
+    YOUTUBE_AVAILABLE = True
+except Exception:
+    print("⚠️ youtube_transcript_api 없음 - pip install youtube-transcript-api")
+    YOUTUBE_AVAILABLE = False
+
+# ============================================================
+# 🌐 Flask 앱 초기화
+# ============================================================
+app = Flask(__name__, static_folder=STATIC_DIR, template_folder=WEB_DIR)
+
+# ✅ CORS: X-Admin-Key까지 허용해야 브라우저 프리플라이트 안 막힘
+CORS(app, resources={
+    r"/*": {
+        "origins": "*",
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization", "X-Admin-Key"],
+        "expose_headers": ["Content-Type"],
+        "supports_credentials": True,
+        "max_age": 3600
+    }
+})
+
+@app.after_request
+def after_request(response):
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization,X-Admin-Key")
+    response.headers.add("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
+    return response
+
+@app.route("/<path:path>", methods=["OPTIONS"])
+def handle_options(path):
+    """OPTIONS 요청 처리"""
+    response = jsonify({"status": "ok"})
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization,X-Admin-Key")
+    response.headers.add("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
+    return response
+
+# ============================================================
+# OPS API (Allowlist + Admin Key)  ✅ PATCHED (multi-key + debug)
+# ============================================================
+import socket
+
+OPS_DIR = os.path.join(BASE_DIR, "ops")
+LOGS_DIR = os.path.join(BASE_DIR, "logs")
+SECRETS_DIR = os.path.join(BASE_DIR, "secrets")
+
+os.makedirs(OPS_DIR, exist_ok=True)
+os.makedirs(LOGS_DIR, exist_ok=True)
+os.makedirs(SECRETS_DIR, exist_ok=True)
+
+OPS_LOG = os.path.join(LOGS_DIR, "ops_api.log")
+
+def _log_ops(msg: str):
+    try:
+        with open(OPS_LOG, "a", encoding="utf-8") as f:
+            f.write(f"[{datetime.now().isoformat()}] {msg}\n")
+    except:
+        pass
+
+def _load_admin_keys():
+    """
+    여러 키 소스를 '모두' 유효키로 인정 (env/file 혼재/구버전 키 남아도 해결)
+    반환: [{"src": "...", "key": "..."}]
+    """
+    keys = []
+
+    # 1) env 후보들
+    env_names = ["LEEMAY_ADMIN_KEY", "ADMIN_TOKEN", "LEEMAY_ADMIN_TOKEN"]
+    for name in env_names:
+        v = (os.environ.get(name) or "").strip()
+        if v:
+            keys.append({"src": f"env:{name}", "key": v})
+
+    # 2) 파일 후보들 (둘 다 인정)
+    file_candidates = [
+        os.path.join(SECRETS_DIR, "admin_key.txt"),
+        os.path.join(SECRETS_DIR, "admin_token.txt"),
+        os.path.join(SECRETS_DIR, "LEEMAY_ADMIN_KEY.txt"),
+        os.path.join(SECRETS_DIR, "ADMIN_TOKEN.txt"),
+    ]
+    for p in file_candidates:
+        if os.path.exists(p):
+            try:
+                v = open(p, "r", encoding="utf-8").read().strip()
+                if v:
+                    keys.append({"src": f"file:{os.path.basename(p)}", "key": v})
+            except:
+                pass
+
+    # 중복 제거
+    uniq = []
+    seen = set()
+    for item in keys:
+        if item["key"] not in seen:
+            uniq.append(item)
+            seen.add(item["key"])
+    return uniq
+
+def _extract_presented_key():
+    """
+    헤더로 전달된 키를 최대한 넓게 수용
+    - X-Admin-Key
+    - X-Admin-Token
+    - Authorization: Bearer <token>
+    """
+    got = (request.headers.get("X-Admin-Key") or "").strip()
+    if got:
+        return got
+
+    got = (request.headers.get("X-Admin-Token") or "").strip()
+    if got:
+        return got
+
+    auth = (request.headers.get("Authorization") or "").strip()
+    if auth.lower().startswith("bearer "):
+        return auth.split(" ", 1)[1].strip()
+
+    return ""
+
+def _require_admin():
+    keys = _load_admin_keys()
+    got = _extract_presented_key()
+
+    if not keys:
+        _log_ops(f"DENY(no_key_config) {request.path} ip={request.remote_addr}")
+        return False
+
+    if not got:
+        _log_ops(f"DENY(no_header) {request.path} ip={request.remote_addr} sources={[k['src'] for k in keys]}")
+        return False
+
+    for item in keys:
+        if got == item["key"]:
+            _log_ops(f"ALLOW {request.path} ip={request.remote_addr} via={item['src']}")
+            return True
+
+    _log_ops(f"DENY(bad_key) {request.path} ip={request.remote_addr} got_len={len(got)} sources={[k['src'] for k in keys]}")
+    return False
+
+def _port_open(port: int, host="127.0.0.1", timeout=0.4) -> bool:
+    try:
+        with socket.create_connection((host, port), timeout=timeout):
+            return True
+    except:
+        return False
+
+def _proc_running(name_substr: str) -> bool:
+    try:
+        target = name_substr.lower()
+        for proc in psutil.process_iter(["name", "cmdline"]):
+            try:
+                nm = (proc.info.get("name") or "").lower()
+                cmd = " ".join(proc.info.get("cmdline") or []).lower()
+                if target in nm or target in cmd:
+                    return True
+            except:
+                continue
+    except:
+        pass
+    return False
+
+# ✅ allowlist (유송 환경 기준)
+ALLOWLIST = {
+    "control_start": [
+        os.path.join(OPS_DIR, "01_CONTROL_START.bat"),
+    ],
+    "bots_start": [
+        os.path.join(BASE_DIR, "ai_trading_star.bat"),
+        os.path.join(BASE_DIR, "chat_study_star.bat"),
+        os.path.join(LEEMAY_DIR, "emay_scripts", "start_emay_background.bat"),
+    ],
+    "bots_stop": [
+        os.path.join(BASE_DIR, "ai_trading_stop.bat"),
+        os.path.join(BASE_DIR, "chat_study_stop.bat"),
+        os.path.join(LEEMAY_DIR, "emay_scripts", "stop_emay.bat"),
+    ],
+    # (옵션) 강화학습/반복 시뮬 묶음
+    "sim_start": [
+        os.path.join(BASE_DIR, "repeat_simulation_star.bat"),
+    ],
+    "sim_stop": [
+        os.path.join(BASE_DIR, "repeat_simulation_stop.bat"),
+    ],
+}
+
+def _run_bat_async(path: str):
+    if not os.path.exists(path):
+        _log_ops(f"SKIP missing: {path}")
+        return {"path": path, "ok": False, "reason": "missing"}
+
+    try:
+        flags = 0
+        if hasattr(subprocess, "CREATE_NO_WINDOW"):
+            flags = subprocess.CREATE_NO_WINDOW
+
+        subprocess.Popen(
+            ["cmd", "/c", path],
+            cwd=BASE_DIR,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            creationflags=flags
+        )
+        _log_ops(f"RUN ok: {path}")
+        return {"path": path, "ok": True}
+    except Exception as e:
+        _log_ops(f"RUN fail: {path} err={e}")
+        return {"path": path, "ok": False, "reason": str(e)}
+
+@app.route("/api/ops/status", methods=["GET"])
+def api_ops_status():
+    # 5001은 이 요청이 들어왔다는 것 자체가 살아있다는 뜻이라 True로 둠
+    p5000 = _port_open(5000)
+    p11434 = _port_open(11434)
+
+    ports = {"5001": True, "5000": p5000, "11434": p11434}
+    process = {
+        "cloudflared": _proc_running("cloudflared"),
+        "ollama": _proc_running("ollama"),
+    }
+
+    if ports["5001"] and ports["5000"] and ports["11434"]:
+        grade = "OK"
+        note = "핵심 서비스 정상"
+    elif ports["5001"] and (ports["5000"] or ports["11434"]):
+        grade = "WARN"
+        note = "일부 서비스 비정상"
+    else:
+        grade = "WARN"
+        note = "봇/모델 포트 닫힘"
+
+    return jsonify({
+        "timestamp": datetime.now().isoformat(),
+        "ports": ports,
+        "process": process,
+        "grade": grade,
+        "note": note
+    })
+
+@app.route("/api/ops/_debug/auth", methods=["GET"])
+def api_ops_debug_auth():
+    """
+    키를 '노출'하지 않고, 서버가 키를 읽고 있는지/어디서 읽는지 확인하는 디버그
+    """
+    keys = _load_admin_keys()
+    got = _extract_presented_key()
+    return jsonify({
+        "has_configured_keys": bool(keys),
+        "sources": [k["src"] for k in keys],
+        "got_header": bool(got),
+        "got_len": len(got)
+    })
+
+@app.route("/api/ops/control/start", methods=["POST"])
+def api_ops_control_start():
+    if not _require_admin():
+        return jsonify({"ok": False, "error": "unauthorized"}), 401
+
+    results = [_run_bat_async(p) for p in ALLOWLIST["control_start"]]
+    return jsonify({"ok": True, "msg": "started", "action": "control_start", "results": results})
+
+@app.route("/api/ops/bots/start", methods=["POST"])
+def api_ops_bots_start():
+    if not _require_admin():
+        return jsonify({"ok": False, "error": "unauthorized"}), 401
+
+    results = [_run_bat_async(p) for p in ALLOWLIST["bots_start"]]
+    return jsonify({"ok": True, "msg": "started", "action": "bots_start", "results": results})
+
+@app.route("/api/ops/bots/stop", methods=["POST"])
+def api_ops_bots_stop():
+    if not _require_admin():
+        return jsonify({"ok": False, "error": "unauthorized"}), 401
+
+    results = [_run_bat_async(p) for p in ALLOWLIST["bots_stop"]]
+    return jsonify({"ok": True, "msg": "started", "action": "bots_stop", "results": results})
+
+@app.route("/api/ops/sim/start", methods=["POST"])
+def api_ops_sim_start():
+    if not _require_admin():
+        return jsonify({"ok": False, "error": "unauthorized"}), 401
+
+    results = [_run_bat_async(p) for p in ALLOWLIST["sim_start"]]
+    return jsonify({"ok": True, "msg": "started", "action": "sim_start", "results": results})
+
+@app.route("/api/ops/sim/stop", methods=["POST"])
+def api_ops_sim_stop():
+    if not _require_admin():
+        return jsonify({"ok": False, "error": "unauthorized"}), 401
+
+    results = [_run_bat_async(p) for p in ALLOWLIST["sim_stop"]]
+    return jsonify({"ok": True, "msg": "started", "action": "sim_stop", "results": results})
+# ============================================================
+# 🎭 1) Emotion Engine
+# ============================================================
+class EmotionEngine:
+    """감정 기반 이미지 및 페르소나 관리"""
+
+    def __init__(self):
+        self.personas = {}
+        self.current_emotion = "neutral"
+        self.emotion_history = []
+        self.load_personas()
+
+    def load_personas(self):
+        persona_file = os.path.join(PERSONAS_DIR, "emay_persona.json")
+        if os.path.exists(persona_file):
+            try:
+                with open(persona_file, "r", encoding="utf-8") as f:
+                    self.personas = json.load(f)
+                print(f"✅ 페르소나 로드 완료: {len(self.personas)}개")
+                return
+            except Exception as e:
+                print(f"⚠️ 페르소나 로드 실패: {e}")
+
+        self._create_default_persona()
+
+    def _create_default_persona(self):
+        self.personas = {
+            "default": {
+                "name": "Lee May",
+                "personality": "친근하고 따뜻한 친구",
+                "tone": "반말, 이모지 사용",
+                "traits": ["공감능력", "긍정적", "유머러스"]
+            }
+        }
+        persona_file = os.path.join(PERSONAS_DIR, "emay_persona.json")
+        try:
+            with open(persona_file, "w", encoding="utf-8") as f:
+                json.dump(self.personas, f, ensure_ascii=False, indent=2)
+            print("✅ 기본 페르소나 생성 완료")
+        except Exception as e:
+            print(f"⚠️ 기본 페르소나 저장 실패: {e}")
+
+    def analyze_emotion(self, message: str) -> dict:
+        emotion = detect_emotion(message)
+        self.current_emotion = emotion
+        self.emotion_history.append({
+            "emotion": emotion,
+            "timestamp": datetime.now().isoformat(),
+            "message": message[:50]
+        })
+        if len(self.emotion_history) > 10:
+            self.emotion_history = self.emotion_history[-10:]
+
+        return {
+            "emotion": emotion,
+            "image_path": f"/image/{emotion}",
+            "confidence": self._calculate_confidence(message, emotion)
+        }
+
+    def _calculate_confidence(self, message: str, emotion: str) -> float:
+        keywords = EMOTION_KEYWORDS.get(emotion, [])
+        msg = (message or "").lower()
+        matches = sum(1 for kw in keywords if kw in msg)
+        return min(matches / max(len(keywords), 1), 1.0) * 100
+
+# ============================================================
+# 📚 2) Knowledge RAG
+# ============================================================
+class KnowledgeRAG:
+    """유튜브 자막 추출 및 지식 저장"""
+
+    def __init__(self):
+        self.knowledge_base = {}
+        self.lock = threading.Lock()  # ✅ 동시 저장 보호
+        self.load_knowledge()
+
+    def load_knowledge(self):
+        kb_file = os.path.join(KNOWLEDGE_DIR, "knowledge_base.json")
+        if os.path.exists(kb_file):
+            try:
+                with open(kb_file, "r", encoding="utf-8") as f:
+                    self.knowledge_base = json.load(f)
+                print(f"✅ 지식 베이스 로드: {len(self.knowledge_base)}개")
+            except Exception as e:
+                print(f"⚠️ 지식 베이스 로드 실패: {e}")
+
+    def save_knowledge(self):
+        kb_file = os.path.join(KNOWLEDGE_DIR, "knowledge_base.json")
+        with self.lock:
+            with open(kb_file, "w", encoding="utf-8") as f:
+                json.dump(self.knowledge_base, f, ensure_ascii=False, indent=2)
+
+    def extract_youtube_id(self, url: str) -> str:
+        if not YOUTUBE_AVAILABLE:
+            return None
+        if not url:
+            return None
+
+        patterns = [
+            r"(?:v=|\/)([0-9A-Za-z_-]{11}).*",
+            r"(?:embed\/)([0-9A-Za-z_-]{11})",
+            r"(?:youtu\.be\/)([0-9A-Za-z_-]{11})",
+            r"^([0-9A-Za-z_-]{11})$"
+        ]
+        for pattern in patterns:
+            m = re.search(pattern, url)
+            if m:
+                return m.group(1)
+        return None
+
+    def learn_from_youtube(self, url: str) -> dict:
+        if not YOUTUBE_AVAILABLE:
+            return {"success": False, "error": "YouTube API 미설치"}
+
+        video_id = self.extract_youtube_id(url)
+        if not video_id:
+            return {"success": False, "error": "올바른 유튜브 URL이 아닙니다"}
+
+        try:
+            # 자막 가져오기 (ko 우선, 실패 시 en)
+            try:
+                transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=["ko"])
+                language = "한국어"
+            except Exception:
+                transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=["en"])
+                language = "영어"
+
+            full_text = " ".join([t.get("text", "") for t in transcript]).strip()
+            if not full_text:
+                return {"success": False, "error": "자막 텍스트가 비어있습니다"}
+
+            self.knowledge_base[video_id] = {
+                "url": url,
+                "language": language,
+                "text": full_text,
+                "length": len(full_text),
+                "timestamp": datetime.now().isoformat(),
+                "summary": full_text[:500]
+            }
+            self.save_knowledge()
+
+            return {
+                "success": True,
+                "video_id": video_id,
+                "language": language,
+                "length": len(full_text),
+                "summary": full_text[:500]
+            }
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def search_knowledge(self, query: str) -> list:
+        if not query:
+            return []
+        results = []
+        q = query.lower()
+
+        for video_id, data in self.knowledge_base.items():
+            txt = (data.get("text") or "").lower()
+            if q in txt:
+                results.append({
+                    "video_id": video_id,
+                    "url": data.get("url"),
+                    "summary": data.get("summary"),
+                    "timestamp": data.get("timestamp")
+                })
+        return results
+
+# ============================================================
+# 📊 3) Live Telemetry
+# ============================================================
+class LiveTelemetry:
+    """실시간 시스템 및 트레이딩 데이터"""
+
+    def __init__(self):
+        self.trading_data = {
+            "balance": 1000000,
+            "profit": 0,
+            "trades": 0
+        }
+
+    def get_system_stats(self) -> dict:
+        try:
+            cpu_percent = psutil.cpu_percent(interval=0.1)
+            memory = psutil.virtual_memory()
+            # ✅ Windows 안전: BASE_DIR 기준으로 디스크 사용량
+            disk = psutil.disk_usage(BASE_DIR)
+
+            return {
+                "cpu": round(cpu_percent, 1),
+                "memory": round(memory.percent, 1),
+                "disk": round(disk.percent, 1),
+                "timestamp": datetime.now().isoformat()
+            }
+        except Exception as e:
+            return {"error": str(e)}
+
+    def get_trading_stats(self) -> dict:
+        bal = float(self.trading_data["balance"] or 1)
+        prof = float(self.trading_data["profit"] or 0)
+        return {
+            "balance": bal,
+            "profit": prof,
+            "profit_rate": (prof / bal) * 100.0,
+            "trades_today": int(self.trading_data["trades"] or 0),
+            "status": "running"
+        }
+
+# ============================================================
+# 🔗 4) Central Command
+# ============================================================
+class CentralCommand:
+    """모든 봇의 중앙 관리"""
+
+    def __init__(self):
+        self.bots = {
+            "leemay_api": {"running": True, "pid": os.getpid()},
+            "cloudflared": {"running": False, "pid": None},
+            "youtube_learner": {"running": False, "pid": None},
+        }
+
+    def check_bot_status(self, bot_name: str) -> dict:
+        if bot_name == "leemay_api":
+            return {"running": True, "pid": os.getpid()}
+
+        if bot_name == "cloudflared":
+            for proc in psutil.process_iter(["pid", "name"]):
+                try:
+                    name = (proc.info.get("name") or "").lower()
+                    if "cloudflared" in name:
+                        return {"running": True, "pid": proc.info.get("pid")}
+                except:
+                    pass
+            return {"running": False, "pid": None}
+
+        # 다른 봇들은 추후 실제 PID 추적/상태 연동 가능
+        return {"running": False, "pid": None}
+
+    def self_diagnose(self) -> dict:
+        modules_status = {
+            "EmayBrain": EMAY_AVAILABLE,
+            "YouTube": YOUTUBE_AVAILABLE,
+            "psutil": True,
+            "Flask": True
+        }
+        health = "healthy" if all(modules_status.values()) else "degraded"
+        return {
+            "timestamp": datetime.now().isoformat(),
+            "modules": modules_status,
+            "health": health
+        }
+
+# ============================================================
+# 🚀 글로벌 인스턴스 생성
+# ============================================================
+emotion_engine = EmotionEngine()
+knowledge_rag = KnowledgeRAG()
+live_telemetry = LiveTelemetry()
+central_command = CentralCommand()
+
+# Emay Brain 초기화
+emay_brain = None
+if EMAY_AVAILABLE:
+    try:
+        emay_brain = EmayBrain()
+        print("✅ Emay Brain 초기화 완료")
+    except Exception as e:
+        print(f"⚠️ Emay Brain 초기화 실패: {e}")
+        emay_brain = None
+
+# ============================================================
+# 🌐 API 라우트
+# ============================================================
+@app.route("/")
+def index():
+    """
+    대시보드:
+    - web/index.html 있으면 그거
+    - 없으면 web/dashboard.html
+    """
+    index_path = os.path.join(WEB_DIR, "index.html")
+    dash_path = os.path.join(WEB_DIR, "dashboard.html")
+    if os.path.exists(index_path):
+        return send_from_directory(WEB_DIR, "index.html")
+    if os.path.exists(dash_path):
+        return send_from_directory(WEB_DIR, "dashboard.html")
+    return jsonify({"error": "UI file not found (web/index.html or web/dashboard.html)"}), 404
+
+@app.route("/health", methods=["GET"])
+def health():
+    return jsonify({
+        "status": "healthy",
+        "timestamp": datetime.now().isoformat(),
+        "modules": {
+            "EmayBrain": EMAY_AVAILABLE,
+            "YouTube": YOUTUBE_AVAILABLE
+        }
+    }), 200
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 🎭 Emotion / Chat API
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+@app.route("/chat", methods=["POST"])
+def chat():
+    try:
+        data = request.get_json(force=True, silent=True) or {}
+        message = (data.get("message") or "").strip()
+        user_id = (data.get("user_id") or "web_user").strip()
+
+        if not message:
+            return jsonify({"error": "메시지가 필요합니다"}), 400
+
+        emotion_result = emotion_engine.analyze_emotion(message)
+
+        if emay_brain:
+            try:
+                response_text = emay_brain.chat(user_id, message)
+            except Exception:
+                response_text = "안녕! 나는 Lee May야! 😊 무엇을 도와줄까?"
+        else:
+            response_text = "안녕! 나는 Lee May야! 😊 무엇을 도와줄까?"
+
+        # ✅ 프론트 호환: reply/response 둘 다 제공
+        return jsonify({
+            "reply": response_text,
+            "response": response_text,
+            "emotion": emotion_result.get("emotion", "neutral"),
+            "image_url": emotion_result.get("image_path", "/image/neutral"),
+            "confidence": emotion_result.get("confidence", 0.0)
+        }), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/image/<emotion>", methods=["GET"])
+def get_emotion_image(emotion):
+    try:
+        image_path = get_emotion_image_path(emotion)
+        if os.path.exists(image_path):
+            return send_file(image_path, mimetype="image/png")
+
+        neutral_path = get_emotion_image_path("neutral")
+        if os.path.exists(neutral_path):
+            return send_file(neutral_path, mimetype="image/png")
+
+        return jsonify({"error": "Image not found"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/emotions", methods=["GET"])
+def list_emotions():
+    emotions = list((EMOTION_KEYWORDS or {}).keys())
+    return jsonify({"emotions": emotions, "count": len(emotions)}), 200
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 📚 Knowledge RAG API
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+@app.route("/api/learning/youtube", methods=["POST"])
+def learn_youtube():
+    try:
+        data = request.get_json(force=True, silent=True) or {}
+        url = (data.get("url") or "").strip()
+        if not url:
+            return jsonify({"success": False, "error": "URL이 필요합니다"}), 400
+        result = knowledge_rag.learn_from_youtube(url)
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route("/api/knowledge/search", methods=["POST"])
+def api_search_knowledge():
+    try:
+        data = request.get_json(force=True, silent=True) or {}
+        query = (data.get("query") or "").strip()
+        results = knowledge_rag.search_knowledge(query)
+        return jsonify({"results": results, "count": len(results)}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/knowledge/list", methods=["GET"])
+def api_list_knowledge():
+    items = []
+    for video_id, data in knowledge_rag.knowledge_base.items():
+        items.append({
+            "video_id": video_id,
+            "url": data.get("url"),
+            "language": data.get("language"),
+            "length": data.get("length"),
+            "timestamp": data.get("timestamp")
+        })
+    return jsonify({"knowledge": items, "count": len(items)}), 200
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 📊 Telemetry API
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+@app.route("/api/system/status", methods=["GET"])
+def system_status():
+    stats = live_telemetry.get_system_stats()
+    return jsonify(stats), 200
+
+@app.route("/api/trading/status", methods=["GET"])
+def trading_status():
+    stats = live_telemetry.get_trading_stats()
+    return jsonify(stats), 200
+
+@app.route("/api/stats", methods=["GET"])
+def get_stats():
+    return jsonify({
+        "leemay": {
+            "emotion_expression": 85,
+            "conversation_understanding": 72,
+            "memory": 90,
+            "humor": 45,
+            "empathy": 68
+        }
+    }), 200
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 🔗 Central Command API
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+@app.route("/api/bots/status", methods=["GET"])
+def bots_status():
+    status = {}
+    for bot_name in central_command.bots.keys():
+        status[bot_name] = central_command.check_bot_status(bot_name)
+    return jsonify(status), 200
+
+@app.route("/api/system/diagnose", methods=["GET"])
+def system_diagnose():
+    diagnosis = central_command.self_diagnose()
+    return jsonify(diagnosis), 200
+
+# ============================================================
+# 🚀 서버 시작
+# ============================================================
+if __name__ == "__main__":
+    print("=" * 70)
+    print("🤖 LEE MAY TRAINING CENTER - INTEGRATED API SERVER")
+    print("=" * 70)
+    print()
+    print("📍 서버 주소:")
+    print("   로컬:  http://localhost:5001")
+    print("   외부:  https://leemay.thetheunique.com")
+    print()
+    print("🎭 통합 모듈:")
+    print("   ✅ Emotion Engine (감정/이미지)")
+    print(f"   {'✅' if YOUTUBE_AVAILABLE else '⚠️ '} Knowledge RAG (유튜브 학습)")
+    print("   ✅ Live Telemetry (실시간 모니터링)")
+    print("   ✅ Central Command (봇 관리)")
+    print("   ✅ OPS API (Allowlist + Admin Key)")
+    print()
+    print("🔗 주요 엔드포인트:")
+    print("   GET  /                 - UI")
+    print("   GET  /health           - 헬스체크")
+    print("   POST /chat             - 채팅")
+    print("   GET  /image/<emotion>  - 감정 이미지")
+    print("   POST /api/learning/youtube     - 유튜브 학습")
+    print("   GET  /api/system/status        - 시스템 상태")
+    print("   GET  /api/bots/status          - 봇 상태")
+    print("   GET  /api/system/diagnose      - 자가 진단")
+    print("   GET  /api/ops/status           - OPS 상태")
+    print("   POST /api/ops/control/start    - CONTROL 시작(allowlist)")
+    print("   POST /api/ops/bots/start       - BOTS 시작(allowlist)")
+    print("   POST /api/ops/bots/stop        - BOTS 정지(allowlist)")
+    print()
+
+    # ✅ 운영 안전값: debug=False, reloader=False
+    app.run(host="0.0.0.0", port=5001, debug=False, use_reloader=False)
