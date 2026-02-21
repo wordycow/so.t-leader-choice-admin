@@ -1,0 +1,84 @@
+# -*- coding: utf-8 -*-
+import os, json, subprocess
+from datetime import datetime
+from pathlib import Path
+
+BASE = r"C:\leemay_project"
+VERSION_PATH = os.path.join(BASE, "data", "version.json")
+CHANGELOG = os.path.join(BASE, "CHANGELOG.md")
+NOTE_PATH = os.path.join(BASE, "data", "pending_update_note.txt")
+
+def now():
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+def run(cmd):
+    return subprocess.check_output(cmd, cwd=BASE, shell=True, text=True).strip()
+
+def load_version():
+    with open(VERSION_PATH, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+def save_version(v):
+    with open(VERSION_PATH, "w", encoding="utf-8") as f:
+        json.dump(v, f, ensure_ascii=False, indent=2)
+
+def read_note():
+    if os.path.exists(NOTE_PATH):
+        with open(NOTE_PATH, "r", encoding="utf-8") as f:
+            note = f.read().strip()
+        try:
+            os.remove(NOTE_PATH)
+        except:
+            pass
+        return note
+    return ""
+
+def version_str(v):
+    # version_int: 331 -> "3.31"
+    prefix = str(v.get("version_prefix", "3")).strip()
+    vi = int(v["version_int"])
+    minor = vi % 100
+    return f"{prefix}.{minor:02d}"
+
+def main():
+    Path(os.path.dirname(VERSION_PATH)).mkdir(parents=True, exist_ok=True)
+    Path(os.path.dirname(CHANGELOG)).mkdir(parents=True, exist_ok=True)
+
+    v = load_version()
+    note = read_note() or "업데이트 메모 없음"
+
+    v["version_int"] = int(v["version_int"]) + 1
+    v["updated_at"] = now()
+
+    new_ver = version_str(v)
+
+    # git commit hash
+    try:
+        commit = run("git rev-parse --short HEAD")
+    except:
+        commit = ""
+    v["git_commit"] = commit
+    v["last_note"] = note
+    save_version(v)
+
+    # changelog append
+    if not os.path.exists(CHANGELOG):
+        with open(CHANGELOG, "w", encoding="utf-8") as f:
+            f.write("# CHANGELOG\n\n")
+
+    with open(CHANGELOG, "a", encoding="utf-8") as f:
+        f.write(f"## v{new_ver} - {v['updated_at']}\n")
+        f.write(f"- {note}\n\n")
+
+    # git add/commit/tag
+    try:
+        run("git add data/version.json CHANGELOG.md")
+        run(f'git commit -m "chore: bump version to v{new_ver}"')
+        run(f"git tag v{new_ver}")
+        print(f"[OK] bumped to v{new_ver}")
+    except Exception as e:
+        print("[WARN] git commit/tag skipped:", e)
+        print(f"[OK] bumped to v{new_ver} (local only)")
+
+if __name__ == "__main__":
+    main()

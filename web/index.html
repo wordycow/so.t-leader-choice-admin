@@ -1,392 +1,277 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lee May OPS Control</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 800px;
-            width: 100%;
-            padding: 40px;
-        }
-        
-        h1 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 2.5em;
-        }
-        
-        .subtitle {
-            color: #666;
-            margin-bottom: 40px;
-            font-size: 1.1em;
-        }
-        
-        .status-panel {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 25px;
-            margin-bottom: 30px;
-        }
-        
-        .status-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        
-        .status-item:last-child {
-            border-bottom: none;
-        }
-        
-        .status-label {
-            font-weight: 600;
-            color: #555;
-        }
-        
-        .status-value {
-            font-weight: 700;
-            padding: 5px 15px;
-            border-radius: 5px;
-            font-size: 0.9em;
-        }
-        
-        .status-ok {
-            background: #d4edda;
-            color: #155724;
-        }
-        
-        .status-warn {
-            background: #fff3cd;
-            color: #856404;
-        }
-        
-        .status-fail {
-            background: #f8d7da;
-            color: #721c24;
-        }
-        
-        .grade-display {
-            text-align: center;
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 10px;
-            margin-bottom: 30px;
-        }
-        
-        .grade-display h2 {
-            font-size: 3em;
-            margin-bottom: 10px;
-        }
-        
-        .grade-display p {
-            font-size: 1.2em;
-            opacity: 0.9;
-        }
-        
-        .controls {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 30px;
-        }
-        
-        .btn {
-            padding: 15px 20px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: white;
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        .btn:active {
-            transform: translateY(0);
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        
-        .btn-success {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        }
-        
-        .btn-danger {
-            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
-        }
-        
-        .btn-info {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        }
-        
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            color: #999;
-            font-size: 0.9em;
-        }
-        
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .alert {
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            display: none;
-        }
-        
-        .alert.show {
-            display: block;
-        }
-        
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LeeMay OPS Control</title>
+  <style>
+    :root{
+      --bg:#0b1120; --panel:#0f172a; --text:#e5e7eb; --muted:#94a3b8; --line:#1f2a44;
+      --ok:#22c55e; --warn:#f59e0b; --fail:#ef4444; --btn:#2563eb; --btn2:#334155;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial;color:var(--text);
+      background:radial-gradient(circle at top, #1f2a44, var(--bg) 55%);}
+    .wrap{max-width:1200px;margin:0 auto;padding:18px}
+    .top{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .brand{font-weight:900;font-size:18px}
+    .pill{padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,0.03);color:var(--muted);font-size:12px}
+    a{color:#cbd5e1;text-decoration:none}
+    a:hover{text-decoration:underline}
+    .grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
+    @media(min-width:980px){.grid{grid-template-columns: 1.1fr 0.9fr}}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border:1px solid var(--line); border-radius:16px; padding:14px; box-shadow:0 10px 30px rgba(0,0,0,0.2)}
+    .card h3{margin:0 0 10px 0;font-size:14px;color:#cbd5e1}
+    .statusGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .sbox{background:rgba(0,0,0,0.18);border:1px solid var(--line);border-radius:14px;padding:12px}
+    .slabel{font-size:12px;color:var(--muted)}
+    .sval{font-size:18px;font-weight:900;margin-top:6px}
+    .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:middle}
+    .ok{background:var(--ok)} .warn{background:var(--warn)} .fail{background:var(--fail)}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    input{background:rgba(255,255,255,0.04);border:1px solid var(--line);color:var(--text);
+      padding:10px 12px;border-radius:12px;outline:none}
+    button{background:var(--btn); color:white; border:0; padding:10px 12px; border-radius:12px; cursor:pointer; font-weight:800}
+    button.secondary{background:var(--btn2)}
+    button.danger{background:var(--fail)}
+    button:disabled{opacity:0.45;cursor:not-allowed}
+    .kv{margin-top:10px;font-size:12px;color:var(--muted);line-height:1.5}
+    .kv b{color:#cbd5e1}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+    .tab{background:rgba(255,255,255,0.04);border:1px solid var(--line);color:var(--text);
+      padding:8px 10px;border-radius:999px;cursor:pointer;font-size:12px}
+    .tab.active{background:rgba(37,99,235,0.25);border-color:rgba(37,99,235,0.45)}
+    pre{margin:0; padding:12px; border-radius:14px; border:1px solid var(--line);
+      background:rgba(0,0,0,0.22); color:#d1d5db; overflow:auto; max-height:420px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size:12px; line-height:1.4; white-space:pre-wrap; word-break:break-word;}
+    .toast{margin-top:10px;font-size:12px}
+    .toast.ok{color:var(--ok)} .toast.warn{color:var(--warn)} .toast.fail{color:var(--fail)}
+    .hint{font-size:12px;color:var(--muted);margin-top:8px}
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🤖 Lee May OPS</h1>
-        <p class="subtitle">Control Center Dashboard</p>
-        
-        <div id="alert" class="alert"></div>
-        
-        <div class="grade-display" id="gradeDisplay">
-            <h2 id="grade">--</h2>
-            <p id="note">시스템 상태를 확인하는 중...</p>
-        </div>
-        
-        <div class="status-panel">
-            <div class="status-item">
-                <span class="status-label">포트 5001 (API)</span>
-                <span class="status-value" id="port5001">--</span>
-            </div>
-            <div class="status-item">
-                <span class="status-label">포트 5000 (Trading)</span>
-                <span class="status-value" id="port5000">--</span>
-            </div>
-            <div class="status-item">
-                <span class="status-label">포트 11434 (Ollama)</span>
-                <span class="status-value" id="port11434">--</span>
-            </div>
-            <div class="status-item">
-                <span class="status-label">Cloudflare Tunnel</span>
-                <span class="status-value" id="cloudflared">--</span>
-            </div>
-            <div class="status-item">
-                <span class="status-label">Ollama External</span>
-                <span class="status-value" id="ollama">--</span>
-            </div>
-            <div class="status-item">
-                <span class="status-label">마지막 업데이트</span>
-                <span class="status-value" id="timestamp" style="background: #e9ecef; color: #495057;">--</span>
-            </div>
-        </div>
-        
-        <div class="controls">
-            <button class="btn btn-primary" onclick="controlStart()">
-                🚀 CONTROL 시작
-            </button>
-            <button class="btn btn-success" onclick="botsStart()">
-                🤖 BOTS 시작
-            </button>
-            <button class="btn btn-danger" onclick="botsStop()">
-                🛑 BOTS 정지
-            </button>
-            <button class="btn btn-info" onclick="refreshStatus()">
-                🔄 상태 새로고침
-            </button>
-        </div>
-        
-        <div class="footer">
-            <p>Lee May Training Center · Port 5001</p>
-            <p style="margin-top: 5px;">
-                <a href="/dashboard" style="color: #667eea; text-decoration: none;">📊 Dashboard</a> ·
-                <a href="/health" style="color: #667eea; text-decoration: none;">💚 Health</a>
-            </p>
-        </div>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">LeeMay OPS Control</div>
+    <div class="pill" id="pillApi">API: -</div>
+    <div class="pill" id="pillLast">Last: -</div>
+    <div class="pill">
+      <a href="/dashboard">Training Center</a> ·
+      <a href="/health">Health(JSON)</a> ·
+      <a href="/health-ui">Health(UI)</a>
     </div>
-    
-    <script>
-        // API Base URL
-        const API_BASE = window.location.origin;
-        
-        // Show alert
-        function showAlert(message, type = 'success') {
-            const alert = document.getElementById('alert');
-            alert.className = `alert alert-${type} show`;
-            alert.textContent = message;
-            setTimeout(() => {
-                alert.className = 'alert';
-            }, 5000);
-        }
-        
-        // Refresh status
-        async function refreshStatus() {
-            try {
-                const response = await fetch(`${API_BASE}/api/ops/status`);
-                const data = await response.json();
-                
-                // Update grade
-                document.getElementById('grade').textContent = data.grade;
-                document.getElementById('note').textContent = data.note;
-                
-                // Update grade display color
-                const gradeDisplay = document.getElementById('gradeDisplay');
-                if (data.grade === 'OK') {
-                    gradeDisplay.style.background = 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)';
-                } else if (data.grade === 'WARN') {
-                    gradeDisplay.style.background = 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)';
-                } else {
-                    gradeDisplay.style.background = 'linear-gradient(135deg, #eb3349 0%, #f45c43 100%)';
-                }
-                
-                // Update ports
-                document.getElementById('port5001').textContent = data.ports['5001'] ? '✓ OPEN' : '✗ CLOSED';
-                document.getElementById('port5001').className = `status-value ${data.ports['5001'] ? 'status-ok' : 'status-fail'}`;
-                
-                document.getElementById('port5000').textContent = data.ports['5000'] ? '✓ OPEN' : '✗ CLOSED';
-                document.getElementById('port5000').className = `status-value ${data.ports['5000'] ? 'status-ok' : 'status-fail'}`;
-                
-                document.getElementById('port11434').textContent = data.ports['11434'] ? '✓ OPEN' : '✗ CLOSED';
-                document.getElementById('port11434').className = `status-value ${data.ports['11434'] ? 'status-ok' : 'status-fail'}`;
-                
-                // Update processes
-                document.getElementById('cloudflared').textContent = data.process.cloudflared ? '✓ RUNNING' : '✗ STOPPED';
-                document.getElementById('cloudflared').className = `status-value ${data.process.cloudflared ? 'status-ok' : 'status-fail'}`;
-                
-                document.getElementById('ollama').textContent = data.process.ollama ? '✓ CONNECTED' : '✗ DISCONNECTED';
-                document.getElementById('ollama').className = `status-value ${data.process.ollama ? 'status-ok' : 'status-fail'}`;
-                
-                // Update timestamp
-                const timestamp = new Date(data.timestamp).toLocaleString('ko-KR');
-                document.getElementById('timestamp').textContent = timestamp;
-                
-            } catch (error) {
-                console.error('Status refresh error:', error);
-                showAlert('상태 조회 실패: ' + error.message, 'error');
-            }
-        }
-        
-        // Control start
-        async function controlStart() {
-            try {
-                const response = await fetch(`${API_BASE}/api/ops/control/start`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
-                });
-                const data = await response.json();
-                
-                if (data.ok) {
-                    showAlert('✅ CONTROL 시작 명령이 실행되었습니다.', 'success');
-                    setTimeout(refreshStatus, 2000);
-                } else {
-                    showAlert('❌ CONTROL 시작 실패: ' + data.msg, 'error');
-                }
-            } catch (error) {
-                console.error('Control start error:', error);
-                showAlert('❌ 요청 실패: ' + error.message, 'error');
-            }
-        }
-        
-        // Bots start
-        async function botsStart() {
-            try {
-                const response = await fetch(`${API_BASE}/api/ops/bots/start`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
-                });
-                const data = await response.json();
-                
-                if (data.ok) {
-                    showAlert('✅ BOTS 시작 명령이 실행되었습니다.', 'success');
-                    setTimeout(refreshStatus, 2000);
-                } else {
-                    showAlert('❌ BOTS 시작 실패: ' + data.msg, 'error');
-                }
-            } catch (error) {
-                console.error('Bots start error:', error);
-                showAlert('❌ 요청 실패: ' + error.message, 'error');
-            }
-        }
-        
-        // Bots stop
-        async function botsStop() {
-            try {
-                const response = await fetch(`${API_BASE}/api/ops/bots/stop`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
-                });
-                const data = await response.json();
-                
-                if (data.ok) {
-                    showAlert('✅ BOTS 정지 명령이 실행되었습니다.', 'success');
-                    setTimeout(refreshStatus, 2000);
-                } else {
-                    showAlert('❌ BOTS 정지 실패: ' + data.msg, 'error');
-                }
-            } catch (error) {
-                console.error('Bots stop error:', error);
-                showAlert('❌ 요청 실패: ' + error.message, 'error');
-            }
-        }
-        
-        // Auto refresh every 10 seconds
-        setInterval(refreshStatus, 10000);
-        
-        // Initial load
-        refreshStatus();
-    </script>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>상태</h3>
+      <div class="statusGrid">
+        <div class="sbox"><div class="slabel">Port 5001 (OPS)</div><div class="sval" id="p5001">-</div></div>
+        <div class="sbox"><div class="slabel">Port 5000 (BOT)</div><div class="sval" id="p5000">-</div></div>
+        <div class="sbox"><div class="slabel">Port 11434 (Ollama)</div><div class="sval" id="p11434">-</div></div>
+      </div>
+
+      <div class="kv" id="kvMeta">
+        <div><b>uptime</b>: -</div>
+        <div><b>ai_log</b>: -</div>
+        <div><b>ops_log</b>: -</div>
+      </div>
+
+      <hr style="border:0;border-top:1px solid var(--line);margin:12px 0">
+
+      <h3>컨트롤</h3>
+      <div class="row">
+        <input id="adminKey" placeholder="Admin Key (예: 1106)" style="min-width:280px" />
+        <button class="secondary" id="btnSaveKey">키 저장</button>
+      </div>
+
+      <div class="row" style="margin-top:10px">
+        <button id="btnRefresh" class="secondary">상태 새로고침</button>
+        <button id="btnAuto" class="secondary">AUTO: ON</button>
+        <button id="btnControlStart" class="secondary">CONTROL START</button>
+      </div>
+
+      <div class="row" style="margin-top:10px">
+        <button id="btnBotsStart">BOTS START</button>
+        <button id="btnBotsStop" class="danger">BOTS STOP</button>
+        <button id="btnToggle" class="secondary">TOGGLE (STOP→START)</button>
+      </div>
+
+      <div class="toast" id="toast"></div>
+      <div class="hint">
+        ✅ 버튼 멱등(Already running) / 실패하면 로그 경로(ops_log, ai_log)로 즉시 추적<br>
+        ⚠️ 요청 중 버튼 잠금(더블클릭 방지)
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>로그 뷰어</h3>
+      <div class="tabs">
+        <button class="tab active" data-tab="ops_api">ops_api.log</button>
+        <button class="tab" data-tab="bots_start">bots_start_last.log</button>
+        <button class="tab" data-tab="ai_latest">ai_trading 최신</button>
+      </div>
+
+      <div class="row" style="margin-bottom:10px">
+        <input id="lines" type="number" min="20" max="2000" value="200" style="width:120px" />
+        <button class="secondary" id="btnLoadLog">로그 불러오기</button>
+        <button class="secondary" id="btnClear">화면 지우기</button>
+      </div>
+
+      <pre id="logArea">로그를 불러오려면 “로그 불러오기”를 누르세요.</pre>
+      <div class="hint" id="logHint">log: -</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // GitHub Pages나 file://로 열어도 로컬 5001로 붙게 처리
+  const API = (location.hostname.endsWith("github.io") || location.protocol === "file:")
+    ? "http://127.0.0.1:5001"
+    : location.origin;
+
+  const $ = (id) => document.getElementById(id);
+  const state = { auto:true, tab:"ops_api", lock:false };
+
+  function headers() {
+    const key = ($("adminKey").value || "").trim();
+    return {
+      "Content-Type":"application/json",
+      "X-Admin-Key": key,
+      "X-ADMIN-TOKEN": key
+    };
+  }
+
+  function setToast(msg, level="") {
+    const t = $("toast");
+    t.className = "toast " + (level || "");
+    t.textContent = msg || "";
+  }
+  function lock(on){
+    state.lock = on;
+    ["btnRefresh","btnControlStart","btnBotsStart","btnBotsStop","btnToggle","btnLoadLog"].forEach(id=>{
+      const el=$(id); if(el) el.disabled=on;
+    });
+  }
+  function fmt(ok){
+    if(ok===true) return `<span class="dot ok"></span>ON`;
+    if(ok===false) return `<span class="dot fail"></span>OFF`;
+    return `<span class="dot warn"></span>-`;
+  }
+  async function fetchJSON(path, opts={}){
+    const res = await fetch(API+path, opts);
+    const text = await res.text();
+    let data=null; try{ data=JSON.parse(text);}catch(e){}
+    return {ok:res.ok, status:res.status, data, text};
+  }
+
+  async function refreshStatus(silent=false){
+    const r = await fetchJSON("/api/ops/status");
+    if(!r.ok){
+      if(!silent) setToast(`status 실패 HTTP ${r.status}`, "fail");
+      return;
+    }
+    const ports = (r.data && r.data.ports) ? r.data.ports : {};
+    $("p5001").innerHTML = fmt(ports["5001"]);
+    $("p5000").innerHTML = fmt(ports["5000"]);
+    $("p11434").innerHTML = fmt(ports["11434"]);
+
+    $("pillApi").textContent = "API: " + API;
+    $("pillLast").textContent = "Last: " + (r.data.timestamp || r.data.ts || new Date().toISOString());
+
+    $("kvMeta").innerHTML =
+      `<div><b>uptime</b>: ${(r.data.uptime ?? r.data.uptime_sec ?? "-")}</div>`+
+      `<div><b>ai_log</b>: ${(r.data.ai_log ?? "-")}</div>`+
+      `<div><b>ops_log</b>: ${(r.data.ops_log ?? "logs/bots_start_last.log")}</div>`;
+
+    if(!silent) setToast("상태 갱신 완료", "ok");
+  }
+
+  async function post(path, body=null){
+    lock(true);
+    try{
+      const r = await fetchJSON(path, {method:"POST", headers:headers(), body: body?JSON.stringify(body):null});
+      if(!r.ok){
+        setToast(`실패: ${path} (HTTP ${r.status}) ${r.text}`, "fail");
+        return null;
+      }
+      return r.data;
+    } finally { lock(false); }
+  }
+
+  async function controlStart(){
+    const d = await post("/api/ops/control/start");
+    setToast("CONTROL START 요청 완료", "ok");
+    await refreshStatus(true);
+    return d;
+  }
+  async function botsStart(){
+    const d = await post("/api/ops/bots/start");
+    if(d){
+      setToast(`BOTS START: port_active=${d.port_active ?? d.ok} / ops_log=${d.ops_log||"-"} / ai_log=${d.ai_log||"-"}`, (d.port_active||d.ok)?"ok":"warn");
+    }
+    await refreshStatus(true);
+    return d;
+  }
+  async function botsStop(){
+    const d = await post("/api/ops/bots/stop");
+    setToast("BOTS STOP 요청 완료", "warn");
+    await refreshStatus(true);
+    return d;
+  }
+  async function toggle(){
+    lock(true);
+    try{
+      await post("/api/ops/bots/stop");
+      await new Promise(r=>setTimeout(r,500));
+      await post("/api/ops/bots/start");
+      setToast("TOGGLE 완료(Stop→Start)", "ok");
+      await refreshStatus(true);
+    } finally { lock(false); }
+  }
+
+  async function loadLog(){
+    const lines = Math.max(20, Math.min(2000, parseInt($("lines").value||"200",10)));
+    const name = state.tab;
+    lock(true);
+    try{
+      const r = await fetchJSON(`/api/ops/log/tail?name=${encodeURIComponent(name)}&lines=${lines}`, {headers:headers()});
+      if(!r.ok){
+        $("logArea").textContent = `로그 실패(HTTP ${r.status})\n` + r.text;
+        $("logHint").textContent = "log: -";
+        setToast("로그 불러오기 실패", "fail");
+        return;
+      }
+      $("logArea").textContent = (r.data.lines || []).join("") || "(empty)";
+      $("logHint").textContent = "log: " + (r.data.path || "-");
+      setToast("로그 로드 완료", "ok");
+    } finally { lock(false); }
+  }
+
+  function setTab(tab){
+    state.tab = tab;
+    document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active", b.dataset.tab===tab));
+    loadLog().catch(()=>{});
+  }
+
+  $("btnSaveKey").onclick = ()=>{ localStorage.setItem("leemay_admin_key", ($("adminKey").value||"").trim()); setToast("키 저장됨", "ok"); };
+  $("btnRefresh").onclick = ()=>refreshStatus(false);
+  $("btnAuto").onclick = ()=>{ state.auto=!state.auto; $("btnAuto").textContent = "AUTO: " + (state.auto?"ON":"OFF"); setToast("AUTO " + (state.auto?"ON":"OFF"), "warn"); };
+  $("btnControlStart").onclick = ()=>controlStart();
+  $("btnBotsStart").onclick = ()=>botsStart();
+  $("btnBotsStop").onclick = ()=>botsStop();
+  $("btnToggle").onclick = ()=>toggle();
+  $("btnLoadLog").onclick = ()=>loadLog();
+  $("btnClear").onclick = ()=>{ $("logArea").textContent=""; setToast("화면 지움", "warn"); };
+
+  document.querySelectorAll(".tab").forEach(b=>b.onclick = ()=>setTab(b.dataset.tab));
+
+  $("adminKey").value = localStorage.getItem("leemay_admin_key") || "1106";
+  refreshStatus(true).catch(()=>{});
+  setTab("ops_api");
+  setInterval(()=>{ if(state.auto) refreshStatus(true).catch(()=>{}); }, 1500);
+</script>
 </body>
 </html>

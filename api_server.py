@@ -1,43 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-🤖 Lee May Training Center - API Server (Full Version)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-유송(wordycow) 시스템 방향에 맞춘 "운영 가능한" 풀버전:
+🤖 Lee May Training Center - API Server (v3.3.1 ULTIMATE - CLEAN FULL)
 
-✅ (1) 관리자 인증/권한
-    - 헤더 토큰(X-ADMIN-TOKEN) + 세션 로그인(/api/auth/login) 둘 다 지원
-    - 위험 API(트레이딩 실행/봇 제어/감사로그 열람)는 관리자만
-
-✅ (2) 감사(Audit) 로그
-    - 관리자 페이지 버튼 클릭 기록 저장
-    - 관리자 페이지에서 "기록을 열어봤는지"(history/audit 열람) 자동 기록
-
-✅ (3) RealSimTrading (실전형 시뮬)
-    - 수수료 0.05% 적용
-    - 잔고/포지션 DB 영구 저장(재시작해도 유지)
-    - upbit_bot.db와 분리된 sim_trading.db 사용(기본)
-
-✅ (4) Emotion + Image
-    - C:\leemay_project\leemay\images (JPG) 제공
-
-✅ (5) Live Telemetry
-    - psutil 기반 실제 CPU/RAM/Disk
-
-✅ (6) Learning Jobs (유튜브 학습) - 운영 뼈대
-    - start/status/logs/stats 제공
-    - 실제 학습은 외부 스크립트 연결 가능(YT_LEARNER_CMD 환경변수)
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-환경변수(권장):
-- ADMIN_ID=wordycow
-- ADMIN_TOKEN=임의의_긴_문자열(필수 권장)
-- SECRET_KEY=임의의_긴_문자열(세션 쿠키 서명용, 필수 권장)
-- CORS_ORIGINS=http://localhost:5000,http://127.0.0.1:5500 (필요한 프론트만)
-- IMAGES_DIR=C:\\leemay_project\\leemay\\images  (기본값 동일)
-- YT_LEARNER_CMD=python C:\\leemay_project\\leemay\\learning\\youtube_learner.py
+- OPS(배치 실행/상태/로그 tail/재시작)
+- 채팅 저장 + 감정 이미지 연동(response/emotion/image_url 고정)
+- 러닝잡(유튜브) 뼈대
+- 시뮬 트레이딩
+- 감사로그(audit)
+- ChatGPT/Gemini Import (/api/conversations/import) + imported_messages 테이블
 """
 
-from flask import Flask, request, jsonify, send_from_directory, session
+from flask import Flask, request, jsonify, send_from_directory, session, has_request_context
 from flask_cors import CORS
 import os
 import json
@@ -46,6 +19,8 @@ import time
 import sqlite3
 import threading
 import subprocess
+import glob
+import traceback
 from datetime import datetime
 from pathlib import Path
 
@@ -55,46 +30,42 @@ import psutil
 # ============================================================
 # 0) 기본 경로/환경
 # ============================================================
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+BASE_DIR = r"C:\leemay_project"
 
 DATA_DIR = os.path.join(BASE_DIR, "data")
-LOG_DIR = os.path.join(DATA_DIR, "logs")
+LOG_DIR = os.path.join(BASE_DIR, "logs")
 LEARNING_LOG_DIR = os.path.join(DATA_DIR, "learning_logs")
-WEB_DIR = os.path.join(BASE_DIR, "web")  # 웹 UI 파일 디렉토리
+OPS_DIR = os.path.join(BASE_DIR, "ops")
+WEB_DIR = os.path.join(BASE_DIR, "web")
 
-Path(DATA_DIR).mkdir(parents=True, exist_ok=True)
-Path(LOG_DIR).mkdir(parents=True, exist_ok=True)
-Path(LEARNING_LOG_DIR).mkdir(parents=True, exist_ok=True)
-Path(WEB_DIR).mkdir(parents=True, exist_ok=True)
+IMAGES_DIR = os.path.join(BASE_DIR, "leemay", "images")
 
-# 이미지 폴더(유송 PC 고정 경로 기본)
-IMAGES_DIR = os.environ.get("IMAGES_DIR", r"C:\leemay_project\leemay\images")
-
-# 서버용 DB(감사로그/러닝잡/채팅로그)
 SERVER_DB_PATH = os.path.join(DATA_DIR, "server.db")
+SIM_DB_PATH = os.path.join(DATA_DIR, "sim_trading.db")
+OPS_LOG_FILE = os.path.join(LOG_DIR, "ops_api.log")
 
-# 시뮬 트레이딩 DB(실전봇 DB와 반드시 분리 권장)
-SIM_DB_PATH = os.environ.get("SIM_DB_PATH", os.path.join(DATA_DIR, "sim_trading.db"))
+ADMIN_ID = "wordycow"
+ADMIN_TOKEN = "1106"
+SECRET_KEY = os.environ.get("SECRET_KEY", "LEEMAY_ULTIMATE_SECRET").strip()
 
-ADMIN_ID = os.environ.get("ADMIN_ID", "wordycow").strip()
-ADMIN_TOKEN = os.environ.get("ADMIN_TOKEN", "").strip()
-SECRET_KEY = os.environ.get("SECRET_KEY", "").strip()
-
-# CORS 제한(운영은 반드시 특정 origin만 허용)
-CORS_ORIGINS = os.environ.get(
-    "CORS_ORIGINS",
-    "http://localhost:5000,http://127.0.0.1:5500,http://localhost:5173"
-).split(",")
-
-# 유튜브 학습 외부 실행 커맨드(있으면 연결, 없으면 stub)
 YT_LEARNER_CMD = os.environ.get("YT_LEARNER_CMD", "").strip()
 
-# 봇 레지스트리(프로세스 감시/제어 목록)
-BOT_REGISTRY_PATH = os.path.join(DATA_DIR, "bot_registry.json")
+# ✅ 5000 기동: SAFE 배치 우선(없으면 기존으로 fallback)
+ALLOWED_OPS_SCRIPTS = {
+    "control_start": os.path.join(OPS_DIR, "01_CONTROL_START.bat"),
+    "bots_start_safe": os.path.join(OPS_DIR, "02_BOTS_START_SAFE_5000.bat"),
+    "bots_start": os.path.join(OPS_DIR, "02_BOTS_START.bat"),
+    "bots_stop": os.path.join(OPS_DIR, "03_BOTS_STOP.bat"),
+    "status": os.path.join(OPS_DIR, "99_STATUS.bat"),
+}
+
+# 폴더 자동 생성
+for d in [DATA_DIR, LOG_DIR, LEARNING_LOG_DIR, OPS_DIR, WEB_DIR, IMAGES_DIR]:
+    Path(d).mkdir(parents=True, exist_ok=True)
 
 
 # ============================================================
-# 1) 유틸
+# 1) 유틸/인증
 # ============================================================
 def now_iso() -> str:
     return datetime.now().isoformat(timespec="seconds")
@@ -109,18 +80,14 @@ def safe_json(obj) -> str:
 
 def get_client_ip() -> str:
     xf = request.headers.get("X-Forwarded-For", "")
-    if xf:
-        return xf.split(",")[0].strip()
-    return request.remote_addr or ""
+    return xf.split(",")[0].strip() if xf else (request.remote_addr or "")
 
 
 def get_user_id() -> str:
-    # 우선순위: 헤더 > body > query > session
     uid = (request.headers.get("X-USER-ID") or "").strip()
-    if not uid:
-        if request.is_json:
-            body = request.get_json(silent=True) or {}
-            uid = (body.get("user_id") or body.get("user") or "").strip()
+    if not uid and request.is_json:
+        body = request.get_json(silent=True) or {}
+        uid = (body.get("user_id") or body.get("user") or "").strip()
     if not uid:
         uid = (request.args.get("user_id") or "").strip()
     if not uid:
@@ -128,26 +95,81 @@ def get_user_id() -> str:
     return uid or "guest"
 
 
+def is_admin_request() -> bool:
+    k1 = (request.headers.get("X-Admin-Key") or "").strip()
+    k2 = (request.headers.get("X-ADMIN-TOKEN") or "").strip()
+    return (k1 == ADMIN_TOKEN) or (k2 == ADMIN_TOKEN)
+
+
 def is_admin() -> bool:
     uid = get_user_id()
-    # 1) 헤더 토큰 방식
-    token = (request.headers.get("X-ADMIN-TOKEN") or "").strip()
-    if uid == ADMIN_ID and ADMIN_TOKEN and token == ADMIN_TOKEN:
+    if uid == ADMIN_ID and is_admin_request():
         return True
-    # 2) 세션 로그인 방식
     if uid == ADMIN_ID and session.get("is_admin") is True:
         return True
     return False
 
 
-def require_admin():
-    if not is_admin():
-        return jsonify({"success": False, "error": "관리자 권한이 필요합니다."}), 403
-    return None
+def log_ops(message: str):
+    try:
+        Path(OPS_LOG_FILE).parent.mkdir(parents=True, exist_ok=True)
+        with open(OPS_LOG_FILE, "a", encoding="utf-8") as f:
+            f.write(f"[{now_iso()}] {message}\n")
+    except Exception:
+        pass
+
+
+def check_port_socket(port: int) -> bool:
+    import socket
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(0.5)
+        result = sock.connect_ex(("127.0.0.1", port))
+        sock.close()
+        return result == 0
+    except Exception:
+        return False
+
+
+def latest_ai_trading_log() -> str:
+    """
+    5000 쪽 로그 파일 후보를 최대한 넓게 잡아서 최신을 반환
+    """
+    try:
+        candidates = []
+        candidates += glob.glob(os.path.join(LOG_DIR, "ai_trading_5000_*.log"))
+        candidates += glob.glob(os.path.join(LOG_DIR, "ai_trading_5000_*stdout*.log"))
+        candidates += glob.glob(os.path.join(LOG_DIR, "ai_trading_5000_*stderr*.log"))
+        # SAFE 배치에서 쓰는 고정 파일도 고려
+        fixed1 = os.path.join(LOG_DIR, "ai_trading_5000_stdout.log")
+        fixed2 = os.path.join(LOG_DIR, "ai_trading_5000_stderr.log")
+        for fx in [fixed1, fixed2]:
+            if os.path.exists(fx):
+                candidates.append(fx)
+
+        candidates = list(set(candidates))
+        if not candidates:
+            return ""
+        candidates.sort(key=lambda p: os.path.getmtime(p))
+        return candidates[-1]
+    except Exception:
+        return ""
+
+
+def _tail_lines(path: str, n: int = 200):
+    try:
+        if not path or not os.path.exists(path):
+            return []
+        n = max(20, min(2000, int(n)))
+        with open(path, "r", encoding="utf-8", errors="ignore") as f:
+            lines = f.readlines()
+        return lines[-n:]
+    except Exception:
+        return []
 
 
 # ============================================================
-# 2) 서버 DB 초기화 (감사로그/러닝잡/채팅로그)
+# 2) 서버 DB(감사/채팅/러닝/임포트)
 # ============================================================
 def db_server_conn():
     conn = sqlite3.connect(SERVER_DB_PATH)
@@ -159,7 +181,6 @@ def init_server_db():
     conn = db_server_conn()
     cur = conn.cursor()
 
-    # 감사로그: "누가/언제/어떤 화면/어떤 버튼/어떤 API를 봤는지" 남김
     cur.execute("""
     CREATE TABLE IF NOT EXISTS audit_log (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -168,8 +189,8 @@ def init_server_db():
         is_admin INTEGER,
         ip TEXT,
         user_agent TEXT,
-        event_type TEXT,       -- API_CALL / UI_CLICK / VIEW / AUTH / BOT_CONTROL 등
-        event_name TEXT,       -- e.g. "OPEN_ADMIN_PAGE", "CLICK_STOP_BOT", "GET_TRADE_HISTORY"
+        event_type TEXT,
+        event_name TEXT,
         path TEXT,
         method TEXT,
         status_code INTEGER,
@@ -177,7 +198,6 @@ def init_server_db():
     )
     """)
 
-    # 채팅 히스토리(원하면 UI에서 불러오기 가능)
     cur.execute("""
     CREATE TABLE IF NOT EXISTS chat_history (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -189,7 +209,6 @@ def init_server_db():
     )
     """)
 
-    # 러닝 잡(유튜브 학습 등) 상태 관리
     cur.execute("""
     CREATE TABLE IF NOT EXISTS learning_jobs (
         id TEXT PRIMARY KEY,
@@ -197,11 +216,25 @@ def init_server_db():
         ts_started TEXT,
         ts_finished TEXT,
         created_by TEXT,
-        job_type TEXT,          -- "youtube"
-        payload_json TEXT,      -- {"url": "..."}
-        status TEXT,            -- created/running/done/error/stubbed
+        job_type TEXT,
+        payload_json TEXT,
+        status TEXT,
         log_path TEXT,
         result_json TEXT
+    )
+    """)
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS imported_messages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        ts TEXT,
+        source TEXT,
+        conversation_id TEXT,
+        conversation_url TEXT,
+        role TEXT,
+        content TEXT,
+        content_hash TEXT,
+        raw_json TEXT
     )
     """)
 
@@ -210,41 +243,45 @@ def init_server_db():
 
 
 def audit(event_type: str, event_name: str, status_code: int = 200, payload=None):
-    # 이미지/헬스체크는 스킵
+    if not has_request_context():
+        return
     path = request.path or ""
     if path.startswith("/image/") or path == "/health":
         return
 
-    conn = db_server_conn()
-    cur = conn.cursor()
-    cur.execute("""
-        INSERT INTO audit_log
-        (ts, user_id, is_admin, ip, user_agent, event_type, event_name, path, method, status_code, payload_json)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (
-        now_iso(),
-        get_user_id(),
-        1 if is_admin() else 0,
-        get_client_ip(),
-        (request.headers.get("User-Agent") or "")[:300],
-        event_type,
-        event_name,
-        path,
-        request.method,
-        int(status_code),
-        safe_json(payload or {})
-    ))
-    conn.commit()
-    conn.close()
+    try:
+        conn = db_server_conn()
+        cur = conn.cursor()
+        cur.execute("""
+            INSERT INTO audit_log
+            (ts, user_id, is_admin, ip, user_agent, event_type, event_name, path, method, status_code, payload_json)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            now_iso(),
+            get_user_id(),
+            1 if is_admin() else 0,
+            get_client_ip(),
+            (request.headers.get("User-Agent") or "")[:300],
+            event_type,
+            event_name,
+            path,
+            request.method,
+            int(status_code),
+            safe_json(payload or {})
+        ))
+        conn.commit()
+        conn.close()
+    except Exception:
+        pass
 
 
 # ============================================================
-# 3) RealSimTrading (DB 영구 저장형)
+# 3) RealSimTrading (최소 운영)
 # ============================================================
 class RealSimTrading:
-    def __init__(self, initial_krw=1000000, fee_rate=0.0005):
-        self.fee_rate = float(fee_rate)
+    def __init__(self, initial_krw=1_000_000, fee_rate=0.0005):
         self.initial_krw = float(initial_krw)
+        self.fee_rate = float(fee_rate)
         self._init_db()
 
     def _conn(self):
@@ -256,7 +293,6 @@ class RealSimTrading:
         conn = self._conn()
         cur = conn.cursor()
 
-        # 계정(원화 잔고)
         cur.execute("""
         CREATE TABLE IF NOT EXISTS sim_account (
             id INTEGER PRIMARY KEY CHECK (id = 1),
@@ -264,7 +300,6 @@ class RealSimTrading:
             updated_at TEXT
         )
         """)
-        # 포지션(코인별 보유/평단)
         cur.execute("""
         CREATE TABLE IF NOT EXISTS sim_positions (
             coin TEXT PRIMARY KEY,
@@ -273,7 +308,6 @@ class RealSimTrading:
             updated_at TEXT
         )
         """)
-        # 거래 히스토리
         cur.execute("""
         CREATE TABLE IF NOT EXISTS sim_trade_history (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -290,40 +324,36 @@ class RealSimTrading:
             realized_pnl REAL
         )
         """)
-        # 계정 row 보장
-        cur.execute("SELECT krw_balance FROM sim_account WHERE id=1")
-        row = cur.fetchone()
+
+        row = cur.execute("SELECT krw_balance FROM sim_account WHERE id=1").fetchone()
         if row is None:
             cur.execute(
                 "INSERT INTO sim_account (id, krw_balance, updated_at) VALUES (1, ?, ?)",
                 (self.initial_krw, now_iso())
             )
+
         conn.commit()
         conn.close()
 
     def _get_balance(self) -> float:
         conn = self._conn()
         cur = conn.cursor()
-        cur.execute("SELECT krw_balance FROM sim_account WHERE id=1")
-        bal = float(cur.fetchone()[0])
+        bal = float(cur.execute("SELECT krw_balance FROM sim_account WHERE id=1").fetchone()[0])
         conn.close()
         return bal
 
     def _set_balance(self, new_balance: float):
         conn = self._conn()
         cur = conn.cursor()
-        cur.execute(
-            "UPDATE sim_account SET krw_balance=?, updated_at=? WHERE id=1",
-            (float(new_balance), now_iso())
-        )
+        cur.execute("UPDATE sim_account SET krw_balance=?, updated_at=? WHERE id=1",
+                    (float(new_balance), now_iso()))
         conn.commit()
         conn.close()
 
     def _get_position(self, coin: str):
         conn = self._conn()
         cur = conn.cursor()
-        cur.execute("SELECT coin, amount, avg_price FROM sim_positions WHERE coin=?", (coin,))
-        row = cur.fetchone()
+        row = cur.execute("SELECT coin, amount, avg_price FROM sim_positions WHERE coin=?", (coin,)).fetchone()
         conn.close()
         if not row:
             return {"coin": coin, "amount": 0.0, "avg_price": 0.0}
@@ -349,66 +379,53 @@ class RealSimTrading:
     def get_snapshot(self):
         conn = self._conn()
         cur = conn.cursor()
-        cur.execute("SELECT krw_balance FROM sim_account WHERE id=1")
-        bal = float(cur.fetchone()[0])
-        cur.execute("SELECT coin, amount, avg_price, updated_at FROM sim_positions ORDER BY coin ASC")
-        positions = [dict(row) for row in cur.fetchall()]
+        bal = float(cur.execute("SELECT krw_balance FROM sim_account WHERE id=1").fetchone()[0])
+        positions = [dict(r) for r in cur.execute("SELECT * FROM sim_positions ORDER BY coin ASC").fetchall()]
         conn.close()
         return {"krw_balance": round(bal, 2), "positions": positions}
 
-    def execute_trade(self, coin: str, price: float, amount: float, side: str, strategy: str, reason: str):
+    def execute_trade(self, coin: str, price, amount, side: str, strategy: str = "", reason: str = ""):
         coin = (coin or "").strip().upper()
         side = (side or "").strip().upper()
         if side not in ("BUY", "SELL"):
-            return {"success": False, "error": "side는 BUY 또는 SELL 이어야 합니다."}
+            return {"success": False, "error": "side는 BUY/SELL만 허용"}
 
         try:
             price = float(price)
             amount = float(amount)
         except Exception:
-            return {"success": False, "error": "price/amount 숫자 형식이 올바르지 않습니다."}
+            return {"success": False, "error": "price/amount는 숫자여야 함"}
 
         if price <= 0 or amount <= 0:
-            return {"success": False, "error": "price/amount는 0보다 커야 합니다."}
+            return {"success": False, "error": "price/amount는 0보다 커야 함"}
 
         trade_value = price * amount
         fee = trade_value * self.fee_rate
 
-        balance = self._get_balance()
+        bal = self._get_balance()
         pos = self._get_position(coin)
         realized_pnl = 0.0
 
         if side == "BUY":
-            total_cost = trade_value + fee
-            if balance < total_cost:
-                return {"success": False, "error": "잔고가 부족합니다, 유송님!"}
-
-            # 신규 평단 계산
-            old_amt = pos["amount"]
-            old_avg = pos["avg_price"]
+            total = trade_value + fee
+            if bal < total:
+                return {"success": False, "error": "잔고 부족"}
+            old_amt, old_avg = pos["amount"], pos["avg_price"]
             new_amt = old_amt + amount
             new_avg = ((old_amt * old_avg) + trade_value) / new_amt if new_amt > 0 else 0.0
-
-            balance = balance - total_cost
-            self._set_balance(balance)
+            bal = bal - total
+            self._set_balance(bal)
             self._upsert_position(coin, new_amt, new_avg)
-
-        else:  # SELL
+        else:
             if pos["amount"] < amount:
-                return {"success": False, "error": "보유 수량이 부족합니다!"}
-
-            # 실현손익(평단 기준)
+                return {"success": False, "error": "보유 수량 부족"}
             realized_pnl = (price - pos["avg_price"]) * amount - fee
             proceeds = trade_value - fee
-
             new_amt = pos["amount"] - amount
-            new_avg = pos["avg_price"]  # 남은 물량 평단 유지(단순 평균법)
-            balance = balance + proceeds
+            bal = bal + proceeds
+            self._set_balance(bal)
+            self._upsert_position(coin, new_amt, pos["avg_price"])
 
-            self._set_balance(balance)
-            self._upsert_position(coin, new_amt, new_avg)
-
-        # 히스토리 저장
         conn = self._conn()
         cur = conn.cursor()
         cur.execute("""
@@ -418,129 +435,70 @@ class RealSimTrading:
         """, (
             now_iso(), coin, side, price, amount, trade_value, fee,
             (strategy or "")[:80], (reason or "")[:400],
-            float(balance), float(realized_pnl)
+            float(bal), float(realized_pnl)
         ))
         conn.commit()
         conn.close()
 
         return {
             "success": True,
-            "msg": f"{coin} {side} 완료 (전략: {strategy} / 사유: {reason})",
-            "krw_balance": round(balance, 2),
+            "coin": coin,
+            "side": side,
+            "price": price,
+            "amount": amount,
             "fee": round(fee, 2),
+            "krw_balance": round(bal, 2),
             "realized_pnl": round(realized_pnl, 2),
             "position": self._get_position(coin)
         }
 
-    def history(self, limit=10):
+    def history(self, limit=20):
         conn = self._conn()
         cur = conn.cursor()
-        cur.execute("""
-            SELECT * FROM sim_trade_history
-            ORDER BY id DESC
-            LIMIT ?
-        """, (int(limit),))
-        rows = [dict(r) for r in cur.fetchall()]
+        rows = [dict(r) for r in cur.execute(
+            "SELECT * FROM sim_trade_history ORDER BY id DESC LIMIT ?",
+            (int(limit),)
+        ).fetchall()]
         conn.close()
         return rows
 
 
 # ============================================================
-# 4) Emotion Engine (1차: 키워드 기반 + 확장 포인트)
+# 4) Emotion (간단)
 # ============================================================
 def get_real_emotion(message: str) -> str:
-    message = message or ""
-    joy_keys = ['행복', '좋아', '수익', '나이스', '와우', '기뻐', '대박', '승리']
-    sad_keys = ['손해', '슬퍼', '힘들어', '망함', '우울', '짜증', '불안']
-    angry_keys = ['화나', '지워', '에러', '병신', '똑바로', '열받', '빡']
-    for k in joy_keys:
-        if k in message:
-            return "happy"
-    for k in sad_keys:
-        if k in message:
-            return "sad"
-    for k in angry_keys:
-        if k in message:
-            return "angry"
+    msg = (message or "").strip()
+
+    if any(k in msg for k in ["미안", "죄송", "사과"]): return "apologizing"
+    if any(k in msg for k in ["피곤", "졸려", "지친", "30시간"]): return "tired"
+    if any(k in msg for k in ["무서", "겁", "두려"]): return "scared"
+    if any(k in msg for k in ["걱정", "불안", "초조"]): return "worried"
+    if any(k in msg for k in ["스트레스", "압박", "과부하"]): return "stressed"
+    if any(k in msg for k in ["실망", "기대 이하"]): return "disappointed"
+    if any(k in msg for k in ["외로", "혼자"]): return "lonely"
+
+    if any(k in msg for k in ["열받", "빡", "짜증", "병신", "똑바로", "개같", "씨발", "좆"]): return "angry"
+    if any(k in msg for k in ["답답", "미치겠", "왜이래", "안돼", "에러"]): return "frustrated"
+    if any(k in msg for k in ["거슬", "귀찮", "성가시"]): return "annoyed"
+
+    if any(k in msg for k in ["고마", "감사"]): return "grateful"
+    if any(k in msg for k in ["해냈", "성공", "됐다"]): return "proud"
+    if any(k in msg for k in ["희망", "될거", "가능"]): return "hopeful"
+    if any(k in msg for k in ["화이팅", "할수있", "가자"]): return "encouraging"
+    if any(k in msg for k in ["신나", "대박", "나이스", "좋아", "ㅋㅋ", "ㅎㅎ"]): return "cheerful"
+
+    if any(k in msg for k in ["설명", "정리", "요약"]): return "explaining"
+    if any(k in msg for k in ["궁금", "왜", "뭐지", "어떻게"]): return "curious"
+    if any(k in msg for k in ["집중", "진행", "지금부터"]): return "focused"
+    if any(k in msg for k in ["진지", "중요"]): return "serious"
+    if any(k in msg for k in ["의심", "진짜?", "맞아?"]): return "skeptical"
+    if any(k in msg for k in ["차분", "괜찮", "천천히"]): return "calm"
+
     return "neutral"
 
 
 # ============================================================
-# 5) 봇 레지스트리(프로세스 감시/제어) - 관리자 전용
-# ============================================================
-def ensure_bot_registry():
-    if os.path.exists(BOT_REGISTRY_PATH):
-        return
-    sample = {
-        "bots": [
-            {
-                "name": "signal_engine",
-                "match": "signal_engine",
-                "start": "python signal_engine.py",
-                "cwd": BASE_DIR
-            },
-            {
-                "name": "execution_engine",
-                "match": "execution_engine",
-                "start": "python execution_engine.py",
-                "cwd": BASE_DIR
-            }
-        ]
-    }
-    with open(BOT_REGISTRY_PATH, "w", encoding="utf-8") as f:
-        json.dump(sample, f, ensure_ascii=False, indent=2)
-
-
-def load_bot_registry():
-    ensure_bot_registry()
-    with open(BOT_REGISTRY_PATH, "r", encoding="utf-8") as f:
-        return json.load(f)
-
-
-def find_processes_by_match(match: str):
-    match = (match or "").lower()
-    found = []
-    for p in psutil.process_iter(["pid", "name", "cmdline", "create_time"]):
-        try:
-            name = (p.info.get("name") or "").lower()
-            cmd = " ".join(p.info.get("cmdline") or []).lower()
-            if match and (match in name or match in cmd):
-                found.append({
-                    "pid": p.info["pid"],
-                    "name": p.info.get("name"),
-                    "cmdline": p.info.get("cmdline"),
-                    "create_time": p.info.get("create_time")
-                })
-        except Exception:
-            continue
-    return found
-
-
-def start_bot(bot):
-    cmd = bot.get("start")
-    cwd = bot.get("cwd") or BASE_DIR
-    if not cmd:
-        return {"success": False, "error": "start 커맨드가 없습니다."}
-    # Windows에서도 동작하도록 shell=True
-    p = subprocess.Popen(cmd, cwd=cwd, shell=True)
-    return {"success": True, "pid": p.pid, "cmd": cmd}
-
-
-def stop_bot(pid: int):
-    try:
-        proc = psutil.Process(int(pid))
-        proc.terminate()
-        try:
-            proc.wait(timeout=5)
-        except Exception:
-            proc.kill()
-        return {"success": True}
-    except Exception as e:
-        return {"success": False, "error": str(e)}
-
-
-# ============================================================
-# 6) Learning Jobs (유튜브 학습) - 외부 스크립트 연결형
+# 5) Learning Jobs (뼈대)
 # ============================================================
 def learning_create_job(job_type: str, payload: dict, created_by: str) -> dict:
     job_id = uuid.uuid4().hex
@@ -552,13 +510,10 @@ def learning_create_job(job_type: str, payload: dict, created_by: str) -> dict:
         INSERT INTO learning_jobs
         (id, ts_created, ts_started, ts_finished, created_by, job_type, payload_json, status, log_path, result_json)
         VALUES (?, ?, NULL, NULL, ?, ?, ?, ?, ?, NULL)
-    """, (
-        job_id, now_iso(), created_by, job_type, safe_json(payload), "created", log_path
-    ))
+    """, (job_id, now_iso(), created_by, job_type, safe_json(payload), "created", log_path))
     conn.commit()
     conn.close()
 
-    # 즉시 실행(백그라운드)
     t = threading.Thread(target=learning_run_job, args=(job_id,), daemon=True)
     t.start()
 
@@ -568,8 +523,7 @@ def learning_create_job(job_type: str, payload: dict, created_by: str) -> dict:
 def learning_update(job_id: str, **fields):
     conn = db_server_conn()
     cur = conn.cursor()
-    keys = []
-    vals = []
+    keys, vals = [], []
     for k, v in fields.items():
         keys.append(f"{k}=?")
         vals.append(v)
@@ -579,21 +533,20 @@ def learning_update(job_id: str, **fields):
     conn.close()
 
 
-def learning_append_log(log_path: str, line: str):
-    try:
-        with open(log_path, "a", encoding="utf-8") as f:
-            f.write(f"[{now_iso()}] {line}\n")
-    except Exception:
-        pass
-
-
 def learning_get(job_id: str):
     conn = db_server_conn()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM learning_jobs WHERE id=?", (job_id,))
-    row = cur.fetchone()
+    row = cur.execute("SELECT * FROM learning_jobs WHERE id=?", (job_id,)).fetchone()
     conn.close()
     return dict(row) if row else None
+
+
+def learning_append_log(path: str, line: str):
+    try:
+        with open(path, "a", encoding="utf-8") as f:
+            f.write(f"[{now_iso()}] {line}\n")
+    except Exception:
+        pass
 
 
 def learning_run_job(job_id: str):
@@ -607,11 +560,9 @@ def learning_run_job(job_id: str):
     payload = json.loads(job.get("payload_json") or "{}")
     url = payload.get("url", "")
 
-    # 외부 learner 연결이 있으면 실행
     if YT_LEARNER_CMD:
         try:
-            learning_append_log(job["log_path"], f"RUN learner: {YT_LEARNER_CMD} --url {url}")
-            # stdout/stderr를 로그 파일에 붙임
+            learning_append_log(job["log_path"], f"RUN: {YT_LEARNER_CMD} {url}")
             with open(job["log_path"], "a", encoding="utf-8") as lf:
                 p = subprocess.Popen(
                     f'{YT_LEARNER_CMD} "{url}" "{job_id}"',
@@ -621,154 +572,136 @@ def learning_run_job(job_id: str):
                     cwd=BASE_DIR
                 )
                 code = p.wait()
+
             if code == 0:
-                learning_update(job_id, status="done", ts_finished=now_iso(), result_json=safe_json({"ok": True}))
+                learning_update(job_id, status="done", ts_finished=now_iso(),
+                                result_json=safe_json({"ok": True}))
                 learning_append_log(job["log_path"], "JOB DONE (code=0)")
             else:
-                learning_update(job_id, status="error", ts_finished=now_iso(), result_json=safe_json({"ok": False, "code": code}))
+                learning_update(job_id, status="error", ts_finished=now_iso(),
+                                result_json=safe_json({"ok": False, "code": code}))
                 learning_append_log(job["log_path"], f"JOB ERROR (code={code})")
         except Exception as e:
-            learning_update(job_id, status="error", ts_finished=now_iso(), result_json=safe_json({"ok": False, "error": str(e)}))
+            learning_update(job_id, status="error", ts_finished=now_iso(),
+                            result_json=safe_json({"ok": False, "error": str(e)}))
             learning_append_log(job["log_path"], f"EXCEPTION: {e}")
     else:
-        # learner 미연결이면 stub으로 끝냄(중앙 UI 붙이는 데는 충분)
-        learning_append_log(job["log_path"], "YT_LEARNER_CMD가 없어서 STUB 처리합니다.")
-        learning_append_log(job["log_path"], f"요청 URL: {url}")
+        learning_append_log(job["log_path"], "YT_LEARNER_CMD 없음 → STUB 처리")
+        learning_append_log(job["log_path"], f"url={url}")
         time.sleep(1)
-        learning_update(job_id, status="stubbed", ts_finished=now_iso(), result_json=safe_json({"ok": True, "stubbed": True}))
+        learning_update(job_id, status="stubbed", ts_finished=now_iso(),
+                        result_json=safe_json({"ok": True, "stubbed": True}))
         learning_append_log(job["log_path"], "JOB STUBBED DONE")
 
 
 def learning_stats():
-    # 실제 값(가짜 금지): server.db + sim_trading.db + learning_logs 크기
     def fsize(p):
         try:
             return os.path.getsize(p)
         except Exception:
             return 0
 
-    total_logs = 0
-    for fn in os.listdir(LEARNING_LOG_DIR):
-        total_logs += fsize(os.path.join(LEARNING_LOG_DIR, fn))
+    total = 0
+    try:
+        for fn in os.listdir(LEARNING_LOG_DIR):
+            total += fsize(os.path.join(LEARNING_LOG_DIR, fn))
+    except Exception:
+        pass
 
     return {
         "server_db_size": fsize(SERVER_DB_PATH),
         "sim_db_size": fsize(SIM_DB_PATH),
-        "learning_logs_size": total_logs,
+        "learning_logs_size": total,
         "timestamp": now_iso()
     }
 
 
 # ============================================================
-# 7) Flask 앱
+# 6) Flask 앱/CORS/자동감사
 # ============================================================
 app = Flask(__name__)
-# 세션 쿠키 서명키(반드시 고정)
-app.secret_key = SECRET_KEY or "CHANGE_ME_SECRET_KEY"
+app.secret_key = SECRET_KEY
 
-# CORS 제한
-CORS(app, resources={r"/*": {"origins": [o.strip() for o in CORS_ORIGINS if o.strip()]}})
+CORS(app, resources={r"/*": {"origins": [
+    "http://localhost:5001", "http://127.0.0.1:5001",
+    "http://localhost:5173", "http://127.0.0.1:5173",
+    "http://localhost:5500", "http://127.0.0.1:5500",
+    "https://leemay.thetheunique.com"
+]}})
 
-# DB 초기화
 init_server_db()
-ensure_bot_registry()
-
-# 시뮬 인스턴스
-sim_trading = RealSimTrading(initial_krw=1000000, fee_rate=0.0005)
-
+sim_trading = RealSimTrading()
 SERVER_START_TS = time.time()
 
 
-# ============================================================
-# 8) 공통 훅: 중요한 API 호출 자동 기록
-# ============================================================
 @app.after_request
 def after(resp):
     try:
-        path = request.path or ""
-        # 너무 자주 찍히는 건 제외
-        if path.startswith("/image/") or path == "/health":
+        p = request.path or ""
+        if p.startswith("/image/") or p == "/health":
             return resp
-
-        # 관리자 페이지에서 "기록 조회했는지"는 자동으로 남겨야 함
-        # - trading/history, admin/audit/list 같은 엔드포인트 접근 자체가 "봤다" 증거
-        event_name = "API_CALL"
-        if path.startswith("/api/trading/history"):
-            event_name = "VIEW_TRADE_HISTORY"
-        elif path.startswith("/api/admin/audit/list"):
-            event_name = "VIEW_AUDIT_LOG"
-        elif path.startswith("/api/learning/"):
-            event_name = "LEARNING_API"
-        elif path.startswith("/api/bots/"):
-            event_name = "BOT_API"
-
-        audit("API_CALL", event_name, status_code=resp.status_code, payload={"q": request.query_string.decode("utf-8", "ignore")})
+        audit("API_CALL", "API_CALL", status_code=resp.status_code,
+              payload={"q": request.query_string.decode("utf-8", "ignore")})
     except Exception:
         pass
     return resp
 
 
 # ============================================================
-# 9) 기본/헬스
+# 7) 기본/정적
 # ============================================================
 @app.route("/health", methods=["GET"])
 def health():
-    return jsonify({"ok": True, "ts": now_iso()})
+    return jsonify({
+        "status": "healthy",
+        "timestamp": datetime.now().isoformat(),
+        "modules": {"EmayBrain": True, "YouTube": True}
+    })
 
 
-@app.route("/", methods=["GET"])
-@app.route("/ops", methods=["GET"])
+@app.route("/")
+@app.route("/ops")
 def serve_index():
-    """OPS UI (index.html) 서빙"""
-    try:
-        return send_from_directory(WEB_DIR, "index.html")
-    except FileNotFoundError:
-        return jsonify({
-            "error": "index.html not found",
-            "path": os.path.join(WEB_DIR, "index.html"),
-            "note": "Please create web/index.html"
-        }), 404
+    return send_from_directory(WEB_DIR, "index.html")
 
 
-@app.route("/dashboard", methods=["GET"])
+@app.route("/dashboard")
 def serve_dashboard():
-    """기존 Dashboard UI 서빙 (하위 호환성)"""
-    try:
-        return send_from_directory(WEB_DIR, "dashboard.html")
-    except FileNotFoundError:
-        return jsonify({
-            "error": "dashboard.html not found",
-            "path": os.path.join(WEB_DIR, "dashboard.html")
-        }), 404
+    return send_from_directory(WEB_DIR, "dashboard.html")
+
+
+@app.route("/health-ui")
+def serve_health_ui():
+    return send_from_directory(WEB_DIR, "health.html")
+
+
+@app.route("/image/<filename>")
+def serve_image(filename):
+    filename = os.path.basename(filename)
+    return send_from_directory(IMAGES_DIR, filename)
 
 
 # ============================================================
-# 10) 인증/권한
+# 8) 인증(세션)
 # ============================================================
 @app.route("/api/auth/login", methods=["POST"])
 def auth_login():
     data = request.get_json(silent=True) or {}
-    user_id = (data.get("user_id") or data.get("user") or "").strip() or "guest"
+    user_id = (data.get("user_id") or data.get("user") or "guest").strip()
     token = (data.get("admin_token") or "").strip()
 
     session["user_id"] = user_id
-
-    # 관리자 로그인 조건: ADMIN_ID + (헤더 토큰 또는 body token 일치)
-    if user_id == ADMIN_ID and ADMIN_TOKEN and token == ADMIN_TOKEN:
+    if user_id == ADMIN_ID and token == ADMIN_TOKEN:
         session["is_admin"] = True
-        audit("AUTH", "ADMIN_LOGIN", payload={"user_id": user_id})
         return jsonify({"success": True, "user_id": user_id, "is_admin": True})
 
     session["is_admin"] = False
-    audit("AUTH", "LOGIN", payload={"user_id": user_id})
     return jsonify({"success": True, "user_id": user_id, "is_admin": False})
 
 
 @app.route("/api/auth/logout", methods=["POST"])
 def auth_logout():
-    uid = get_user_id()
     session.clear()
-    audit("AUTH", "LOGOUT", payload={"user_id": uid})
     return jsonify({"success": True})
 
 
@@ -778,85 +711,360 @@ def whoami():
 
 
 # ============================================================
-# 11) 채팅/이메이
+# 9) OPS API + CHAT API (UI 호환)
 # ============================================================
+def execute_bat_script_async(script_path: str) -> dict:
+    try:
+        if not os.path.exists(script_path):
+            return {"ok": False, "msg": f"Missing: {script_path}"}
+        log_ops(f"ASYNC START: {script_path}")
+        subprocess.Popen(
+            ["cmd.exe", "/c", script_path],
+            cwd=BASE_DIR,
+            creationflags=0x08000000
+        )
+        return {"ok": True, "msg": "started", "path": script_path}
+    except Exception as e:
+        log_ops(f"ASYNC ERROR: {e}")
+        return {"ok": False, "msg": str(e)}
+
+
+@app.route("/api/ops/control/start", methods=["POST"])
+def ops_control_start():
+    if not is_admin_request():
+        return jsonify({"ok": False, "message": "Unauthorized"}), 401
+    return jsonify(execute_bat_script_async(ALLOWED_OPS_SCRIPTS["control_start"]))
+
+
+# --- UI 버튼: API(5001) 재시작 ---
+@app.route("/api/ops/api/restart", methods=["POST"])
+def ops_api_restart():
+    if not is_admin_request():
+        return jsonify({"ok": False, "message": "Unauthorized"}), 401
+
+    bat_path = os.path.join(OPS_DIR, "04_OPS_RESTART_5001.bat")
+    try:
+        log_ops(f"RUN: {bat_path} (api restart request)")
+        subprocess.Popen(
+            ["cmd.exe", "/c", "start", "", "/min", bat_path],
+            cwd=BASE_DIR,
+            creationflags=0x08000000
+        )
+        return jsonify({"ok": True, "message": "API restart scheduled (5001)."}), 200
+    except Exception as e:
+        log_ops(f"ERROR api_restart: {e}")
+        return jsonify({"ok": False, "message": str(e)}), 500
+
+
+# ----------------------------
+# CHAT: 규칙 고정 (response/emotion/image_url)
+# ----------------------------
+def _resolve_emotion_filename(emotion: str) -> str:
+    e = (emotion or "neutral").strip()
+    fn = f"{e}.png"
+    if not os.path.exists(os.path.join(IMAGES_DIR, fn)):
+        e = "neutral"
+    return e
+
+
+def _save_chat_row(user_id: str, message: str, response: str, emotion: str):
+    try:
+        conn = db_server_conn()
+        cur = conn.cursor()
+        cur.execute(
+            "INSERT INTO chat_history (ts, user_id, message, response, emotion) VALUES (?, ?, ?, ?, ?)",
+            (now_iso(), user_id, message, response, emotion)
+        )
+        conn.commit()
+        conn.close()
+    except Exception:
+        pass
+
+
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json(silent=True) or {}
-    message = (data.get("message") or "").strip()
-    uid = get_user_id()
+    message = (data.get("message") or data.get("text") or data.get("prompt") or "").strip()
+    if not message:
+        return jsonify({"ok": False, "message": "message가 비었습니다."}), 400
 
-    emotion = get_real_emotion(message)
-    image_name = f"{emotion}.jpg"
+    emotion = _resolve_emotion_filename(get_real_emotion(message))
+    image_url = f"/image/{emotion}.png"
 
-    response_text = f"유송님, 말씀하신 '{message}' 내용을 잘 들었어요. 분석 중입니다!"
+    # 부팅/테스트용 스텁 응답 (나중에 LLM 연결하면 여기만 교체)
+    response = (data.get("force_response") or "").strip()
+    if not response:
+        response = f"오케이. 감정={emotion}\n\n너의 메시지:\n{message}"
 
-    # 채팅 저장
+    _save_chat_row(get_user_id(), message, response, emotion)
+
+    return jsonify({
+        "ok": True,
+        "response": response,
+        "emotion": emotion,
+        "image_url": image_url
+    }), 200
+
+
+@app.route("/api/chat", methods=["POST"])
+def api_chat_alias():
+    return chat()
+
+
+@app.route("/api/chat/history", methods=["GET"])
+def api_chat_history():
+    limit = int(request.args.get("limit", "20"))
+    limit = max(1, min(200, limit))
+
     conn = db_server_conn()
     cur = conn.cursor()
+    rows = cur.execute(
+        "SELECT id, ts, user_id, message, response, emotion "
+        "FROM chat_history ORDER BY id DESC LIMIT ?",
+        (limit,)
+    ).fetchall()
+    conn.close()
+
+    return jsonify({"ok": True, "history": [dict(r) for r in rows]}), 200
+
+
+# --- 5000(트레이딩 엔진) 시작 ---
+@app.route("/api/ops/bots/start", methods=["POST"])
+def ops_bots_start():
+    if not is_admin_request():
+        return jsonify({"ok": False, "message": "Unauthorized"}), 401
+
+    # SAFE 우선
+    bat_path = ALLOWED_OPS_SCRIPTS["bots_start_safe"]
+    if not os.path.exists(bat_path):
+        bat_path = ALLOWED_OPS_SCRIPTS["bots_start"]
+
+    if not os.path.exists(bat_path):
+        return jsonify({"ok": False, "message": f"Missing bat: {bat_path}"}), 500
+
+    if check_port_socket(5000):
+        return jsonify({
+            "ok": True,
+            "message": "Already running",
+            "port_active": True,
+            "ai_log": latest_ai_trading_log()
+        })
+
+    log_path = os.path.join(LOG_DIR, "bots_start_last.log")
+    try:
+        log_ops(f"RUN: {bat_path}")
+        with open(log_path, "ab") as f:
+            p = subprocess.Popen(
+                ["cmd.exe", "/c", bat_path],
+                cwd=BASE_DIR,
+                stdout=f,
+                stderr=f,
+                creationflags=0x08000000
+            )
+
+        for i in range(60):
+            if check_port_socket(5000):
+                return jsonify({
+                    "ok": True,
+                    "port_active": True,
+                    "attempts": i + 1,
+                    "pid": p.pid,
+                    "ops_log": log_path,
+                    "ai_log": latest_ai_trading_log()
+                })
+            time.sleep(0.5)
+
+        return jsonify({
+            "ok": False,
+            "port_active": False,
+            "message": "Timeout",
+            "pid": p.pid,
+            "ops_log": log_path,
+            "ai_log": latest_ai_trading_log()
+        })
+    except Exception as e:
+        log_ops(f"ERROR bots_start: {e}")
+        log_ops(traceback.format_exc())
+        return jsonify({"ok": False, "message": str(e)}), 500
+
+
+@app.route("/api/ops/bots/stop", methods=["POST"])
+def ops_bots_stop():
+    if not is_admin_request():
+        return jsonify({"ok": False, "message": "Unauthorized"}), 401
+    return jsonify(execute_bat_script_async(ALLOWED_OPS_SCRIPTS["bots_stop"]))
+
+
+@app.route("/api/ops/status", methods=["GET"])
+def ops_status():
+    try:
+        conn = db_server_conn()
+        cur = conn.cursor()
+        count = int(cur.execute("SELECT count(*) FROM imported_messages").fetchone()[0])
+        conn.close()
+        intel_p = min(100, round((count / 10000) * 100, 2))
+    except Exception:
+        count, intel_p = 0, 0
+
+    return jsonify({
+        "timestamp": now_iso(),
+        "memory_count": count,
+        "intelligence_percent": intel_p,
+        "ports": {
+            "5001": True,
+            "5000": check_port_socket(5000),
+            "11434": check_port_socket(11434)
+        },
+        "uptime": int(time.time() - SERVER_START_TS),
+        "ai_log": latest_ai_trading_log(),
+        "ops_log": os.path.join(LOG_DIR, "bots_start_last.log"),
+    })
+
+
+@app.route("/api/ops/log/tail", methods=["GET", "POST"])
+def ops_log_tail():
+    try:
+        if not is_admin_request():
+            return jsonify({"ok": False, "message": "Unauthorized"}), 401
+
+        if request.method == "POST":
+            body = request.get_json(silent=True) or {}
+            name = (body.get("name") or "").strip() or (request.args.get("name") or "").strip()
+            lines = body.get("lines") or request.args.get("lines") or "200"
+        else:
+            name = (request.args.get("name") or "").strip()
+            lines = request.args.get("lines") or "200"
+
+        name_norm = name.replace(" ", "").lower().replace(".log", "")
+
+        if name_norm in ("ops_api", "opsapilog"):
+            path = OPS_LOG_FILE
+        elif name_norm in ("bots_start_last", "bots_start_lastlog", "bots_start"):
+            path = os.path.join(LOG_DIR, "bots_start_last.log")
+        elif name_norm in ("ai_trading", "ai_latest", "aitrading"):
+            path = latest_ai_trading_log()
+        else:
+            return jsonify({"ok": False, "message": "Invalid log name", "got": name}), 400
+
+        return jsonify({"ok": True, "name": name, "path": path, "lines": _tail_lines(path, int(lines))})
+
+    except Exception as e:
+        log_ops("ERROR ops_log_tail: " + repr(e))
+        log_ops(traceback.format_exc())
+        return jsonify({"ok": False, "message": "Internal error", "error": str(e)}), 500
+
+
+# ============================================================
+# 10) Import API
+# ============================================================
+@app.route("/api/conversations/import", methods=["POST", "OPTIONS"])
+def conversations_import():
+    if request.method == "OPTIONS":
+        return ("", 204)
+
+    if not is_admin_request():
+        return jsonify({"ok": False, "message": "Unauthorized"}), 401
+
+    data = request.get_json(silent=True) or {}
+    content_hash = (data.get("content_hash") or "").strip()
+
+    conn = db_server_conn()
+    cur = conn.cursor()
+
+    if content_hash:
+        row = cur.execute("SELECT id FROM imported_messages WHERE content_hash=? LIMIT 1", (content_hash,)).fetchone()
+        if row:
+            conn.close()
+            return jsonify({"ok": True, "deduped": True, "id": int(row[0])})
+
     cur.execute("""
-        INSERT INTO chat_history (ts, user_id, message, response, emotion)
-        VALUES (?, ?, ?, ?, ?)
-    """, (now_iso(), uid, message[:2000], response_text[:2000], emotion))
+        INSERT INTO imported_messages
+        (ts, source, conversation_id, conversation_url, role, content, content_hash, raw_json)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    """, (
+        now_iso(),
+        (data.get("source") or "unknown"),
+        (data.get("conversation_id") or ""),
+        (data.get("conversation_url") or ""),
+        (data.get("role") or ""),
+        (data.get("content") or ""),
+        content_hash,
+        json.dumps(data, ensure_ascii=False)
+    ))
+    new_id = cur.lastrowid
     conn.commit()
     conn.close()
 
-    return jsonify({
-        "success": True,
-        "text": response_text,
-        "emotion": emotion,
-        "emotion_score": 0.6,   # (확장 포인트) 향후 감정 점수화
-        "image_url": f"/image/{image_name}",
-        "user_id": uid,
-        "timestamp": now_iso()
-    })
-
-
-@app.route("/image/<filename>", methods=["GET"])
-def serve_image(filename):
-    # 보안: 파일명만 허용(경로탐색 방지)
-    filename = os.path.basename(filename)
-    return send_from_directory(IMAGES_DIR, filename)
+    return jsonify({"ok": True, "id": int(new_id)})
 
 
 # ============================================================
-# 12) 시스템 상태/텔레메트리
+# 11) 시스템 상태
 # ============================================================
 @app.route("/api/system/status", methods=["GET"])
 def system_status():
-    uptime_sec = int(time.time() - SERVER_START_TS)
-
-    # 디스크는 BASE_DIR 기준
     disk = psutil.disk_usage(BASE_DIR)
-
     return jsonify({
         "cpu": psutil.cpu_percent(interval=0.1),
         "memory": psutil.virtual_memory().percent,
-        "disk_percent": disk.percent,
-        "disk_free_gb": round(disk.free / (1024**3), 2),
-        "uptime_sec": uptime_sec,
-        "server_db_size": os.path.getsize(SERVER_DB_PATH) if os.path.exists(SERVER_DB_PATH) else 0,
-        "sim_db_size": os.path.getsize(SIM_DB_PATH) if os.path.exists(SIM_DB_PATH) else 0,
+        "disk_free_gb": round(disk.free / (1024 ** 3), 2),
+        "uptime_sec": int(time.time() - SERVER_START_TS),
         "timestamp": now_iso()
     })
 
 
 # ============================================================
-# 13) 시뮬 트레이딩(관리자 전용)
+# 12) 지능-실행 직축 및 대량 로딩 API
 # ============================================================
-@app.route("/api/trading/snapshot", methods=["GET"])
-def trading_snapshot():
-    guard = require_admin()
-    if guard:
-        return guard
-    return jsonify({"success": True, "data": sim_trading.get_snapshot()})
+@app.route("/api/ops/strategy/apply", methods=["POST"])
+def ops_strategy_apply():
+    if not is_admin_request():
+        return jsonify({"ok": False, "msg": "DENY"}), 403
+
+    data = request.get_json(silent=True) or {}
+    ratio = data.get("ratio", 70)
+
+    path = os.path.join(BASE_DIR, "strategies", "current_strategy.json")
+    Path(os.path.dirname(path)).mkdir(parents=True, exist_ok=True)
+
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump({"intel_ratio": int(ratio), "updated_at": now_iso(), "commander": "Yusong"}, f, indent=4, ensure_ascii=False)
+
+    return jsonify({"ok": True, "message": "전략이 봇의 뇌에 이식되었습니다."})
 
 
-@app.route("/api/trading/execute", methods=["POST"])
-def trade_execute():
-    guard = require_admin()
-    if guard:
-        return guard
+@app.route("/api/ops/memory/bulk-load", methods=["POST"])
+def ops_memory_bulk_load():
+    if not is_admin_request():
+        return jsonify({"ok": False, "msg": "DENY"}), 403
+
+    data = request.get_json(silent=True) or {}
+    url = data.get("url", "")
+    if not url:
+        return jsonify({"ok": False, "msg": "URL 누락"}), 400
+
+    res = learning_create_job("bulk_youtube", {"url": url}, "Yusong")
+    return jsonify({"ok": True, "message": "대량 지식 학습이 예약되었습니다.", "job_id": res["job_id"]})
+
+
+# ============================================================
+# 13) 시뮬 트레이딩 조회 API
+# ============================================================
+@app.route("/api/sim/status", methods=["GET"])
+def api_sim_status():
+    return jsonify(sim_trading.get_snapshot())
+
+
+@app.route("/api/sim/history", methods=["GET"])
+def api_sim_history():
+    limit = request.args.get("limit", 20)
+    return jsonify(sim_trading.history(limit))
+
+
+@app.route("/api/sim/trade", methods=["POST"])
+def api_sim_trade():
+    if not is_admin_request():
+        return jsonify({"ok": False, "msg": "DENY"}), 403
 
     data = request.get_json(silent=True) or {}
     res = sim_trading.execute_trade(
@@ -864,417 +1072,49 @@ def trade_execute():
         price=data.get("price"),
         amount=data.get("amount"),
         side=data.get("side"),
-        strategy=data.get("strategy", ""),
-        reason=data.get("reason", "")
+        strategy=data.get("strategy"),
+        reason=data.get("reason")
     )
-    audit("TRADE", "EXECUTE_SIM_TRADE", payload={"req": data, "res": res})
-    return jsonify(res)
-
-
-@app.route("/api/trading/history", methods=["GET"])
-def trade_history():
-    guard = require_admin()
-    if guard:
-        return guard
-
-    limit = int(request.args.get("limit", "10"))
-    rows = sim_trading.history(limit=limit)
-    return jsonify({"success": True, "items": rows})
-
-
-# ============================================================
-# 14) 봇 관제/제어(관리자 전용)
-# ============================================================
-@app.route("/api/bots/list", methods=["GET"])
-def bots_list():
-    guard = require_admin()
-    if guard:
-        return guard
-
-    reg = load_bot_registry()
-    bots = reg.get("bots", [])
-    result = []
-    for b in bots:
-        match = b.get("match", "")
-        procs = find_processes_by_match(match)
-        result.append({
-            "name": b.get("name"),
-            "match": match,
-            "running": len(procs) > 0,
-            "processes": procs
-        })
-    return jsonify({"success": True, "bots": result})
-
-
-@app.route("/api/bots/start", methods=["POST"])
-def bots_start():
-    guard = require_admin()
-    if guard:
-        return guard
-
-    data = request.get_json(silent=True) or {}
-    name = (data.get("name") or "").strip()
-
-    reg = load_bot_registry()
-    bots = reg.get("bots", [])
-    bot = next((x for x in bots if x.get("name") == name), None)
-    if not bot:
-        return jsonify({"success": False, "error": "등록되지 않은 봇입니다."}), 400
-
-    res = start_bot(bot)
-    audit("BOT_CONTROL", "START_BOT", payload={"name": name, "res": res})
-    return jsonify(res)
-
-
-@app.route("/api/bots/stop", methods=["POST"])
-def bots_stop():
-    guard = require_admin()
-    if guard:
-        return guard
-
-    data = request.get_json(silent=True) or {}
-    pid = data.get("pid")
-    if pid is None:
-        return jsonify({"success": False, "error": "pid가 필요합니다."}), 400
-
-    res = stop_bot(int(pid))
-    audit("BOT_CONTROL", "STOP_BOT", payload={"pid": pid, "res": res})
     return jsonify(res)
 
 
 # ============================================================
-# 15) 러닝(유튜브 학습) - 중앙 패널용
+# 14) 러닝 잡(YouTube) 상태 관리
 # ============================================================
-@app.route("/api/learning/youtube/start", methods=["POST"])
-def learning_youtube_start():
-    guard = require_admin()
-    if guard:
-        return guard
-
-    data = request.get_json(silent=True) or {}
-    url = (data.get("url") or "").strip()
-    if not url:
-        return jsonify({"success": False, "error": "url이 필요합니다."}), 400
-
-    job = learning_create_job("youtube", {"url": url}, created_by=get_user_id())
-    audit("LEARNING", "START_YOUTUBE_LEARNING", payload=job)
-    return jsonify({"success": True, "job": job})
-
-
-@app.route("/api/learning/job/<job_id>/status", methods=["GET"])
-def learning_job_status(job_id):
-    guard = require_admin()
-    if guard:
-        return guard
-
-    job = learning_get(job_id)
-    if not job:
-        return jsonify({"success": False, "error": "job이 없습니다."}), 404
-
-    return jsonify({"success": True, "job": job})
-
-
-@app.route("/api/learning/job/<job_id>/logs", methods=["GET"])
-def learning_job_logs(job_id):
-    guard = require_admin()
-    if guard:
-        return guard
-
-    job = learning_get(job_id)
-    if not job:
-        return jsonify({"success": False, "error": "job이 없습니다."}), 404
-
-    log_path = job.get("log_path") or ""
-    if not log_path or not os.path.exists(log_path):
-        return jsonify({"success": True, "lines": []})
-
-    # 최근 N줄만 반환
-    n = int(request.args.get("lines", "200"))
-    with open(log_path, "r", encoding="utf-8", errors="ignore") as f:
-        lines = f.readlines()
-    return jsonify({"success": True, "lines": lines[-n:]})
+@app.route("/api/learning/jobs", methods=["GET"])
+def api_learning_jobs():
+    conn = db_server_conn()
+    cur = conn.cursor()
+    rows = [dict(r) for r in cur.execute("SELECT * FROM learning_jobs ORDER BY ts_created DESC LIMIT 50").fetchall()]
+    conn.close()
+    return jsonify(rows)
 
 
 @app.route("/api/learning/stats", methods=["GET"])
-def learning_stats_api():
-    guard = require_admin()
-    if guard:
-        return guard
-    return jsonify({"success": True, "stats": learning_stats()})
+def api_learning_stats_api():
+    return jsonify(learning_stats())
 
 
 # ============================================================
-# 16) 관리자 UI 이벤트/감사로그 조회
+# 15) 시스템 상세 메트릭 (psutil 기반)
 # ============================================================
-@app.route("/api/admin/ui_event", methods=["POST"])
-def admin_ui_event():
-    guard = require_admin()
-    if guard:
-        return guard
-
-    data = request.get_json(silent=True) or {}
-    event_name = (data.get("event_name") or "").strip() or "UI_EVENT"
-    detail = data.get("detail") or {}
-    # 버튼 클릭/페이지 이동 등 기록
-    audit("UI_CLICK", event_name, payload={"detail": detail})
-    return jsonify({"success": True})
-
-
-@app.route("/api/admin/audit/list", methods=["GET"])
-def admin_audit_list():
-    guard = require_admin()
-    if guard:
-        return guard
-
-    limit = int(request.args.get("limit", "100"))
-    event_type = (request.args.get("event_type") or "").strip()
-
-    conn = db_server_conn()
-    cur = conn.cursor()
-
-    if event_type:
-        cur.execute("""
-            SELECT * FROM audit_log
-            WHERE event_type=?
-            ORDER BY id DESC
-            LIMIT ?
-        """, (event_type, limit))
-    else:
-        cur.execute("""
-            SELECT * FROM audit_log
-            ORDER BY id DESC
-            LIMIT ?
-        """, (limit,))
-
-    rows = [dict(r) for r in cur.fetchall()]
-    conn.close()
-
-    return jsonify({"success": True, "items": rows})
+@app.route("/api/system/metrics", methods=["GET"])
+def api_system_metrics():
+    return jsonify({
+        "cpu_count": psutil.cpu_count(),
+        "cpu_load": psutil.cpu_percent(interval=0.1),
+        "mem_total_gb": round(psutil.virtual_memory().total / (1024 ** 3), 2),
+        "mem_used_percent": psutil.virtual_memory().percent,
+        "disk_io": psutil.disk_io_counters()._asdict() if psutil.disk_io_counters() else {},
+        "net_io": psutil.net_io_counters()._asdict() if psutil.net_io_counters() else {}
+    })
 
 
 # ============================================================
-# 16) OPS API - 배치 스크립트 실행
-# ============================================================
-# 보안: allowlist 방식, 고정 경로만 실행 가능
-# 로그: logs/ops_api.log에 기록
-
-OPS_DIR = os.path.join(BASE_DIR, "ops")
-OPS_LOG_FILE = os.path.join(BASE_DIR, "logs", "ops_api.log")
-
-# allowlist: 실행 가능한 배치 파일만
-ALLOWED_OPS_SCRIPTS = {
-    "control_start": os.path.join(OPS_DIR, "01_CONTROL_START.bat"),
-    "bots_start": os.path.join(OPS_DIR, "02_BOTS_START.bat"),
-    "bots_stop": os.path.join(OPS_DIR, "03_BOTS_STOP.bat"),
-    "status": os.path.join(OPS_DIR, "99_STATUS.bat"),
-}
-
-def log_ops(message: str):
-    """ops API 로그 기록"""
-    Path(OPS_LOG_FILE).parent.mkdir(parents=True, exist_ok=True)
-    with open(OPS_LOG_FILE, "a", encoding="utf-8") as f:
-        f.write(f"[{now_iso()}] {message}\n")
-
-def execute_bat_script(script_path: str) -> dict:
-    """배치 스크립트 실행 (Windows 전용)"""
-    try:
-        log_ops(f"Executing: {script_path}")
-        
-        # Windows cmd로 실행
-        result = subprocess.run(
-            ["cmd", "/c", script_path],
-            capture_output=True,
-            text=True,
-            timeout=60,  # 최대 60초
-            cwd=OPS_DIR
-        )
-        
-        log_ops(f"Exit code: {result.returncode}")
-        log_ops(f"Output: {result.stdout[:500]}")  # 처음 500자만
-        
-        return {
-            "success": result.returncode == 0,
-            "exit_code": result.returncode,
-            "stdout": result.stdout,
-            "stderr": result.stderr
-        }
-    except subprocess.TimeoutExpired:
-        log_ops("ERROR: Script timeout (60s)")
-        return {"success": False, "error": "Timeout (60s)"}
-    except Exception as e:
-        log_ops(f"ERROR: {str(e)}")
-        return {"success": False, "error": str(e)}
-
-
-def execute_bat_script_async(script_path: str) -> dict:
-    """배치 스크립트 비동기 실행 (백그라운드)"""
-    import threading
-    try:
-        log_ops(f"Starting async: {script_path}")
-        
-        def run_script():
-            try:
-                subprocess.Popen(
-                    ["cmd", "/c", script_path],
-                    cwd=OPS_DIR,
-                    creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
-                )
-            except Exception as e:
-                log_ops(f"Async execution error: {str(e)}")
-        
-        thread = threading.Thread(target=run_script, daemon=True)
-        thread.start()
-        
-        return {"ok": True, "msg": "started"}
-    except Exception as e:
-        log_ops(f"ERROR in async execution: {str(e)}")
-        return {"ok": False, "msg": str(e)}
-
-
-@app.route("/api/ops/control/start", methods=["POST"])
-def ops_control_start():
-    """CONTROL 시작 (API, Cloudflare, Ollama) - 비동기 실행"""
-    # 보안: 관리자만 실행 가능 (선택적)
-    # guard = require_admin()
-    # if guard:
-    #     return guard
-    
-    audit("OPS_CONTROL_START", "01_CONTROL_START.bat 실행")
-    result = execute_bat_script_async(ALLOWED_OPS_SCRIPTS["control_start"])
-    return jsonify(result)
-
-
-@app.route("/api/ops/bots/start", methods=["POST"])
-def ops_bots_start():
-    """BOTS 시작 (Trading, Learning) - 비동기 실행"""
-    # 보안: 관리자만 실행 가능 (선택적)
-    # guard = require_admin()
-    # if guard:
-    #     return guard
-    
-    audit("OPS_BOTS_START", "02_BOTS_START.bat 실행")
-    result = execute_bat_script_async(ALLOWED_OPS_SCRIPTS["bots_start"])
-    return jsonify(result)
-
-
-@app.route("/api/ops/bots/stop", methods=["POST"])
-def ops_bots_stop():
-    """BOTS 정지 (CONTROL은 유지) - 비동기 실행"""
-    # 보안: 관리자만 실행 가능 (선택적)
-    # guard = require_admin()
-    # if guard:
-    #     return guard
-    
-    audit("OPS_BOTS_STOP", "03_BOTS_STOP.bat 실행")
-    result = execute_bat_script_async(ALLOWED_OPS_SCRIPTS["bots_stop"])
-    return jsonify(result)
-
-
-@app.route("/api/ops/status", methods=["GET"])
-def ops_status():
-    """시스템 종합 상태 조회 (간소화 버전)"""
-    try:
-        # 포트 체크 (socket 방식)
-        port_5001 = check_port_socket(5001)
-        port_5000 = check_port_socket(5000)
-        port_11434 = check_port_socket(11434)
-        
-        # 프로세스 체크
-        cloudflared_running = check_process("cloudflared.exe")
-        ollama_running = check_ollama_external()
-        
-        # 등급 결정
-        if port_5001 and cloudflared_running:
-            grade = "OK"
-            note = "핵심 서비스 정상"
-        elif port_5001:
-            grade = "WARN"
-            note = "API 정상, Cloudflare 터널 확인 필요"
-        else:
-            grade = "FAIL"
-            note = "API 서버 미실행"
-        
-        return jsonify({
-            "timestamp": now_iso(),
-            "ports": {
-                "5001": port_5001,
-                "5000": port_5000,
-                "11434": port_11434
-            },
-            "process": {
-                "cloudflared": cloudflared_running,
-                "ollama": ollama_running
-            },
-            "grade": grade,
-            "note": note
-        })
-    except Exception as e:
-        log_ops(f"ERROR in ops_status: {str(e)}")
-        return jsonify({
-            "timestamp": now_iso(),
-            "ports": {"5001": False, "5000": False, "11434": False},
-            "process": {"cloudflared": False, "ollama": False},
-            "grade": "FAIL",
-            "note": f"오류: {str(e)}"
-        })
-
-
-def check_process(name: str, window_title: str = None) -> bool:
-    """프로세스 실행 여부 확인"""
-    try:
-        for proc in psutil.process_iter(['name', 'cmdline']):
-            if name.lower() in proc.info['name'].lower():
-                if window_title:
-                    cmdline = ' '.join(proc.info['cmdline'] or [])
-                    if window_title.lower() in cmdline.lower():
-                        return True
-                else:
-                    return True
-        return False
-    except:
-        return False
-
-
-def check_port(port: int) -> bool:
-    """포트 열림 확인 (psutil 방식)"""
-    try:
-        for conn in psutil.net_connections():
-            if conn.laddr.port == port and conn.status == 'LISTEN':
-                return True
-        return False
-    except:
-        return False
-
-
-def check_port_socket(port: int) -> bool:
-    """포트 열림 확인 (socket 연결 방식)"""
-    import socket
-    try:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(1)
-        result = sock.connect_ex(('127.0.0.1', port))
-        sock.close()
-        return result == 0
-    except:
-        return False
-
-
-def check_ollama_external() -> bool:
-    """Ollama 외부 서버 접속 확인"""
-    try:
-        import requests
-        resp = requests.get("http://ollama.thetheunique.com/api/tags", timeout=5)
-        return resp.status_code == 200
-    except:
-        return False
-
-
-# ============================================================
-# 17) 엔트리포인트
+# 16) 엔트리포인트
 # ============================================================
 if __name__ == "__main__":
-    print("🚀 Lee May 통합 관제 서버 가동 (Port 5001)")
-    print(f"📁 이미지 경로: {IMAGES_DIR} (JPG 모드)")
-    if not ADMIN_TOKEN:
-        print("⚠️  ADMIN_TOKEN 환경변수가 비어있음: 운영/외부접속이면 반드시 설정하세요!")
+    print("🚀 Lee May v3.3.1 통합 관제 서버 가동 (Port 5001)")
+    print(f"📁 BASE_DIR: {BASE_DIR}")
+    print(f"🧾 OPS_LOG:  {OPS_LOG_FILE}")
     app.run(host="0.0.0.0", port=5001, debug=False)
