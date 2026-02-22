@@ -1,0 +1,337 @@
+폴더 PATH의 목록입니다.
+볼륨 일련 번호는 C2EB-A998입니다.
+C:.
+|   5001
+|   60
+|   cloudflared_debug.log
+|   notepad
+|   project_structure.txt
+|   
++---backups
+|   \---garbage
++---bot
++---brain
+|       교본.md
+|       자가_복구_리포트.log
+|       전략_파라미터.json
+|       지능_성장_보고서.md
+|       
++---core
+|   |   api_server.py
+|   |   emotion_mapper.py
+|   |   
+|   +---knowledge_base
+|   +---leemay
+|   |   +---images
+|   |   \---personas
+|   |           emay_persona.json
+|   |           
+|   \---__pycache__
+|           emotion_mapper.cpython-313.pyc
+|           
++---data
+|       server.db
+|       
++---docs
++---emay
++---knowledge_base
++---leemay
+|   |   __init__.py
+|   |   
+|   +---core
+|   |   |   leemay_brain.py
+|   |   |   __init__.py
+|   |   |   
+|   |   \---__pycache__
+|   |           __init__.cpython-313.pyc
+|   |           
+|   +---images
+|   |       angry.png
+|   |       annoyed.png
+|   |       apologizing.png
+|   |       calm.png
+|   |       cheerful.png
+|   |       comforting.png
+|   |       confident.png
+|   |       curious.png
+|   |       disappointed.png
+|   |       empathetic.png
+|   |       encouraging.png
+|   |       excited.png
+|   |       explaining.png
+|   |       focused.png
+|   |       frustrated.png
+|   |       grateful.png
+|   |       happy.png
+|   |       hopeful.png
+|   |       interested.png
+|   |       listening.png
+|   |       lonely.png
+|   |       loving.png
+|   |       motivated.png
+|   |       neutral.png
+|   |       playful.png
+|   |       proud.png
+|   |       relaxed.png
+|   |       sad.png
+|   |       scared.png
+|   |       serious.png
+|   |       skeptical.png
+|   |       stressed.png
+|   |       surprised.png
+|   |       thinking.png
+|   |       tired.png
+|   |       worried.png
+|   |       
+|   +---personas
+|   \---__pycache__
+|           __init__.cpython-313.pyc
+|           
++---logs
++---new_files
+|   +---batch_files
+|   +---config_files
+|   |       backtest_results.json
+|   |       delisted_coins.json
+|   |       emay_persona.json
+|   |       
+|   +---docs
+|   |       ADMIN_DASHBOARD.md
+|   |       AI_TRADING_RECOVERY_PLAN.md
+|   |       API_TESTING.md
+|   |       ARCHITECTURE.md
+|   |       ARCHITECTURE_V9.md
+|   |       AUTO_RECOVERY_GUIDE.md
+|   |       BACKUP_GUIDE.md
+|   |       BALANCE_EXPLANATION.md
+|   |       BATCH_GUIDE_FIXED.md
+|   |       BOTS_CLASSIFICATION.md
+|   |       CHATGPT_COLLABORATION_GUIDE.md
+|   |       check_local_ollama.md
+|   |       CLOUDFLARE_FIX_COMPLETE.md
+|   |       DEBUGGING_FILES.md
+|   |       DEPLOYMENT_GUIDE.md
+|   |       DIY_GUIDE.md
+|   |       FINAL_HANDOFF.md
+|   |       FINAL_TEST_GUIDE.md
+|   |       GITHUB_FORCE_PUSH_RECOVERY.md
+|   |       MONITORING_REPORT.md
+|   |       NAMED_TUNNEL_SETUP_GUIDE.md
+|   |       OLD_LEARNING_DATA_RESTORED.md
+|   |       PERMANENT_OLLAMA_SOLUTIONS.md
+|   |       PERSISTENT_SESSION_GUIDE.md
+|   |       PM2_GUIDE.md
+|   |       PRE_PRODUCTION_CHECKLIST.md
+|   |       PROJECT_MASTER.md
+|   |       PROJECT_RULES.md
+|   |       README-v6.md
+|   |       README.md
+|   |       README_1.md
+|   |       README_2.md
+|   |       REPORT_00_SNAPSHOT.md
+|   |       REPORT_02_TRADING_TRAINING.md
+|   |       REPORT_03_YOUTUBE_RAG.md
+|   |       RUNBOOK.md
+|   |       STOPPED_BOTS_FIX.md
+|   |       UPDATE_LOG.md
+|   |       v10.1_BUGFIX.md
+|   |       v10_PRODUCTION_READY.md
+|   |       v9.1_UX_IMPROVEMENTS.md
+|   |       VERIFICATION_REPORT.md
+|   |       windows_auto_start_guide.md
+|   |       ZERO_DOWNTIME_DEPLOYMENT.md
+|   |       
+|   +---other_files
+|   |       .gitignore
+|   |       admin_key.txt
+|   |       admin_token.txt
+|   |       api_keys.json.example
+|   |       api_server.py.BACKUP_20260221
+|   |       apply-all-backgrounds.sh
+|   |       apply-backgrounds.sh
+|   |       bot-manager.sh
+|   |       bump_version.py.txt
+|   |       check-backgrounds.sh
+|   |       check_ollama_tunnel.sh
+|   |       config.yml
+|   |       cookies.txt
+|   |       design-system.css
+|   |       enhancements.css
+|   |       hover-visibility-enhanced.css
+|   |       install-and-run.sh
+|   |       install_ollama_sandbox.sh
+|   |       LeeMay_Monitor_MAINpowershell
+|   |       LeeMay_START.vbs
+|   |       medieval-magic.css
+|   |       medieval-override.css
+|   |       monitor-bot.sh
+|   |       quick_update.sh
+|   |       requirements-bot.txt
+|   |       requirements-surge-hunter.txt
+|   |       requirements.txt
+|   |       requirements_1.txt
+|   |       requirements_2.txt
+|   |       resolve_conflicts.sh
+|   |       run_5000_20260221_191827.cmd
+|   |       run_5000_20260221_191907.cmd
+|   |       run_5000_20260221_192635_814_7916.cmd
+|   |       run_5000_20260221_212846_143_31764.cmd
+|   |       run_5000_20260221_215423_324_23810.cmd
+|   |       run_5000_20260221_215708_262_5648.cmd
+|   |       run_5000_20260221_233606_057_25496.cmd
+|   |       run_5000_20260222_000009_961_30212.cmd
+|   |       setup-wizard.sh
+|   |       start-bot-v4.sh
+|   |       start-bot-v5.sh
+|   |       START-HERE.sh
+|   |       START-SAFE.cmd
+|   |       start-smart-bot.sh
+|   |       START.cmd
+|   |       start_emay_silent.vbs
+|   |       strategy_10_analysis.txt
+|   |       strategy_11_analysis.txt
+|   |       strategy_12_analysis.txt
+|   |       strategy_13_analysis.txt
+|   |       strategy_14_analysis.txt
+|   |       strategy_15_analysis.txt
+|   |       strategy_16_analysis.txt
+|   |       strategy_17_analysis.txt
+|   |       strategy_18_analysis.txt
+|   |       strategy_19_analysis.txt
+|   |       strategy_1_analysis.txt
+|   |       strategy_2_analysis.txt
+|   |       strategy_3_analysis.txt
+|   |       strategy_4_analysis.txt
+|   |       strategy_5_analysis.txt
+|   |       strategy_6_analysis.txt
+|   |       strategy_7_analysis.txt
+|   |       strategy_8_analysis.txt
+|   |       strategy_9_analysis.txt
+|   |       test_new_tunnel.sh
+|   |       the-unique-core.css
+|   |       troubleshoot_ollama.sh
+|   |       upbit-bot-v8.0-ultimate-release.tar.gz
+|   |       upbit-bot-v8.0-ultimate-release.zip
+|   |       update.sh
+|   |       update_ollama_url.sh
+|   |       version.json.txt
+|   |       _BASELINE_V8
+|   |       _LEEMAY
+|   |       _LEGACY_V6
+|   |       
+|   \---python_files
+|           ai_trading_5000_stub.py
+|           api_server_1.py
+|           backtest_patterns.py
+|           backtest_patterns_1.py
+|           bot_manager.py
+|           bot_manager_1.py
+|           bot_state_manager.py
+|           bot_state_manager_1.py
+|           emay_brain.py
+|           emay_brain_1.py
+|           emei_response_router.py
+|           emotion_mapper_1.py
+|           enhanced_emei_learning.py
+|           generate_emotions.py
+|           generate_emotions_1.py
+|           imei_learning_system.py
+|           imei_learning_system_1.py
+|           init_db.py
+|           init_db_1.py
+|           init_db_v2.py
+|           init_db_v2_1.py
+|           license_protection.py
+|           license_protection_1.py
+|           license_protection_2.py
+|           license_server.py
+|           license_server_1.py
+|           license_server_2.py
+|           memory.py
+|           memory_1.py
+|           portfolio_manager.py
+|           recovery_system.py
+|           restore_all_learning_data.py
+|           restore_old_learning_data.py
+|           show_backtest_report.py
+|           show_backtest_report_1.py
+|           test-dip-hunter.py
+|           test-dip-quick.py
+|           test-flow.py
+|           test-surge-hunter.py
+|           test-surge-simple.py
+|           test_emay_chat.py
+|           test_emay_chat_1.py
+|           test_memory.py
+|           test_memory_1.py
+|           test_mongodb_atlas.py
+|           test_mongodb_atlas_1.py
+|           trade_reasons.py
+|           trading_database.py
+|           trading_database_1.py
+|           trading_database_2.py
+|           upbit-backtest.py
+|           upbit-smart-bot-v5-LIVE.py
+|           upbit-smart-bot-v5-LIVE_1.py
+|           upbit-smart-bot-v5.py
+|           upbit-smart-bot-v5_1.py
+|           upbit-smart-bot-v6.py
+|           upbit-smart-bot-v6_1.py
+|           upbit-smart-bot-v6_2.py
+|           upbit-smart-bot-v6_3.py
+|           upbit-smart-bot-v6_4.py
+|           upbit-smart-bot-v8.0-LEARNING.py
+|           upbit-smart-bot-v8.0-ULTIMATE.py
+|           upbit-smart-bot-v8.0-ULTIMATE_1.py
+|           user_manager.py
+|           youtube_learner.py
+|           youtube_learner_1.py
+|           youtube_smart_learner.py
+|           youtube_smart_learner_1.py
+|           
++---ops
+|       01_CONTROL_START.bat
+|       02_BOTS_START.bat
+|       02_BOTS_START_SAFE_5000.bat
+|       03_BOTS_STOP.bat
+|       04_OPS_RESTART_5001.bat
+|       10_TRADING_PARAM.bat
+|       11_RECOVERY.bat
+|       99_STATUS.bat
+|       ai_trading_star.bat
+|       chat_study_star.bat
+|       INSTALL-ALL.bat
+|       install-and-run.bat
+|       INSTALL-COMPLETE.bat
+|       INSTALL-FINAL.bat
+|       INSTALL-FIXED.bat
+|       INSTALL.bat
+|       INSTALL_1.bat
+|       INSTALL_2.bat
+|       LeeMay_Monitor_MAIN.bat
+|       LeeMay_STOP.bat
+|       setup-wizard.bat
+|       START-FINAL.bat
+|       START-FIXED.bat
+|       START-HERE.bat
+|       START.bat
+|       START_1.bat
+|       START_ALL.bat
+|       START_Cloudflare_Ollama.bat
+|       start_emay_background.bat
+|       STOP.bat
+|       STOP_ALL.bat
+|       STOP_Cloudflare_Ollama.bat
+|       stop_emay.bat
+|       
++---past_thing
+\---web
+    |   control_5001.html
+    |   dashboard.html
+    |   index.html
+    |   trading_5000.html
+    |   
+    \---assets
+            app.css
+            app.js
+            
