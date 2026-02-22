@@ -1,204 +1,149 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>운영 제어 센터 (Port 5001) - Lee May Trading</title>
-    <link rel="stylesheet" href="assets/app.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>LeeMay Training Center</title>
+  <link rel="stylesheet" href="assets/app.css" />
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🎛️ 운영 제어 센터</h1>
-            <p class="subtitle">Lee May Trading System - Operations Control Center (Port 5001)</p>
-            <div class="server-badge">Control Server</div>
-        </header>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-title">LeeMay Training Center</div>
+      </div>
 
-        <main>
-            <!-- 시스템 상태 대시보드 -->
-            <section class="dashboard-section">
-                <h2>📊 시스템 상태</h2>
-                <div class="status-grid">
-                    <div class="status-card">
-                        <div class="status-icon">🖥️</div>
-                        <h3>Control Server</h3>
-                        <div class="status-indicator active" id="control-status">● Running</div>
-                        <p class="status-detail">Port: 5001</p>
-                    </div>
-                    <div class="status-card">
-                        <div class="status-icon">📈</div>
-                        <h3>Trading Server</h3>
-                        <div class="status-indicator" id="trading-status">○ Checking...</div>
-                        <p class="status-detail">Port: 5000</p>
-                    </div>
-                    <div class="status-card">
-                        <div class="status-icon">🤖</div>
-                        <h3>Bot Engines</h3>
-                        <div class="status-indicator" id="bots-status">○ Checking...</div>
-                        <p class="status-detail">Multi-Engine</p>
-                    </div>
-                    <div class="status-card">
-                        <div class="status-icon">💬</div>
-                        <h3>IMEI AI</h3>
-                        <div class="status-indicator" id="imei-status">○ Checking...</div>
-                        <p class="status-detail">AI Assistant</p>
-                    </div>
-                </div>
-            </section>
+      <div class="topbar-right">
+        <div class="pill" id="pill-last">Last: -</div>
+        <div class="pill ok" id="pill-health">health: -</div>
+        <div class="pill" id="pill-api">API: same-origin</div>
+      </div>
+    </header>
 
-            <!-- 제어 패널 -->
-            <section class="control-panel-section">
-                <h2>🎮 제어 패널</h2>
-                <div class="control-grid">
-                    <button class="control-btn start" onclick="startAllBots()">
-                        <span class="btn-icon">▶️</span>
-                        <span class="btn-text">모든 봇 시작</span>
-                    </button>
-                    <button class="control-btn stop" onclick="stopAllBots()">
-                        <span class="btn-icon">⏹️</span>
-                        <span class="btn-text">모든 봇 정지</span>
-                    </button>
-                    <button class="control-btn restart" onclick="restartSystem()">
-                        <span class="btn-icon">🔄</span>
-                        <span class="btn-text">시스템 재시작</span>
-                    </button>
-                    <button class="control-btn refresh" onclick="refreshStatus()">
-                        <span class="btn-icon">🔃</span>
-                        <span class="btn-text">상태 새로고침</span>
-                    </button>
-                </div>
-            </section>
+    <main class="grid">
+      <!-- LEFT -->
+      <section class="panel">
+        <div class="panel-title">상태</div>
 
-            <!-- 실시간 로그 -->
-            <section class="log-section">
-                <div class="section-header">
-                    <h2>📝 실시간 로그</h2>
-                    <button class="clear-log-btn" onclick="clearLogs()">로그 지우기</button>
-                </div>
-                <div id="log-output" class="log-output">
-                    <div class="log-entry info">시스템 준비 완료</div>
-                </div>
-            </section>
+        <div class="cards">
+          <div class="card">
+            <div class="card-row">
+              <div class="card-k">Port 5001 (OPS)</div>
+              <div class="dot off" id="dot-5001"></div>
+              <div class="card-v" id="txt-5001">CHECK</div>
+            </div>
+          </div>
 
-            <!-- 빠른 링크 -->
-            <section class="quick-links-section">
-                <h2>🔗 빠른 링크</h2>
-                <div class="links-grid">
-                    <a href="trading_5000.html" class="link-card primary">
-                        <span class="link-icon">📈</span>
-                        <span class="link-title">트레이딩 대시보드</span>
-                        <span class="link-desc">실시간 거래 모니터링</span>
-                    </a>
-                    <a href="/api/health" class="link-card" target="_blank">
-                        <span class="link-icon">❤️</span>
-                        <span class="link-title">Health Check</span>
-                        <span class="link-desc">시스템 상태 확인</span>
-                    </a>
-                    <a href="/api/status" class="link-card" target="_blank">
-                        <span class="link-icon">📊</span>
-                        <span class="link-title">Status API</span>
-                        <span class="link-desc">JSON 상태 정보</span>
-                    </a>
-                    <a href="index.html" class="link-card">
-                        <span class="link-icon">🏠</span>
-                        <span class="link-title">메인 페이지</span>
-                        <span class="link-desc">대시보드 홈</span>
-                    </a>
-                </div>
-            </section>
-        </main>
+          <div class="card">
+            <div class="card-row">
+              <div class="card-k">Port 5000 (BOT)</div>
+              <div class="dot off" id="dot-5000"></div>
+              <div class="card-v" id="txt-5000">CHECK</div>
+            </div>
+          </div>
 
-        <footer>
-            <p>Lee May Trading System © 2026 | Operations Control Center</p>
-            <p class="footer-detail">Port 5001 - OPS Management Interface</p>
-        </footer>
-    </div>
+          <div class="card">
+            <div class="card-row">
+              <div class="card-k">Port 11434 (Ollama)</div>
+              <div class="dot off" id="dot-11434"></div>
+              <div class="card-v" id="txt-11434">CHECK</div>
+            </div>
+          </div>
+        </div>
 
-    <script src="assets/app.js"></script>
-    <script>
-        // Control Center Specific Functions
-        async function startAllBots() {
-            addLog('🚀 모든 봇 시작 요청...', 'info');
-            try {
-                const response = await fetch('/api/ops/start-all', { 
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
-                });
-                const data = await response.json();
-                
-                if (data.success) {
-                    addLog('✅ 봇 시작 성공', 'success');
-                } else {
-                    addLog('❌ 봇 시작 실패: ' + (data.error || '알 수 없는 오류'), 'error');
-                }
-                
-                setTimeout(refreshStatus, 2000);
-            } catch (error) {
-                addLog('❌ 네트워크 오류: ' + error.message, 'error');
-            }
-        }
+        <div class="meta">
+          <div class="meta-row"><span class="meta-k">uptime</span><span class="meta-v" id="txt-uptime">-</span></div>
+          <div class="meta-row"><span class="meta-k">ai_log</span><span class="meta-v mono" id="txt-ai-log">-</span></div>
+          <div class="meta-row"><span class="meta-k">ops_log</span><span class="meta-v mono" id="txt-ops-log">-</span></div>
+        </div>
 
-        async function stopAllBots() {
-            if (!confirm('모든 봇을 정지하시겠습니까?')) return;
-            
-            addLog('🛑 모든 봇 정지 요청...', 'info');
-            try {
-                const response = await fetch('/api/ops/stop-all', { 
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
-                });
-                const data = await response.json();
-                
-                if (data.success) {
-                    addLog('✅ 봇 정지 성공', 'success');
-                } else {
-                    addLog('❌ 봇 정지 실패: ' + (data.error || '알 수 없는 오류'), 'error');
-                }
-                
-                setTimeout(refreshStatus, 2000);
-            } catch (error) {
-                addLog('❌ 네트워크 오류: ' + error.message, 'error');
-            }
-        }
+        <div class="panel-title sub">사령부 전술 제어 <span class="dim">COMMANDER ONLY</span></div>
 
-        async function restartSystem() {
-            if (!confirm('시스템 전체를 재시작하시겠습니까? 모든 연결이 일시적으로 끊깁니다.')) return;
-            
-            addLog('🔄 시스템 재시작 요청...', 'warning');
-            try {
-                const response = await fetch('/api/ops/restart', { 
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
-                });
-                const data = await response.json();
-                
-                if (data.success) {
-                    addLog('✅ 재시작 명령 전송 완료 - 잠시 후 자동으로 복구됩니다', 'success');
-                    setTimeout(() => {
-                        addLog('🔃 30초 후 페이지를 새로고침합니다...', 'info');
-                    }, 5000);
-                    setTimeout(() => location.reload(), 35000);
-                } else {
-                    addLog('❌ 재시작 실패: ' + (data.error || '알 수 없는 오류'), 'error');
-                }
-            } catch (error) {
-                addLog('❌ 네트워크 오류: ' + error.message, 'error');
-            }
-        }
+        <div class="cmd-row">
+          <input id="cmd-input" class="input" placeholder=".... (Enter로 전송)" autocomplete="off" />
+          <button class="btn ghost" id="btn-auto">AUTO: ON</button>
+        </div>
 
-        function clearLogs() {
-            const logOutput = document.getElementById('log-output');
-            logOutput.innerHTML = '<div class="log-entry info">로그가 지워졌습니다</div>';
-        }
+        <div class="hint">
+          전술 적용: 현재 슬라이더의 지능 설정을 봇에 즉시 이식합니다.
+        </div>
 
-        // Auto-refresh status
-        window.addEventListener('load', () => {
-            addLog('🎛️ 운영 제어 센터 초기화 완료', 'success');
-            refreshStatus();
-            
-            // Auto-refresh every 15 seconds
-            setInterval(refreshStatus, 15000);
-        });
-    </script>
+        <div class="btn-grid">
+          <button class="btn" id="btn-refresh">현황 업데이트</button>
+          <button class="btn" id="btn-engine">서버 엔진 가동</button>
+
+          <button class="btn" id="btn-train">매매 봇 훈련</button>
+          <button class="btn warn" id="btn-rearm">봇 재정비</button>
+
+          <button class="btn danger" id="btn-stop">매매 중단</button>
+          <button class="btn danger" id="btn-reboot">시스템 재부팅</button>
+        </div>
+
+        <div class="slider">
+          <div class="slider-row">
+            <div class="slider-k">탐사 지능 강도 (Intelligence Ratio)</div>
+            <div class="slider-v" id="txt-ir">70%</div>
+          </div>
+          <input id="ir" type="range" min="0" max="100" value="70" />
+          <button class="btn wide" id="btn-apply">전략 즉각 적용</button>
+        </div>
+
+        <div class="footnote dim">
+          ※ 404/403/500이 보이면: 먼저 엔드포인트(/health, /api/system/status, /chat)를 확인.
+        </div>
+      </section>
+
+      <!-- CENTER -->
+      <section class="panel">
+        <div class="panel-title">로그 뷰어</div>
+
+        <div class="log-top">
+          <div class="chips" id="log-chips"></div>
+          <div class="pill mono" id="log-path">log: -</div>
+        </div>
+
+        <div class="log-actions">
+          <button class="btn" id="btn-log-load">로그 불러오기</button>
+          <button class="btn ghost" id="btn-log-clear">화면 지우기</button>
+          <input class="input" id="log-filter" placeholder="필터(검색)..." />
+        </div>
+
+        <pre class="logbox" id="logbox"></pre>
+      </section>
+
+      <!-- RIGHT -->
+      <section class="panel">
+        <div class="panel-title">E-MAY</div>
+
+        <div class="emay-head">
+          <div class="pill" id="pill-emotion">emotion: -</div>
+        </div>
+
+        <div class="portrait">
+          <img id="emotion-img" alt="emotion" />
+        </div>
+
+        <div class="chat">
+          <div class="chatbox" id="chatbox"></div>
+
+          <div class="chat-input">
+            <input class="input" id="chat-input" placeholder="채팅 입력 후 Enter..." autocomplete="off" />
+            <button class="btn" id="btn-send">SEND</button>
+          </div>
+
+          <div class="api-error" id="api-error" hidden>
+            <div class="api-error-title">API 오류</div>
+            <pre class="api-error-body" id="api-error-body"></pre>
+          </div>
+
+          <div class="dim small">
+            · 채팅이 길어지면 이미지 박스는 고정. 채팅만 스크롤.
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="assets/app.js"></script>
 </body>
 </html>
