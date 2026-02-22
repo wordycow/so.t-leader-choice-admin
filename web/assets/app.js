@@ -1,328 +1,347 @@
-// Lee May Trading System - Unified JavaScript
-// Common functions for both control and trading dashboards
+(() => {
+  const CFG = {
+    endpoints: {
+      health: "/health",
+      systemStatus: "/api/system/status",
+      botsStatus: "/api/bots/status",
+      chat: "/chat",
+      imageBase: "/image/",
+      // OPS (관리자)
+      opsBotsStart: "/api/ops/bots/start",
+      opsBotsStop: "/api/ops/bots/stop",
+      opsBotsRestart: "/api/ops/bots/restart",
+      opsSystemRestart: "/api/ops/system/restart",
+      opsStrategyApply: "/api/ops/strategy/apply",
+      opsCommander: "/api/ops/command",
+      // logs
+      logsList: "/api/ops/logs/list",
+      logsRead: "/api/ops/logs/read"
+    },
+    refreshMs: 15000,
+    logTail: 300
+  };
 
-// Global state
-let refreshInterval = null;
+  const $ = (id) => document.getElementById(id);
 
-// Add log entry
-function addLog(message, type = 'info') {
-    const logOutput = document.getElementById('log-output');
-    if (!logOutput) return;
-    
-    const timestamp = new Date().toLocaleTimeString('ko-KR');
-    const logEntry = document.createElement('div');
-    logEntry.className = `log-entry ${type}`;
-    logEntry.textContent = `[${timestamp}] ${message}`;
-    
-    // Add to top
-    logOutput.insertBefore(logEntry, logOutput.firstChild);
-    
-    // Keep only last 50 entries
-    while (logOutput.children.length > 50) {
-        logOutput.removeChild(logOutput.lastChild);
+  const state = {
+    auto: true,
+    selectedLog: "ops_api.log",
+    logs: [],
+    opsKey: localStorage.getItem("LEEMAY_OPS_KEY") || ""
+  };
+
+  function setPill(el, text, kind) {
+    el.classList.remove("ok", "warn", "danger");
+    if (kind) el.classList.add(kind);
+    el.textContent = text;
+  }
+
+  function setDot(dotEl, ok) {
+    dotEl.classList.toggle("on", !!ok);
+    dotEl.classList.toggle("off", !ok);
+  }
+
+  function showError(title, detail) {
+    const wrap = $("api-error");
+    const body = $("api-error-body");
+    wrap.hidden = false;
+    body.textContent = `${title}\n\n${detail || ""}`.trim();
+  }
+
+  function clearError() {
+    const wrap = $("api-error");
+    wrap.hidden = true;
+    $("api-error-body").textContent = "";
+  }
+
+  async function apiFetch(url, opts = {}, expectJson = true) {
+    const headers = Object.assign(
+      { "Content-Type": "application/json" },
+      opts.headers || {}
+    );
+
+    // OPS KEY는 /api/ops/* 에만 자동 첨부
+    if (url.startsWith("/api/ops/") && state.opsKey) {
+      headers["X-OPS-KEY"] = state.opsKey;
     }
-}
 
-// Refresh system status
-async function refreshStatus() {
-    try {
-        // Check Control Server (5001)
-        const controlStatus = document.getElementById('control-status');
-        if (controlStatus) {
-            try {
-                const controlResponse = await fetch('/api/health', { 
-                    method: 'GET',
-                    signal: AbortSignal.timeout(3000)
-                });
-                
-                if (controlResponse.ok) {
-                    controlStatus.textContent = '● Running';
-                    controlStatus.classList.add('active');
-                } else {
-                    controlStatus.textContent = '○ Offline';
-                    controlStatus.classList.remove('active');
-                }
-            } catch (error) {
-                controlStatus.textContent = '○ Error';
-                controlStatus.classList.remove('active');
-            }
-        }
-        
-        // Check Trading Server (5000)
-        const tradingStatus = document.getElementById('trading-status');
-        if (tradingStatus) {
-            try {
-                const tradingResponse = await fetch('/api/health', {
-                    method: 'GET',
-                    signal: AbortSignal.timeout(3000)
-                });
-                
-                if (tradingResponse.ok) {
-                    tradingStatus.textContent = '● Running';
-                    tradingStatus.classList.add('active');
-                } else {
-                    tradingStatus.textContent = '○ Offline';
-                    tradingStatus.classList.remove('active');
-                }
-            } catch (error) {
-                tradingStatus.textContent = '○ Error';
-                tradingStatus.classList.remove('active');
-            }
-        }
-        
-        // Check Bot Engines
-        const botsStatus = document.getElementById('bots-status');
-        if (botsStatus) {
-            try {
-                const botsResponse = await fetch('/api/status', {
-                    method: 'GET',
-                    signal: AbortSignal.timeout(3000)
-                });
-                
-                if (botsResponse.ok) {
-                    const data = await botsResponse.json();
-                    const runningBots = data.bots ? data.bots.filter(b => b.status === 'running').length : 0;
-                    
-                    if (runningBots > 0) {
-                        botsStatus.textContent = `● ${runningBots} Running`;
-                        botsStatus.classList.add('active');
-                    } else {
-                        botsStatus.textContent = '○ Stopped';
-                        botsStatus.classList.remove('active');
-                    }
-                } else {
-                    botsStatus.textContent = '○ Unknown';
-                    botsStatus.classList.remove('active');
-                }
-            } catch (error) {
-                botsStatus.textContent = '○ Error';
-                botsStatus.classList.remove('active');
-            }
-        }
-        
-        // Check IMEI AI
-        const imeiStatus = document.getElementById('imei-status');
-        if (imeiStatus) {
-            try {
-                const imeiResponse = await fetch('/api/health', {
-                    method: 'GET',
-                    signal: AbortSignal.timeout(3000)
-                });
-                
-                if (imeiResponse.ok) {
-                    imeiStatus.textContent = '● Active';
-                    imeiStatus.classList.add('active');
-                } else {
-                    imeiStatus.textContent = '○ Offline';
-                    imeiStatus.classList.remove('active');
-                }
-            } catch (error) {
-                imeiStatus.textContent = '○ Error';
-                imeiStatus.classList.remove('active');
-            }
-        }
-        
-        // Update bot engine status indicators
-        updateBotEngineStatus('signal-status', '/api/bots/signal/status');
-        updateBotEngineStatus('strategy-status', '/api/bots/strategy/status');
-        updateBotEngineStatus('execution-status', '/api/bots/execution/status');
-        updateBotEngineStatus('risk-status', '/api/bots/risk/status');
-        
-    } catch (error) {
-        console.error('Status refresh error:', error);
+    const res = await fetch(url, Object.assign({}, opts, { headers }));
+    const ct = (res.headers.get("content-type") || "").toLowerCase();
+
+    const readText = async () => {
+      try { return await res.text(); } catch { return ""; }
+    };
+
+    if (!res.ok) {
+      const t = await readText();
+      throw new Error(`[HTTP ${res.status}] ${url}\n${t.slice(0, 1200)}`);
     }
-}
 
-// Update individual bot engine status
-async function updateBotEngineStatus(elementId, endpoint) {
-    const element = document.getElementById(elementId);
-    if (!element) return;
-    
-    try {
-        const response = await fetch(endpoint, {
-            method: 'GET',
-            signal: AbortSignal.timeout(2000)
-        });
-        
-        if (response.ok) {
-            const data = await response.json();
-            
-            if (data.running) {
-                element.textContent = '●';
-                element.classList.add('active');
-            } else {
-                element.textContent = '○';
-                element.classList.remove('active');
-            }
-            
-            // Update metrics if available
-            if (elementId === 'signal-status' && data.signal_count !== undefined) {
-                const countElement = document.getElementById('signal-count');
-                if (countElement) countElement.textContent = `신호: ${data.signal_count}`;
-            }
-            
-            if (elementId === 'strategy-status' && data.strategy_count !== undefined) {
-                const countElement = document.getElementById('strategy-count');
-                if (countElement) countElement.textContent = `전략: ${data.strategy_count}`;
-            }
-            
-            if (elementId === 'execution-status' && data.execution_count !== undefined) {
-                const countElement = document.getElementById('execution-count');
-                if (countElement) countElement.textContent = `실행: ${data.execution_count}`;
-            }
-            
-            if (elementId === 'risk-status' && data.risk_level !== undefined) {
-                const levelElement = document.getElementById('risk-level');
-                if (levelElement) levelElement.textContent = `리스크: ${data.risk_level}`;
-            }
-        } else {
-            element.textContent = '○';
-            element.classList.remove('active');
-        }
-    } catch (error) {
-        element.textContent = '○';
-        element.classList.remove('active');
+    if (!expectJson) return await res.text();
+
+    if (ct.includes("application/json")) {
+      return await res.json();
     }
-}
 
-// Format utilities
-function formatCurrency(value, currency = 'KRW') {
-    if (currency === 'KRW') {
-        return new Intl.NumberFormat('ko-KR').format(Math.round(value)) + '원';
-    }
-    return new Intl.NumberFormat('ko-KR', {
-        style: 'currency',
-        currency: currency
-    }).format(value);
-}
+    // JSON 기대했는데 HTML/텍스트가 내려오는 경우(= 네가 지금 본 "JSON 아님" 케이스)
+    const t = await readText();
+    throw new Error(`[JSON 아님] ${url}\ncontent-type=${ct || "unknown"}\n\n${t.slice(0, 1200)}`);
+  }
 
-function formatNumber(value, maxDecimals = 8) {
-    return new Intl.NumberFormat('ko-KR', {
-        maximumFractionDigits: maxDecimals
-    }).format(value);
-}
-
-function formatPercent(value, decimals = 2) {
-    const sign = value >= 0 ? '+' : '';
-    return sign + value.toFixed(decimals) + '%';
-}
-
-function formatDateTime(timestamp) {
-    const date = new Date(timestamp);
-    return date.toLocaleString('ko-KR');
-}
-
-function formatTime(timestamp) {
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString('ko-KR');
-}
-
-// API request helper
-async function apiRequest(endpoint, options = {}) {
-    try {
-        const defaultOptions = {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            signal: AbortSignal.timeout(10000)
-        };
-        
-        const response = await fetch(endpoint, {
-            ...defaultOptions,
-            ...options
-        });
-        
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-        
-        return await response.json();
-    } catch (error) {
-        console.error('API Request failed:', error);
-        throw error;
-    }
-}
-
-// Notification helper
-function showNotification(message, type = 'info') {
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.textContent = message;
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 1rem 2rem;
-        background: var(--bg-secondary);
-        border: 2px solid var(--${type}-color);
-        border-radius: 8px;
-        color: var(--text-primary);
-        box-shadow: var(--shadow-xl);
-        z-index: 9999;
-        animation: slideIn 0.3s ease-out;
+  function addMsg(role, text) {
+    const box = $("chatbox");
+    const msg = document.createElement("div");
+    msg.className = `msg ${role}`;
+    msg.innerHTML = `
+      <div class="msg-meta">${role === "user" ? "YOU" : "E-MAY"}</div>
+      <div class="msg-body"></div>
     `;
-    
-    document.body.appendChild(notification);
-    
-    // Auto remove after 5 seconds
-    setTimeout(() => {
-        notification.style.animation = 'slideOut 0.3s ease-out';
-        setTimeout(() => notification.remove(), 300);
-    }, 5000);
-}
+    msg.querySelector(".msg-body").textContent = text;
+    box.appendChild(msg);
+    box.scrollTop = box.scrollHeight;
+  }
 
-// Add CSS for notifications
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from { transform: translateX(400px); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
+  function setEmotion(emotion) {
+    const e = emotion || "neutral";
+    setPill($("pill-emotion"), `emotion: ${e}`, null);
+    $("emotion-img").src = `${CFG.endpoints.imageBase}${encodeURIComponent(e)}?t=${Date.now()}`;
+  }
+
+  function renderLogChips() {
+    const wrap = $("log-chips");
+    wrap.innerHTML = "";
+
+    const list = state.logs.length ? state.logs : [
+      { name: "ops_api.log", path: "C:\\leemay_project\\logs\\ops_api.log" },
+      { name: "bots_start_last.log", path: "C:\\leemay_project\\logs\\bots_start_last.log" },
+      { name: "ai_trading_latest.log", path: "C:\\leemay_project\\logs\\ai_trading_latest.log" }
+    ];
+
+    list.forEach((it) => {
+      const b = document.createElement("button");
+      b.className = "chip" + (it.name === state.selectedLog ? " active" : "");
+      b.textContent = it.name;
+      b.addEventListener("click", () => {
+        state.selectedLog = it.name;
+        $("log-path").textContent = `log: ${it.path || "-"}`;
+        renderLogChips();
+        loadLog().catch(() => {});
+      });
+      wrap.appendChild(b);
+    });
+
+    const selected = list.find(x => x.name === state.selectedLog) || list[0];
+    if (selected) {
+      state.selectedLog = selected.name;
+      $("log-path").textContent = `log: ${selected.path || "-"}`;
     }
-    
-    @keyframes slideOut {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(400px); opacity: 0; }
+  }
+
+  function applyLogFilter(text) {
+    const raw = $("logbox").dataset.raw || "";
+    if (!text) {
+      $("logbox").textContent = raw;
+      return;
     }
-`;
-document.head.appendChild(style);
+    const lines = raw.split("\n").filter(l => l.toLowerCase().includes(text.toLowerCase()));
+    $("logbox").textContent = lines.join("\n");
+  }
 
-// Error handler
-window.addEventListener('error', (event) => {
-    console.error('Global error:', event.error);
-    addLog('❌ 오류 발생: ' + event.error.message, 'error');
-});
+  async function loadLog() {
+    clearError();
+    const data = await apiFetch(`${CFG.endpoints.logsRead}?name=${encodeURIComponent(state.selectedLog)}&tail=${CFG.logTail}`, {}, true);
 
-// Unhandled promise rejection handler
-window.addEventListener('unhandledrejection', (event) => {
-    console.error('Unhandled promise rejection:', event.reason);
-    addLog('❌ 비동기 오류: ' + event.reason, 'error');
-});
+    // 기대 포맷: { name, path, text }
+    const text = data.text || "";
+    $("logbox").dataset.raw = text;
+    applyLogFilter($("log-filter").value.trim());
+  }
 
-// Initialize on DOM ready
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('Lee May Trading System - JavaScript Loaded');
-    addLog('✅ 시스템 JavaScript 로드 완료', 'success');
-});
+  async function refreshStatus() {
+    clearError();
 
-// Export functions for global use
-window.LeeMaxTrading = {
-    addLog,
-    refreshStatus,
-    formatCurrency,
-    formatNumber,
-    formatPercent,
-    formatDateTime,
-    formatTime,
-    apiRequest,
-    showNotification
-};
-
-// Auto-start status check
-setTimeout(() => {
-    if (typeof refreshStatus === 'function') {
-        refreshStatus();
+    // health (텍스트/JSON 모두 허용)
+    try {
+      const r = await fetch(CFG.endpoints.health);
+      const t = await r.text();
+      const ok = r.ok;
+      setPill($("pill-health"), `health: ${ok ? "OK" : "FAIL"}`, ok ? "ok" : "danger");
+    } catch {
+      setPill($("pill-health"), "health: FAIL", "danger");
     }
-}, 1000);
 
-console.log('Lee May Trading System - app.js loaded successfully');
+    // system status
+    const s = await apiFetch(CFG.endpoints.systemStatus, {}, true);
+
+    // 기대 포맷(권장):
+    // { now, uptime_s, ports:{5001:{ok},5000:{ok},11434:{ok}}, logs:{ai_log,ops_log}, emotion }
+    const ports = s.ports || {};
+    const p5001 = ports["5001"] || ports[5001] || {};
+    const p5000 = ports["5000"] || ports[5000] || {};
+    const p11434 = ports["11434"] || ports[11434] || {};
+
+    setDot($("dot-5001"), !!p5001.ok);
+    setDot($("dot-5000"), !!p5000.ok);
+    setDot($("dot-11434"), !!p11434.ok);
+
+    $("txt-5001").textContent = p5001.ok ? "ON" : "OFF";
+    $("txt-5000").textContent = p5000.ok ? "ON" : "OFF";
+    $("txt-11434").textContent = p11434.ok ? "ON" : "OFF";
+
+    $("txt-uptime").textContent = (s.uptime_s != null) ? `${s.uptime_s}s` : "-";
+    $("txt-ai-log").textContent = (s.logs && s.logs.ai_log) ? s.logs.ai_log : "-";
+    $("txt-ops-log").textContent = (s.logs && s.logs.ops_log) ? s.logs.ops_log : "-";
+
+    const nowText = s.now || new Date().toLocaleString();
+    setPill($("pill-last"), `Last: ${nowText}`, null);
+
+    // logs list (있으면 반영)
+    if (Array.isArray(s.log_files)) {
+      state.logs = s.log_files; // [{name,path}]
+      renderLogChips();
+    }
+
+    // emotion
+    if (s.emotion) setEmotion(s.emotion);
+
+    // bots status는 별도(있으면)
+    try {
+      await apiFetch(CFG.endpoints.botsStatus, {}, true);
+    } catch {
+      // botsStatus가 없어도 시스템 상태만으로 충분히 표시 가능
+    }
+  }
+
+  async function opsPost(url, payload = {}) {
+    clearError();
+    return await apiFetch(url, { method: "POST", body: JSON.stringify(payload) }, true);
+  }
+
+  async function doStart() { await opsPost(CFG.endpoints.opsBotsStart); }
+  async function doStop() { await opsPost(CFG.endpoints.opsBotsStop); }
+  async function doRestartBots() { await opsPost(CFG.endpoints.opsBotsRestart); }
+  async function doReboot() { await opsPost(CFG.endpoints.opsSystemRestart); }
+  async function doTrain() { await opsPost("/api/ops/learning/trading/start"); } // 서버에서 구현 시 활성
+  async function doApply() {
+    const ratio = Number($("ir").value) / 100;
+    await opsPost(CFG.endpoints.opsStrategyApply, { intelligence_ratio: ratio });
+  }
+
+  async function doCommander(cmd) {
+    if (!cmd.trim()) return;
+    await opsPost(CFG.endpoints.opsCommander, { command: cmd.trim() });
+  }
+
+  async function doChat(text) {
+    clearError();
+    addMsg("user", text);
+
+    const data = await apiFetch(CFG.endpoints.chat, {
+      method: "POST",
+      body: JSON.stringify({ message: text })
+    }, true);
+
+    const reply = data.reply || data.text || "(no reply)";
+    addMsg("ai", reply);
+
+    if (data.emotion) setEmotion(data.emotion);
+  }
+
+  function bind() {
+    $("btn-refresh").addEventListener("click", () => refreshStatus().catch(e => showError("Status Error", e.message)));
+    $("btn-engine").addEventListener("click", async () => {
+      try { await doStart(); await refreshStatus(); await loadLog().catch(()=>{}); }
+      catch(e){ showError("OPS Start Error", e.message); }
+    });
+    $("btn-stop").addEventListener("click", async () => {
+      if (!confirm("매매를 중단(봇 STOP) 하시겠습니까?")) return;
+      try { await doStop(); await refreshStatus(); await loadLog().catch(()=>{}); }
+      catch(e){ showError("OPS Stop Error", e.message); }
+    });
+    $("btn-rearm").addEventListener("click", async () => {
+      if (!confirm("봇 재정비(봇 RESTART) 하시겠습니까?")) return;
+      try { await doRestartBots(); await refreshStatus(); await loadLog().catch(()=>{}); }
+      catch(e){ showError("OPS Restart Error", e.message); }
+    });
+    $("btn-reboot").addEventListener("click", async () => {
+      if (!confirm("CONTROL(5001)을 재시작합니다. 잠시 끊길 수 있습니다.\n진행?")) return;
+      try { await doReboot(); }
+      catch(e){ showError("System Restart Error", e.message); }
+    });
+    $("btn-train").addEventListener("click", async () => {
+      try { await doTrain(); await loadLog().catch(()=>{}); }
+      catch(e){ showError("Training Trigger Error", e.message); }
+    });
+
+    $("ir").addEventListener("input", () => {
+      $("txt-ir").textContent = `${$("ir").value}%`;
+    });
+    $("btn-apply").addEventListener("click", async () => {
+      try { await doApply(); await refreshStatus(); }
+      catch(e){ showError("Apply Strategy Error", e.message); }
+    });
+
+    $("btn-auto").addEventListener("click", () => {
+      state.auto = !state.auto;
+      $("btn-auto").textContent = `AUTO: ${state.auto ? "ON" : "OFF"}`;
+      $("btn-auto").classList.toggle("ghost", !state.auto);
+    });
+
+    $("btn-log-load").addEventListener("click", () => loadLog().catch(e => showError("Log Load Error", e.message)));
+    $("btn-log-clear").addEventListener("click", () => {
+      $("logbox").textContent = "";
+      $("logbox").dataset.raw = "";
+    });
+    $("log-filter").addEventListener("input", () => applyLogFilter($("log-filter").value.trim()));
+
+    // chat
+    const send = async () => {
+      const v = $("chat-input").value.trim();
+      if (!v) return;
+      $("chat-input").value = "";
+      try { await doChat(v); }
+      catch(e){ showError("Chat Error", e.message); }
+    };
+    $("btn-send").addEventListener("click", () => send());
+    $("chat-input").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") send();
+    });
+
+    // commander
+    $("cmd-input").addEventListener("keydown", async (e) => {
+      if (e.key !== "Enter") return;
+      const v = $("cmd-input").value;
+      $("cmd-input").value = "";
+      try { await doCommander(v); await loadLog().catch(()=>{}); }
+      catch(err){ showError("Commander Error", err.message); }
+    });
+  }
+
+  async function init() {
+    setEmotion("neutral");
+    renderLogChips();
+
+    // logs list를 먼저 가져오면 더 정확
+    try {
+      const data = await apiFetch(CFG.endpoints.logsList, {}, true);
+      if (Array.isArray(data.files)) {
+        state.logs = data.files; // [{name,path}]
+        renderLogChips();
+      }
+    } catch {
+      // 없어도 진행
+    }
+
+    try { await refreshStatus(); } catch(e){ showError("Init Status Error", e.message); }
+    try { await loadLog(); } catch(e){ showError("Init Log Error", e.message); }
+
+    setInterval(() => {
+      if (!state.auto) return;
+      refreshStatus().catch(e => showError("Auto Status Error", e.message));
+      loadLog().catch(() => {});
+    }, CFG.refreshMs);
+  }
+
+  bind();
+  init();
+})();
