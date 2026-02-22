@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>트레이딩 대시보드 (Port 5000) - Lee May Trading</title>
+    <link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📈 트레이딩 대시보드</h1>
+            <p class="subtitle">Lee May Trading System - Live Trading Dashboard (Port 5000)</p>
+            <div class="server-badge trading">Trading Server</div>
+        </header>
+
+        <main>
+            <!-- 계정 정보 -->
+            <section class="account-section">
+                <h2>💰 계정 현황</h2>
+                <div class="account-grid">
+                    <div class="account-card">
+                        <div class="account-label">총 보유자산 (KRW)</div>
+                        <div class="account-value" id="total-balance">-</div>
+                    </div>
+                    <div class="account-card">
+                        <div class="account-label">가용 현금 (KRW)</div>
+                        <div class="account-value" id="available-cash">-</div>
+                    </div>
+                    <div class="account-card">
+                        <div class="account-label">투자 자산 (KRW)</div>
+                        <div class="account-value" id="invested-amount">-</div>
+                    </div>
+                    <div class="account-card profit">
+                        <div class="account-label">총 수익률</div>
+                        <div class="account-value" id="profit-rate">-</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 봇 상태 -->
+            <section class="bot-status-section">
+                <h2>🤖 봇 엔진 상태</h2>
+                <div class="bot-grid">
+                    <div class="bot-card">
+                        <div class="bot-header">
+                            <h3>Signal Engine</h3>
+                            <div class="bot-status-indicator" id="signal-status">○</div>
+                        </div>
+                        <div class="bot-info">
+                            <p class="bot-detail">신호 생성 및 분석</p>
+                            <p class="bot-metric" id="signal-count">신호: -</p>
+                        </div>
+                    </div>
+                    <div class="bot-card">
+                        <div class="bot-header">
+                            <h3>Strategy Engine</h3>
+                            <div class="bot-status-indicator" id="strategy-status">○</div>
+                        </div>
+                        <div class="bot-info">
+                            <p class="bot-detail">전략 실행 엔진</p>
+                            <p class="bot-metric" id="strategy-count">전략: -</p>
+                        </div>
+                    </div>
+                    <div class="bot-card">
+                        <div class="bot-header">
+                            <h3>Execution Engine</h3>
+                            <div class="bot-status-indicator" id="execution-status">○</div>
+                        </div>
+                        <div class="bot-info">
+                            <p class="bot-detail">주문 실행 엔진</p>
+                            <p class="bot-metric" id="execution-count">실행: -</p>
+                        </div>
+                    </div>
+                    <div class="bot-card">
+                        <div class="bot-header">
+                            <h3>Risk Manager</h3>
+                            <div class="bot-status-indicator" id="risk-status">○</div>
+                        </div>
+                        <div class="bot-info">
+                            <p class="bot-detail">리스크 관리</p>
+                            <p class="bot-metric" id="risk-level">리스크: -</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 보유 코인 -->
+            <section class="holdings-section">
+                <h2>🪙 보유 코인</h2>
+                <div class="table-container">
+                    <table class="holdings-table">
+                        <thead>
+                            <tr>
+                                <th>코인</th>
+                                <th>보유량</th>
+                                <th>평균단가</th>
+                                <th>현재가</th>
+                                <th>평가금액</th>
+                                <th>수익률</th>
+                            </tr>
+                        </thead>
+                        <tbody id="holdings-tbody">
+                            <tr>
+                                <td colspan="6" class="no-data">데이터를 불러오는 중...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 최근 거래 -->
+            <section class="trades-section">
+                <div class="section-header">
+                    <h2>📊 최근 거래 내역</h2>
+                    <button class="refresh-btn" onclick="refreshTrades()">🔃 새로고침</button>
+                </div>
+                <div class="table-container">
+                    <table class="trades-table">
+                        <thead>
+                            <tr>
+                                <th>시각</th>
+                                <th>코인</th>
+                                <th>타입</th>
+                                <th>수량</th>
+                                <th>가격</th>
+                                <th>금액</th>
+                                <th>상태</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trades-tbody">
+                            <tr>
+                                <td colspan="7" class="no-data">거래 내역이 없습니다</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 실시간 로그 -->
+            <section class="log-section compact">
+                <div class="section-header">
+                    <h2>📝 트레이딩 로그</h2>
+                    <button class="clear-log-btn" onclick="clearLogs()">지우기</button>
+                </div>
+                <div id="log-output" class="log-output compact">
+                    <div class="log-entry info">트레이딩 시스템 준비 완료</div>
+                </div>
+            </section>
+
+            <!-- 빠른 액션 -->
+            <section class="quick-actions-section">
+                <h2>⚡ 빠른 액션</h2>
+                <div class="actions-grid">
+                    <button class="action-btn" onclick="emergencyStop()">
+                        <span class="action-icon">🚨</span>
+                        <span class="action-text">긴급 정지</span>
+                    </button>
+                    <button class="action-btn" onclick="pauseTrading()">
+                        <span class="action-icon">⏸️</span>
+                        <span class="action-text">거래 일시정지</span>
+                    </button>
+                    <button class="action-btn" onclick="resumeTrading()">
+                        <span class="action-icon">▶️</span>
+                        <span class="action-text">거래 재개</span>
+                    </button>
+                    <a href="control_5001.html" class="action-btn link">
+                        <span class="action-icon">🎛️</span>
+                        <span class="action-text">제어 센터</span>
+                    </a>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Lee May Trading System © 2026 | Trading Dashboard</p>
+            <p class="footer-detail">Port 5000 - Real-time Trading Interface</p>
+        </footer>
+    </div>
+
+    <script src="assets/app.js"></script>
+    <script>
+        // Trading Dashboard Specific Functions
+        async function loadAccountInfo() {
+            try {
+                const response = await fetch('/api/trading/account');
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('total-balance').textContent = 
+                        formatKRW(data.account.total_balance);
+                    document.getElementById('available-cash').textContent = 
+                        formatKRW(data.account.available_cash);
+                    document.getElementById('invested-amount').textContent = 
+                        formatKRW(data.account.invested_amount);
+                    document.getElementById('profit-rate').textContent = 
+                        formatPercent(data.account.profit_rate);
+                }
+            } catch (error) {
+                console.error('계정 정보 로드 실패:', error);
+            }
+        }
+
+        async function loadHoldings() {
+            try {
+                const response = await fetch('/api/trading/holdings');
+                const data = await response.json();
+                
+                const tbody = document.getElementById('holdings-tbody');
+                
+                if (data.success && data.holdings.length > 0) {
+                    tbody.innerHTML = data.holdings.map(coin => `
+                        <tr>
+                            <td class="coin-name">${coin.name}</td>
+                            <td>${formatNumber(coin.amount)}</td>
+                            <td>${formatKRW(coin.avg_price)}</td>
+                            <td>${formatKRW(coin.current_price)}</td>
+                            <td>${formatKRW(coin.value)}</td>
+                            <td class="${coin.profit_rate >= 0 ? 'profit' : 'loss'}">
+                                ${formatPercent(coin.profit_rate)}
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="6" class="no-data">보유 코인이 없습니다</td></tr>';
+                }
+            } catch (error) {
+                console.error('보유 코인 로드 실패:', error);
+            }
+        }
+
+        async function loadTrades() {
+            try {
+                const response = await fetch('/api/trading/trades/recent');
+                const data = await response.json();
+                
+                const tbody = document.getElementById('trades-tbody');
+                
+                if (data.success && data.trades.length > 0) {
+                    tbody.innerHTML = data.trades.map(trade => `
+                        <tr>
+                            <td>${formatTime(trade.timestamp)}</td>
+                            <td class="coin-name">${trade.coin}</td>
+                            <td class="trade-type ${trade.type}">${trade.type === 'buy' ? '매수' : '매도'}</td>
+                            <td>${formatNumber(trade.amount)}</td>
+                            <td>${formatKRW(trade.price)}</td>
+                            <td>${formatKRW(trade.total)}</td>
+                            <td class="trade-status ${trade.status}">${trade.status}</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="7" class="no-data">거래 내역이 없습니다</td></tr>';
+                }
+            } catch (error) {
+                console.error('거래 내역 로드 실패:', error);
+            }
+        }
+
+        async function refreshTrades() {
+            addLog('🔃 거래 내역 새로고침...', 'info');
+            await loadTrades();
+        }
+
+        async function emergencyStop() {
+            if (!confirm('긴급 정지를 실행하시겠습니까? 모든 거래가 즉시 중단됩니다.')) return;
+            
+            addLog('🚨 긴급 정지 실행!', 'error');
+            try {
+                const response = await fetch('/api/trading/emergency-stop', { method: 'POST' });
+                const data = await response.json();
+                
+                if (data.success) {
+                    addLog('✅ 긴급 정지 완료', 'success');
+                } else {
+                    addLog('❌ 긴급 정지 실패', 'error');
+                }
+            } catch (error) {
+                addLog('❌ 오류: ' + error.message, 'error');
+            }
+        }
+
+        async function pauseTrading() {
+            addLog('⏸️ 거래 일시정지...', 'warning');
+            try {
+                const response = await fetch('/api/trading/pause', { method: 'POST' });
+                const data = await response.json();
+                
+                if (data.success) {
+                    addLog('✅ 거래 일시정지 완료', 'success');
+                } else {
+                    addLog('❌ 일시정지 실패', 'error');
+                }
+            } catch (error) {
+                addLog('❌ 오류: ' + error.message, 'error');
+            }
+        }
+
+        async function resumeTrading() {
+            addLog('▶️ 거래 재개...', 'info');
+            try {
+                const response = await fetch('/api/trading/resume', { method: 'POST' });
+                const data = await response.json();
+                
+                if (data.success) {
+                    addLog('✅ 거래 재개 완료', 'success');
+                } else {
+                    addLog('❌ 재개 실패', 'error');
+                }
+            } catch (error) {
+                addLog('❌ 오류: ' + error.message, 'error');
+            }
+        }
+
+        // Helper functions
+        function formatKRW(value) {
+            return new Intl.NumberFormat('ko-KR').format(Math.round(value)) + '원';
+        }
+
+        function formatPercent(value) {
+            return (value >= 0 ? '+' : '') + value.toFixed(2) + '%';
+        }
+
+        function formatNumber(value) {
+            return new Intl.NumberFormat('ko-KR', { maximumFractionDigits: 8 }).format(value);
+        }
+
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleTimeString('ko-KR');
+        }
+
+        function clearLogs() {
+            document.getElementById('log-output').innerHTML = 
+                '<div class="log-entry info">로그가 지워졌습니다</div>';
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            addLog('📈 트레이딩 대시보드 초기화 완료', 'success');
+            refreshStatus();
+            loadAccountInfo();
+            loadHoldings();
+            loadTrades();
+            
+            // Auto-refresh
+            setInterval(() => {
+                refreshStatus();
+                loadAccountInfo();
+                loadHoldings();
+            }, 10000);
+            
+            setInterval(loadTrades, 30000);
+        });
+    </script>
+</body>
+</html>
