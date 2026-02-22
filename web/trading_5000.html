@@ -3,354 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>트레이딩 대시보드 (Port 5000) - Lee May Trading</title>
-    <link rel="stylesheet" href="assets/app.css">
+    <title>Leemay AI Trading - LIVE 5000</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+KR:wght@300;500;700&display=swap');
+        
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-purple: #bc13fe;
+            --bg-dark: #0a0b10;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: white;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden; /* 27인치 꽉 차게 고정 */
+            height: 100vh;
+        }
+
+        .orbitron { font-family: 'Orbitron', sans-serif; }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+        }
+
+        .strategy-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid #444;
+        }
+
+        .strategy-card.active {
+            border-left-color: var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+        }
+
+        /* 스크롤바 커스텀 */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+
+        .chat-container { height: calc(100vh - 400px); }
+    </style>
 </head>
-<body>
-    <div class="container">
-        <header>
-            <h1>📈 트레이딩 대시보드</h1>
-            <p class="subtitle">Lee May Trading System - Live Trading Dashboard (Port 5000)</p>
-            <div class="server-badge trading">Trading Server</div>
-        </header>
+<body class="p-4 flex flex-col gap-4">
 
-        <main>
-            <!-- 계정 정보 -->
-            <section class="account-section">
-                <h2>💰 계정 현황</h2>
-                <div class="account-grid">
-                    <div class="account-card">
-                        <div class="account-label">총 보유자산 (KRW)</div>
-                        <div class="account-value" id="total-balance">-</div>
-                    </div>
-                    <div class="account-card">
-                        <div class="account-label">가용 현금 (KRW)</div>
-                        <div class="account-value" id="available-cash">-</div>
-                    </div>
-                    <div class="account-card">
-                        <div class="account-label">투자 자산 (KRW)</div>
-                        <div class="account-value" id="invested-amount">-</div>
-                    </div>
-                    <div class="account-card profit">
-                        <div class="account-label">총 수익률</div>
-                        <div class="account-value" id="profit-rate">-</div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 봇 상태 -->
-            <section class="bot-status-section">
-                <h2>🤖 봇 엔진 상태</h2>
-                <div class="bot-grid">
-                    <div class="bot-card">
-                        <div class="bot-header">
-                            <h3>Signal Engine</h3>
-                            <div class="bot-status-indicator" id="signal-status">○</div>
-                        </div>
-                        <div class="bot-info">
-                            <p class="bot-detail">신호 생성 및 분석</p>
-                            <p class="bot-metric" id="signal-count">신호: -</p>
-                        </div>
-                    </div>
-                    <div class="bot-card">
-                        <div class="bot-header">
-                            <h3>Strategy Engine</h3>
-                            <div class="bot-status-indicator" id="strategy-status">○</div>
-                        </div>
-                        <div class="bot-info">
-                            <p class="bot-detail">전략 실행 엔진</p>
-                            <p class="bot-metric" id="strategy-count">전략: -</p>
-                        </div>
-                    </div>
-                    <div class="bot-card">
-                        <div class="bot-header">
-                            <h3>Execution Engine</h3>
-                            <div class="bot-status-indicator" id="execution-status">○</div>
-                        </div>
-                        <div class="bot-info">
-                            <p class="bot-detail">주문 실행 엔진</p>
-                            <p class="bot-metric" id="execution-count">실행: -</p>
-                        </div>
-                    </div>
-                    <div class="bot-card">
-                        <div class="bot-header">
-                            <h3>Risk Manager</h3>
-                            <div class="bot-status-indicator" id="risk-status">○</div>
-                        </div>
-                        <div class="bot-info">
-                            <p class="bot-detail">리스크 관리</p>
-                            <p class="bot-metric" id="risk-level">리스크: -</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 보유 코인 -->
-            <section class="holdings-section">
-                <h2>🪙 보유 코인</h2>
-                <div class="table-container">
-                    <table class="holdings-table">
-                        <thead>
-                            <tr>
-                                <th>코인</th>
-                                <th>보유량</th>
-                                <th>평균단가</th>
-                                <th>현재가</th>
-                                <th>평가금액</th>
-                                <th>수익률</th>
-                            </tr>
-                        </thead>
-                        <tbody id="holdings-tbody">
-                            <tr>
-                                <td colspan="6" class="no-data">데이터를 불러오는 중...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-
-            <!-- 최근 거래 -->
-            <section class="trades-section">
-                <div class="section-header">
-                    <h2>📊 최근 거래 내역</h2>
-                    <button class="refresh-btn" onclick="refreshTrades()">🔃 새로고침</button>
-                </div>
-                <div class="table-container">
-                    <table class="trades-table">
-                        <thead>
-                            <tr>
-                                <th>시각</th>
-                                <th>코인</th>
-                                <th>타입</th>
-                                <th>수량</th>
-                                <th>가격</th>
-                                <th>금액</th>
-                                <th>상태</th>
-                            </tr>
-                        </thead>
-                        <tbody id="trades-tbody">
-                            <tr>
-                                <td colspan="7" class="no-data">거래 내역이 없습니다</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-
-            <!-- 실시간 로그 -->
-            <section class="log-section compact">
-                <div class="section-header">
-                    <h2>📝 트레이딩 로그</h2>
-                    <button class="clear-log-btn" onclick="clearLogs()">지우기</button>
-                </div>
-                <div id="log-output" class="log-output compact">
-                    <div class="log-entry info">트레이딩 시스템 준비 완료</div>
-                </div>
-            </section>
-
-            <!-- 빠른 액션 -->
-            <section class="quick-actions-section">
-                <h2>⚡ 빠른 액션</h2>
-                <div class="actions-grid">
-                    <button class="action-btn" onclick="emergencyStop()">
-                        <span class="action-icon">🚨</span>
-                        <span class="action-text">긴급 정지</span>
-                    </button>
-                    <button class="action-btn" onclick="pauseTrading()">
-                        <span class="action-icon">⏸️</span>
-                        <span class="action-text">거래 일시정지</span>
-                    </button>
-                    <button class="action-btn" onclick="resumeTrading()">
-                        <span class="action-icon">▶️</span>
-                        <span class="action-text">거래 재개</span>
-                    </button>
-                    <a href="control_5001.html" class="action-btn link">
-                        <span class="action-icon">🎛️</span>
-                        <span class="action-text">제어 센터</span>
-                    </a>
-                </div>
-            </section>
-        </main>
-
-        <footer>
-            <p>Lee May Trading System © 2026 | Trading Dashboard</p>
-            <p class="footer-detail">Port 5000 - Real-time Trading Interface</p>
-        </footer>
+    <div class="grid grid-cols-5 gap-4 h-24">
+        <div class="glass-panel p-3 flex flex-col justify-center items-center">
+            <span class="text-xs text-gray-400">INVESTED</span>
+            <span class="text-xl orbitron font-bold">₩1,000,000</span>
+        </div>
+        <div class="glass-panel p-3 flex flex-col justify-center items-center">
+            <span class="text-xs text-gray-400">UNREALIZED PNL</span>
+            <span class="text-xl orbitron font-bold text-green-400">+₩42,500</span>
+        </div>
+        <div class="glass-panel p-3 flex flex-col justify-center items-center">
+            <span class="text-xs text-gray-400">REALIZED PNL</span>
+            <span class="text-xl orbitron font-bold text-blue-400">₩125,000</span>
+        </div>
+        <div class="glass-panel p-3 flex flex-col justify-center items-center border-b-2 border-cyan-500">
+            <span class="text-xs text-gray-400">WIN RATE</span>
+            <span class="text-2xl orbitron font-bold text-cyan-400">78%</span>
+        </div>
+        <div class="glass-panel p-3 flex flex-col justify-center items-center bg-red-900/20">
+            <span class="text-xs text-red-400">LIVE MODE</span>
+            <span class="text-lg font-bold animate-pulse text-red-500">BATTLE ACTIVE</span>
+        </div>
     </div>
 
-    <script src="assets/app.js"></script>
-    <script>
-        // Trading Dashboard Specific Functions
-        async function loadAccountInfo() {
-            try {
-                const response = await fetch('/api/trading/account');
-                const data = await response.json();
-                
-                if (data.success) {
-                    document.getElementById('total-balance').textContent = 
-                        formatKRW(data.account.total_balance);
-                    document.getElementById('available-cash').textContent = 
-                        formatKRW(data.account.available_cash);
-                    document.getElementById('invested-amount').textContent = 
-                        formatKRW(data.account.invested_amount);
-                    document.getElementById('profit-rate').textContent = 
-                        formatPercent(data.account.profit_rate);
-                }
-            } catch (error) {
-                console.error('계정 정보 로드 실패:', error);
-            }
-        }
-
-        async function loadHoldings() {
-            try {
-                const response = await fetch('/api/trading/holdings');
-                const data = await response.json();
-                
-                const tbody = document.getElementById('holdings-tbody');
-                
-                if (data.success && data.holdings.length > 0) {
-                    tbody.innerHTML = data.holdings.map(coin => `
-                        <tr>
-                            <td class="coin-name">${coin.name}</td>
-                            <td>${formatNumber(coin.amount)}</td>
-                            <td>${formatKRW(coin.avg_price)}</td>
-                            <td>${formatKRW(coin.current_price)}</td>
-                            <td>${formatKRW(coin.value)}</td>
-                            <td class="${coin.profit_rate >= 0 ? 'profit' : 'loss'}">
-                                ${formatPercent(coin.profit_rate)}
-                            </td>
-                        </tr>
-                    `).join('');
-                } else {
-                    tbody.innerHTML = '<tr><td colspan="6" class="no-data">보유 코인이 없습니다</td></tr>';
-                }
-            } catch (error) {
-                console.error('보유 코인 로드 실패:', error);
-            }
-        }
-
-        async function loadTrades() {
-            try {
-                const response = await fetch('/api/trading/trades/recent');
-                const data = await response.json();
-                
-                const tbody = document.getElementById('trades-tbody');
-                
-                if (data.success && data.trades.length > 0) {
-                    tbody.innerHTML = data.trades.map(trade => `
-                        <tr>
-                            <td>${formatTime(trade.timestamp)}</td>
-                            <td class="coin-name">${trade.coin}</td>
-                            <td class="trade-type ${trade.type}">${trade.type === 'buy' ? '매수' : '매도'}</td>
-                            <td>${formatNumber(trade.amount)}</td>
-                            <td>${formatKRW(trade.price)}</td>
-                            <td>${formatKRW(trade.total)}</td>
-                            <td class="trade-status ${trade.status}">${trade.status}</td>
-                        </tr>
-                    `).join('');
-                } else {
-                    tbody.innerHTML = '<tr><td colspan="7" class="no-data">거래 내역이 없습니다</td></tr>';
-                }
-            } catch (error) {
-                console.error('거래 내역 로드 실패:', error);
-            }
-        }
-
-        async function refreshTrades() {
-            addLog('🔃 거래 내역 새로고침...', 'info');
-            await loadTrades();
-        }
-
-        async function emergencyStop() {
-            if (!confirm('긴급 정지를 실행하시겠습니까? 모든 거래가 즉시 중단됩니다.')) return;
+    <div class="flex-1 flex gap-4 overflow-hidden">
+        
+        <div class="flex-[0.7] flex flex-col gap-4">
             
-            addLog('🚨 긴급 정지 실행!', 'error');
-            try {
-                const response = await fetch('/api/trading/emergency-stop', { method: 'POST' });
-                const data = await response.json();
-                
-                if (data.success) {
-                    addLog('✅ 긴급 정지 완료', 'success');
-                } else {
-                    addLog('❌ 긴급 정지 실패', 'error');
-                }
-            } catch (error) {
-                addLog('❌ 오류: ' + error.message, 'error');
-            }
-        }
+            <div class="glass-panel flex-1 overflow-hidden flex flex-col p-4">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-lg text-gray-300">⚔️ 실시간 매매 기록</h3>
+                    <span class="text-xs text-cyan-500 orbitron">SCANNING MARKET...</span>
+                </div>
+                <div class="overflow-y-auto pr-2">
+                    <table class="w-full text-left text-sm">
+                        <thead class="sticky top-0 bg-[#0a0b10] text-gray-500">
+                            <tr>
+                                <th class="pb-2">TIME</th>
+                                <th class="pb-2">ASSET</th>
+                                <th class="pb-2">STRATEGY</th>
+                                <th class="pb-2">TYPE</th>
+                                <th class="pb-2 text-right">PRICE</th>
+                                <th class="pb-2 text-right">PNL</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-300">
+                            <tr class="border-b border-white/5">
+                                <td class="py-3 orbitron">15:22:10</td>
+                                <td class="font-bold text-white text-lg">BTC</td>
+                                <td><span class="bg-blue-500/20 text-blue-400 px-2 py-1 rounded text-xs">Surge Hunter</span></td>
+                                <td class="text-red-400 font-bold">BUY</td>
+                                <td class="text-right orbitron">₩94,500,000</td>
+                                <td class="text-right text-gray-500">-</td>
+                            </tr>
+                            </tbody>
+                    </table>
+                </div>
+            </div>
 
-        async function pauseTrading() {
-            addLog('⏸️ 거래 일시정지...', 'warning');
-            try {
-                const response = await fetch('/api/trading/pause', { method: 'POST' });
-                const data = await response.json();
-                
-                if (data.success) {
-                    addLog('✅ 거래 일시정지 완료', 'success');
-                } else {
-                    addLog('❌ 일시정지 실패', 'error');
-                }
-            } catch (error) {
-                addLog('❌ 오류: ' + error.message, 'error');
-            }
-        }
+            <div class="grid grid-cols-5 gap-3 h-32">
+                <div class="strategy-card active glass-panel p-3 flex flex-col justify-between">
+                    <div class="flex justify-between items-start">
+                        <span class="text-[10px] text-cyan-400 font-bold">SURGE</span>
+                        <div class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></div>
+                    </div>
+                    <span class="text-lg orbitron font-bold">+4.2%</span>
+                    <span class="text-[9px] text-gray-500 uppercase">Searching Volatility</span>
+                </div>
+                <div class="strategy-card active glass-panel p-3 flex flex-col justify-between">
+                    <span class="text-[10px] text-purple-400 font-bold">DIP</span>
+                    <span class="text-lg orbitron font-bold">-1.5%</span>
+                    <span class="text-[9px] text-gray-500 uppercase">Waiting for Drop</span>
+                </div>
+                <div class="strategy-card glass-panel p-3 opacity-50 flex flex-col justify-between">
+                    <span class="text-[10px] text-gray-400 font-bold">BOX</span>
+                    <span class="text-lg orbitron font-bold">0.0%</span>
+                    <span class="text-[9px] text-gray-500 uppercase">Standby</span>
+                </div>
+                <div class="strategy-card glass-panel p-3 opacity-50 flex flex-col justify-between">
+                    <span class="text-[10px] text-gray-400 font-bold">TREND</span>
+                    <span class="text-lg orbitron font-bold">0.0%</span>
+                    <span class="text-[9px] text-gray-500 uppercase">Standby</span>
+                </div>
+                <div class="strategy-card glass-panel p-3 opacity-50 flex flex-col justify-between">
+                    <span class="text-[10px] text-gray-400 font-bold">VOLUME</span>
+                    <span class="text-lg orbitron font-bold">0.0%</span>
+                    <span class="text-[9px] text-gray-500 uppercase">Standby</span>
+                </div>
+            </div>
+        </div>
 
-        async function resumeTrading() {
-            addLog('▶️ 거래 재개...', 'info');
-            try {
-                const response = await fetch('/api/trading/resume', { method: 'POST' });
-                const data = await response.json();
-                
-                if (data.success) {
-                    addLog('✅ 거래 재개 완료', 'success');
-                } else {
-                    addLog('❌ 재개 실패', 'error');
-                }
-            } catch (error) {
-                addLog('❌ 오류: ' + error.message, 'error');
-            }
-        }
+        <div class="flex-[0.3] glass-panel flex flex-col p-4 border-l border-cyan-500/30">
+            <div class="flex flex-col items-center mb-6">
+                <div class="w-40 h-40 rounded-full border-2 border-cyan-500 p-1 mb-2 relative">
+                    <img id="leemay-avatar" src="/leemay/images/joy.png" alt="Leemay" class="w-full h-full rounded-full object-cover">
+                    <div class="absolute bottom-1 right-2 w-6 h-6 bg-green-500 border-4 border-[#0a0b10] rounded-full"></div>
+                </div>
+                <h2 class="text-xl font-bold orbitron tracking-widest">IMEI (이메이)</h2>
+                <span class="text-xs text-cyan-400">AI TRADING ASSISTANT</span>
+            </div>
 
-        // Helper functions
-        function formatKRW(value) {
-            return new Intl.NumberFormat('ko-KR').format(Math.round(value)) + '원';
-        }
+            <div class="chat-container overflow-y-auto space-y-4 mb-4 text-sm pr-2">
+                <div class="flex flex-col items-start">
+                    <div class="bg-gray-800 rounded-2xl rounded-tl-none p-3 max-w-[90%]">
+                        안녕하세요! 아빠, 현재 비트코인 거래량이 심상치 않아요. **Surge Hunter** 전략이 작동 준비 중입니다! 🚀
+                    </div>
+                    <span class="text-[10px] text-gray-500 mt-1">오후 3:15</span>
+                </div>
+            </div>
 
-        function formatPercent(value) {
-            return (value >= 0 ? '+' : '') + value.toFixed(2) + '%';
-        }
+            <div class="mt-auto relative">
+                <input type="text" placeholder="이메이에게 질문..." class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 focus:outline-none focus:border-cyan-500 text-sm">
+                <button class="absolute right-3 top-2.5 text-cyan-500 font-bold">SEND</button>
+            </div>
+        </div>
+    </div>
 
-        function formatNumber(value) {
-            return new Intl.NumberFormat('ko-KR', { maximumFractionDigits: 8 }).format(value);
-        }
-
-        function formatTime(timestamp) {
-            const date = new Date(timestamp);
-            return date.toLocaleTimeString('ko-KR');
-        }
-
-        function clearLogs() {
-            document.getElementById('log-output').innerHTML = 
-                '<div class="log-entry info">로그가 지워졌습니다</div>';
-        }
-
-        // Initialize
-        window.addEventListener('load', () => {
-            addLog('📈 트레이딩 대시보드 초기화 완료', 'success');
-            refreshStatus();
-            loadAccountInfo();
-            loadHoldings();
-            loadTrades();
-            
-            // Auto-refresh
-            setInterval(() => {
-                refreshStatus();
-                loadAccountInfo();
-                loadHoldings();
-            }, 10000);
-            
-            setInterval(loadTrades, 30000);
-        });
-    </script>
 </body>
 </html>
