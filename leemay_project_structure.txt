@@ -1,337 +1,358 @@
-폴더 PATH의 목록입니다.
-볼륨 일련 번호는 C2EB-A998입니다.
-C:.
-|   5001
-|   60
-|   cloudflared_debug.log
-|   notepad
-|   project_structure.txt
-|   
-+---backups
-|   \---garbage
-+---bot
-+---brain
-|       교본.md
-|       자가_복구_리포트.log
-|       전략_파라미터.json
-|       지능_성장_보고서.md
-|       
-+---core
-|   |   api_server.py
-|   |   emotion_mapper.py
-|   |   
-|   +---knowledge_base
-|   +---leemay
-|   |   +---images
-|   |   \---personas
-|   |           emay_persona.json
-|   |           
-|   \---__pycache__
-|           emotion_mapper.cpython-313.pyc
-|           
-+---data
-|       server.db
-|       
-+---docs
-+---emay
-+---knowledge_base
-+---leemay
-|   |   __init__.py
-|   |   
-|   +---core
-|   |   |   leemay_brain.py
-|   |   |   __init__.py
-|   |   |   
-|   |   \---__pycache__
-|   |           __init__.cpython-313.pyc
-|   |           
-|   +---images
-|   |       angry.png
-|   |       annoyed.png
-|   |       apologizing.png
-|   |       calm.png
-|   |       cheerful.png
-|   |       comforting.png
-|   |       confident.png
-|   |       curious.png
-|   |       disappointed.png
-|   |       empathetic.png
-|   |       encouraging.png
-|   |       excited.png
-|   |       explaining.png
-|   |       focused.png
-|   |       frustrated.png
-|   |       grateful.png
-|   |       happy.png
-|   |       hopeful.png
-|   |       interested.png
-|   |       listening.png
-|   |       lonely.png
-|   |       loving.png
-|   |       motivated.png
-|   |       neutral.png
-|   |       playful.png
-|   |       proud.png
-|   |       relaxed.png
-|   |       sad.png
-|   |       scared.png
-|   |       serious.png
-|   |       skeptical.png
-|   |       stressed.png
-|   |       surprised.png
-|   |       thinking.png
-|   |       tired.png
-|   |       worried.png
-|   |       
-|   +---personas
-|   \---__pycache__
-|           __init__.cpython-313.pyc
-|           
-+---logs
-+---new_files
-|   +---batch_files
-|   +---config_files
-|   |       backtest_results.json
-|   |       delisted_coins.json
-|   |       emay_persona.json
-|   |       
-|   +---docs
-|   |       ADMIN_DASHBOARD.md
-|   |       AI_TRADING_RECOVERY_PLAN.md
-|   |       API_TESTING.md
-|   |       ARCHITECTURE.md
-|   |       ARCHITECTURE_V9.md
-|   |       AUTO_RECOVERY_GUIDE.md
-|   |       BACKUP_GUIDE.md
-|   |       BALANCE_EXPLANATION.md
-|   |       BATCH_GUIDE_FIXED.md
-|   |       BOTS_CLASSIFICATION.md
-|   |       CHATGPT_COLLABORATION_GUIDE.md
-|   |       check_local_ollama.md
-|   |       CLOUDFLARE_FIX_COMPLETE.md
-|   |       DEBUGGING_FILES.md
-|   |       DEPLOYMENT_GUIDE.md
-|   |       DIY_GUIDE.md
-|   |       FINAL_HANDOFF.md
-|   |       FINAL_TEST_GUIDE.md
-|   |       GITHUB_FORCE_PUSH_RECOVERY.md
-|   |       MONITORING_REPORT.md
-|   |       NAMED_TUNNEL_SETUP_GUIDE.md
-|   |       OLD_LEARNING_DATA_RESTORED.md
-|   |       PERMANENT_OLLAMA_SOLUTIONS.md
-|   |       PERSISTENT_SESSION_GUIDE.md
-|   |       PM2_GUIDE.md
-|   |       PRE_PRODUCTION_CHECKLIST.md
-|   |       PROJECT_MASTER.md
-|   |       PROJECT_RULES.md
-|   |       README-v6.md
-|   |       README.md
-|   |       README_1.md
-|   |       README_2.md
-|   |       REPORT_00_SNAPSHOT.md
-|   |       REPORT_02_TRADING_TRAINING.md
-|   |       REPORT_03_YOUTUBE_RAG.md
-|   |       RUNBOOK.md
-|   |       STOPPED_BOTS_FIX.md
-|   |       UPDATE_LOG.md
-|   |       v10.1_BUGFIX.md
-|   |       v10_PRODUCTION_READY.md
-|   |       v9.1_UX_IMPROVEMENTS.md
-|   |       VERIFICATION_REPORT.md
-|   |       windows_auto_start_guide.md
-|   |       ZERO_DOWNTIME_DEPLOYMENT.md
-|   |       
-|   +---other_files
-|   |       .gitignore
-|   |       admin_key.txt
-|   |       admin_token.txt
-|   |       api_keys.json.example
-|   |       api_server.py.BACKUP_20260221
-|   |       apply-all-backgrounds.sh
-|   |       apply-backgrounds.sh
-|   |       bot-manager.sh
-|   |       bump_version.py.txt
-|   |       check-backgrounds.sh
-|   |       check_ollama_tunnel.sh
-|   |       config.yml
-|   |       cookies.txt
-|   |       design-system.css
-|   |       enhancements.css
-|   |       hover-visibility-enhanced.css
-|   |       install-and-run.sh
-|   |       install_ollama_sandbox.sh
-|   |       LeeMay_Monitor_MAINpowershell
-|   |       LeeMay_START.vbs
-|   |       medieval-magic.css
-|   |       medieval-override.css
-|   |       monitor-bot.sh
-|   |       quick_update.sh
-|   |       requirements-bot.txt
-|   |       requirements-surge-hunter.txt
-|   |       requirements.txt
-|   |       requirements_1.txt
-|   |       requirements_2.txt
-|   |       resolve_conflicts.sh
-|   |       run_5000_20260221_191827.cmd
-|   |       run_5000_20260221_191907.cmd
-|   |       run_5000_20260221_192635_814_7916.cmd
-|   |       run_5000_20260221_212846_143_31764.cmd
-|   |       run_5000_20260221_215423_324_23810.cmd
-|   |       run_5000_20260221_215708_262_5648.cmd
-|   |       run_5000_20260221_233606_057_25496.cmd
-|   |       run_5000_20260222_000009_961_30212.cmd
-|   |       setup-wizard.sh
-|   |       start-bot-v4.sh
-|   |       start-bot-v5.sh
-|   |       START-HERE.sh
-|   |       START-SAFE.cmd
-|   |       start-smart-bot.sh
-|   |       START.cmd
-|   |       start_emay_silent.vbs
-|   |       strategy_10_analysis.txt
-|   |       strategy_11_analysis.txt
-|   |       strategy_12_analysis.txt
-|   |       strategy_13_analysis.txt
-|   |       strategy_14_analysis.txt
-|   |       strategy_15_analysis.txt
-|   |       strategy_16_analysis.txt
-|   |       strategy_17_analysis.txt
-|   |       strategy_18_analysis.txt
-|   |       strategy_19_analysis.txt
-|   |       strategy_1_analysis.txt
-|   |       strategy_2_analysis.txt
-|   |       strategy_3_analysis.txt
-|   |       strategy_4_analysis.txt
-|   |       strategy_5_analysis.txt
-|   |       strategy_6_analysis.txt
-|   |       strategy_7_analysis.txt
-|   |       strategy_8_analysis.txt
-|   |       strategy_9_analysis.txt
-|   |       test_new_tunnel.sh
-|   |       the-unique-core.css
-|   |       troubleshoot_ollama.sh
-|   |       upbit-bot-v8.0-ultimate-release.tar.gz
-|   |       upbit-bot-v8.0-ultimate-release.zip
-|   |       update.sh
-|   |       update_ollama_url.sh
-|   |       version.json.txt
-|   |       _BASELINE_V8
-|   |       _LEEMAY
-|   |       _LEGACY_V6
-|   |       
-|   \---python_files
-|           ai_trading_5000_stub.py
-|           api_server_1.py
-|           backtest_patterns.py
-|           backtest_patterns_1.py
-|           bot_manager.py
-|           bot_manager_1.py
-|           bot_state_manager.py
-|           bot_state_manager_1.py
-|           emay_brain.py
-|           emay_brain_1.py
-|           emei_response_router.py
-|           emotion_mapper_1.py
-|           enhanced_emei_learning.py
-|           generate_emotions.py
-|           generate_emotions_1.py
-|           imei_learning_system.py
-|           imei_learning_system_1.py
-|           init_db.py
-|           init_db_1.py
-|           init_db_v2.py
-|           init_db_v2_1.py
-|           license_protection.py
-|           license_protection_1.py
-|           license_protection_2.py
-|           license_server.py
-|           license_server_1.py
-|           license_server_2.py
-|           memory.py
-|           memory_1.py
-|           portfolio_manager.py
-|           recovery_system.py
-|           restore_all_learning_data.py
-|           restore_old_learning_data.py
-|           show_backtest_report.py
-|           show_backtest_report_1.py
-|           test-dip-hunter.py
-|           test-dip-quick.py
-|           test-flow.py
-|           test-surge-hunter.py
-|           test-surge-simple.py
-|           test_emay_chat.py
-|           test_emay_chat_1.py
-|           test_memory.py
-|           test_memory_1.py
-|           test_mongodb_atlas.py
-|           test_mongodb_atlas_1.py
-|           trade_reasons.py
-|           trading_database.py
-|           trading_database_1.py
-|           trading_database_2.py
-|           upbit-backtest.py
-|           upbit-smart-bot-v5-LIVE.py
-|           upbit-smart-bot-v5-LIVE_1.py
-|           upbit-smart-bot-v5.py
-|           upbit-smart-bot-v5_1.py
-|           upbit-smart-bot-v6.py
-|           upbit-smart-bot-v6_1.py
-|           upbit-smart-bot-v6_2.py
-|           upbit-smart-bot-v6_3.py
-|           upbit-smart-bot-v6_4.py
-|           upbit-smart-bot-v8.0-LEARNING.py
-|           upbit-smart-bot-v8.0-ULTIMATE.py
-|           upbit-smart-bot-v8.0-ULTIMATE_1.py
-|           user_manager.py
-|           youtube_learner.py
-|           youtube_learner_1.py
-|           youtube_smart_learner.py
-|           youtube_smart_learner_1.py
-|           
-+---ops
-|       01_CONTROL_START.bat
-|       02_BOTS_START.bat
-|       02_BOTS_START_SAFE_5000.bat
-|       03_BOTS_STOP.bat
-|       04_OPS_RESTART_5001.bat
-|       10_TRADING_PARAM.bat
-|       11_RECOVERY.bat
-|       99_STATUS.bat
-|       ai_trading_star.bat
-|       chat_study_star.bat
-|       INSTALL-ALL.bat
-|       install-and-run.bat
-|       INSTALL-COMPLETE.bat
-|       INSTALL-FINAL.bat
-|       INSTALL-FIXED.bat
-|       INSTALL.bat
-|       INSTALL_1.bat
-|       INSTALL_2.bat
-|       LeeMay_Monitor_MAIN.bat
-|       LeeMay_STOP.bat
-|       setup-wizard.bat
-|       START-FINAL.bat
-|       START-FIXED.bat
-|       START-HERE.bat
-|       START.bat
-|       START_1.bat
-|       START_ALL.bat
-|       START_Cloudflare_Ollama.bat
-|       start_emay_background.bat
-|       STOP.bat
-|       STOP_ALL.bat
-|       STOP_Cloudflare_Ollama.bat
-|       stop_emay.bat
-|       
-+---past_thing
-\---web
-    |   control_5001.html
-    |   dashboard.html
-    |   index.html
-    |   trading_5000.html
-    |   
-    \---assets
-            app.css
-            app.js
-            
+🎯 이메이(Leemay) 프로젝트 - 완전체 (2026-02-23 업데이트)
+│
+├─ 🏗️ [시스템 아키텍처] - System Architecture
+│ │
+│ ├─ 🔴 CONTROL (항시 가동 - 24/7)
+│ │ ├─ 포트: 5001 ✅ 완료
+│ │ ├─ 역할: 시스템 생명선 ✅ 완료
+│ │ ├─ 외부 접속: https://leemay.thetheunique.com
+ ✅ 완료
+│ │ │ └─ Cloudflare Tunnel (ollama-stable) 연동 ✅ 완료
+│ │ │
+│ │ ├─ 구성 요소
+│ │ │ ├─ 📡 API Server (api_server.py) ✅ 완료
+│ │ │ │ ├─ Flask + CORS ✅ 완료
+│ │ │ │ ├─ REST API 엔드포인트 ✅ 완료
+│ │ │ │ │ ├─ /health (헬스체크) ✅ 완료
+│ │ │ │ │ ├─ /chat (감정 대화) ✅ 완료
+│ │ │ │ │ ├─ /image/<emotion> (36개 감정 이미지) ✅ 완료
+│ │ │ │ │ ├─ /api/system/status (시스템 모니터링) ✅ 완료
+│ │ │ │ │ ├─ /api/bots/status (봇 상태) ✅ 완료
+│ │ │ │ │ ├─ /api/learning/youtube (유튜브 학습) ⏳ 예정
+│ │ │ │ │ ├─ /api/conversations/import 🆕 ✅ 완료 (지식 데이터 수신)
+│ │ │ │ │ └─ /api/ops/* (운영 API - 관리자 인증 필수) 🔄 개발중
+│ │ │ │ │ ├─ (Stage 4.5) OPS_KEY(1106) 기반 물리 파일 제어권 🔄 개발중
+│ │ │ │ │ ├─ (Stage 4.5) /api/ops/organ/generate (장기 생성 + Hot-Reload) 🔄 개발중
+│ │ │ │ │ ├─ (Stage 4.5) /api/ops/organ/delete (삭제 → backups/trash 안전 이동) 🔄 개발중
+│ │ │ │ │ ├─ (Stage 4.5) /api/ops/logs/read (brain/ 로그 tail 읽기) 🔄 개발중
+│ │ │ │ │ └─ (Stage 4.5) /api/ops/autoheal/not_found (404 자동 분석/복구) 🔄 개발중
+│ │ │ │ └─ 웹 UI ✅ 완료
+│ │ │ │ ├─ control_5001.html (CONTROL 대시보드) ✅ 완료
+│ │ │ │ └─ 지능 성장 레이더 차트 (예정) ⏳ 예정
+│ │ │ │
+│ │ │ ├─ 🧠 LLM Engine ✅ 완료(기본) / 🔄 개발중(Stage 4.5)
+│ │ │ │ ├─ leemay_brain.py (AI 두뇌) ✅ 완료 (emay/imay 폐기, leemay로 통일)
+│ │ │ │ ├─ Ollama Client ✅ 완료
+│ │ │ │ ├─ 모델: llama3.1 ✅ 완료
+│ │ │ │ └─ 연결: http://ollama.thetheunique.com
+ ✅ 완료
+│ │ │ │ ├─ (Stage 4.5) core\organs\evolution_organ.py 🆕 🔄 개발중 (수집 데이터 → questions.db 지능화 저장)
+│ │ │ │ └─ (Stage 4.5) core\organs\health_organ.py 🆕 🔄 개발중 (60초 건강 체크 + evolution_map.json 갱신 + WinError32 방어)
+│ │ │ │
+│ │ │ ├─ 💾 Memory System ✅ 완료(기본) / 🔄 개발중(Stage 4.5) / ⏳ 예정(v2.5 고도화)
+│ │ │ │ ├─ memory.py (MongoDB 연동) ✅ 완료 (LeemayMemory/Alias 호환 기반)
+│ │ │ │ ├─ MongoDB Atlas (512MB Free Tier) ✅ 완료
+│ │ │ │ ├─ 대화 기록 저장 ✅ 완료
+│ │ │ │ ├─ 학습 데이터 적재 🔄 개발중
+│ │ │ │ └─ 지능 성장 분석 데이터 🔄 개발중
+│ │ │ │ ├─ (Stage 4.5) brain\questions.db 🆕 🔄 개발중 ("학습된 지능" 중앙 DB / 정본 위치 명시)
+│ │ │ │ └─ (Stage 4.5) brain\questions.db-shm, brain\questions.db-wal 🆕 🔄 개발중 (동시 쓰기 물리 흔적)
+│ │ │ │
+│ │ │ ├─ 🎭 Emotion Engine ✅ 완료
+│ │ │ │ ├─ emotion_mapper.py ✅ 완료
+│ │ │ │ ├─ 36개 감정 매핑 시스템 ✅ 완료
+│ │ │ │ └─ 감정별 이미지 자동 선택 ✅ 완료
+│ │ │ │
+│ │ │ └─ ☁️ Cloudflare Tunnel ✅ 완료(5001) / 🔄 개발중(5000 연결 검증)
+│ │ │ ├─ 설정 파일: C:\Users[사용자].cloudflared\config.yml ✅ 완료
+│ │ │ ├─ Tunnel ID: 9d769497-4d6f-45a8-9236-ee9f214e5d8e ✅ 완료
+│ │ │ ├─ Ingress 라우팅 ✅ 완료(설정) / 🔄 개발중(서비스 검증)
+│ │ │ │ ├─ leemay.thetheunique.com → localhost:5001 ✅ 완료
+│ │ │ │ └─ ai_trading.thetheunique.com → localhost:5000 ✅ 완료(설정) / ⚪ 미가동(봇 복구 후 검증)
+│ │ │ └─ 외부 접속 HTTPS 제공 ✅ 완료
+│ │ │
+│ │ ├─ 시작 방법: ops\01_CONTROL_START.bat ✅ 완료
+│ │ ├─ 리소스 사용 ✅ 완료(관측 기준)
+│ │ │ ├─ CPU: 15~30%
+│ │ │ ├─ RAM: 1~2GB
+│ │ │ └─ 디스크: 200MB~1GB
+│ │ └─ 상태: ✅ 가동 중
+│ │ └─ ops\98_HEARTBEAT.bat 🆕 ✅ 완료 (v3.0 생존 감시)
+│ │
+│ └─ 🟡 BOTS (선택적 가동)
+│ │
+│ ├─ 📉 AI Trading Bot (포트 5000)
+│ │ ├─ 파일: upbit-smart-bot-v8.0-ULTIMATE.py ✅ 완료(배치) / ⚪ 미가동
+│ │ ├─ 외부 접속: https://ai_trading.thetheunique.com
+ ✅ 완료(설정) / ⚪ 미가동(복구 후)
+│ │ ├─ 상태: ⚪ 현재 비활성 (복구 예정) ⏳ 예정
+│ │ ├─ 기능 ✅ 설계 완료 / ⚪ 실행 전
+│ │ │ ├─ 5가지 패턴 자동 인식
+│ │ │ │ ├─ 박스권
+│ │ │ │ ├─ 상승/하락 추세
+│ │ │ │ ├─ 급등 후 조정
+│ │ │ │ └─ 수급 변화
+│ │ │ ├─ 5개 전략 동시 경쟁
+│ │ │ │ ├─ Surge Hunter (급등 포착)
+│ │ │ │ ├─ Dip Hunter (저점 매수)
+│ │ │ │ ├─ Box Trader (박스권 매매)
+│ │ │ │ ├─ Trend Follower (추세 추종)
+│ │ │ │ └─ Volume Hunter (거래량 기반)
+│ │ │ ├─ 실시간 학습 (매 거래)
+│ │ │ ├─ 50개 거래마다 재학습
+│ │ │ ├─ 손실 복구 모드 (-15% 시 자동 활성화)
+│ │ │ └─ Flask 대시보드 (trading_5000.html) 🔄 개발중(파일/서빙 검증)
+│ │ ├─ 복구 계획: docs/AI_TRADING_RECOVERY_PLAN.md ✅ 완료(문서)
+│ │ └─ 리소스: CPU 15~30%, RAM 300MB
+│ │
+│ ├─ 📺 YouTube Learner
+│ │ ├─ 기본: youtube_learner.py ⏳ 예정
+│ │ ├─ 고급: youtube_smart_learner.py (Whisper 지원) ⏳ 예정
+│ │ ├─ 상태: ⚪ 수동 실행 ⏳ 예정
+│ │ ├─ 실행 방법
+│ │ │ ├─ 웹 UI에서 URL 입력 ⏳ 예정
+│ │ │ └─ 명령줄 직접 실행 ⏳ 예정
+│ │ └─ 저장 위치: knowledge_base/ ✅ 완료(폴더 존재)
+│ │
+│ └─ 🎓 Strategy Learning Bot
+│ ├─ upbit-smart-bot-v8.0-LEARNING.py ⏳ 예정
+│ ├─ upbit-backtest.py ⏳ 예정
+│ ├─ 상태: ⚪ 수동 (주말 실행 권장) ⏳ 예정
+│ └─ 용도: 전략 최적화 및 백테스트 ✅ 완료(정의)
+│
+├─ 🔄 [데이터 공급망] - Intelligence Pipeline 🆕
+│ │
+│ ├─ 📥 Logger (아빠 지식 수집)
+│ │ ├─ Tampermonkey 스크립트 ✅ 완료(작성/적용)
+│ │ │ ├─ ChatGPT 대화 가로채기 ✅ 완료
+│ │ │ ├─ Gemini 대화 가로채기 ✅ 완료
+│ │ │ └─ 실시간 전송: POST localhost:5001/api/conversations/import ✅ 완료
+│ │ └─ 수집 데이터 ✅ 완료(스키마/전송)
+│ │ ├─ 대화 내용 (질문 + 답변)
+│ │ ├─ 타임스탬프
+│ │ ├─ 분야 태그 (코딩/트레이딩/AI 등)
+│ │ └─ 컨텍스트 메타데이터
+│ │
+│ ├─ 📊 Import (지식 적재)
+│ │ ├─ 엔드포인트: /api/conversations/import ✅ 완료
+│ │ ├─ 처리 로직 🔄 개발중
+│ │ │ ├─ 데이터 검증 (중복 제거) 🔄 개발중
+│ │ │ ├─ 분야별 분류 (자동 태깅) 🔄 개발중
+│ │ │ ├─ MongoDB 저장 ✅ 완료(연결) / 🔄 개발중(적재 고도화)
+│ │ │ └─ 지능 성장 지표 업데이트 🔄 개발중
+│ │ └─ 저장소: data\server.db ✅ 완료(존재/사용)
+│ │
+│ └─ 📈 Visualization (지능 시각화)
+│ ├─ 지능 성장 레이더 차트 ⏳ 예정
+│ │ ├─ 축: 코딩/트레이딩/AI/시스템/데이터 등
+│ │ ├─ 점수 계산: 대화량 + 복잡도 + 실행 성공률
+│ │ └─ 실시간 업데이트 (3초 폴링)
+│ ├─ 진화 게이지 대시보드 ⏳ 예정
+│ │ ├─ 총 학습량
+│ │ ├─ 분야별 성장률
+│ │ └─ 최근 학습 히스토리
+│ └─ 구현 위치: control_5001.html (예정) ⏳ 예정
+│
+├─ 📂 [정본 운영 원칙] - Standard Operating Procedure
+│ │
+│ ├─ 📁 저장소 일원화 (5대 정본 폴더)
+│ │ │
+│ │ ├─ C:\leemay_project\core\ (시스템 중추) ✅ 완료(기본) / 🔄 개발중(Stage 4.5 장기)
+│ │ │ ├─ 역할: 항시 가동 핵심 로직 ✅ 완료
+│ │ │ ├─ 핵심 파일 ✅ 완료(존재)
+│ │ │ │ ├─ api_server.py (메인 API 서버)
+│ │ │ │ ├─ leemay_brain.py (LLM 두뇌) ✅ 완료 (emay_brain.py → leemay_brain.py 통합)
+│ │ │ │ ├─ memory.py (MongoDB 연동)
+│ │ │ │ └─ emotion_mapper.py (36개 감정 매핑)
+│ │ │ └─ 특징: 24시간 무중단 가동 ✅ 완료
+│ │ │ └─ core\organs\ (Stage 4.5) 🆕 🔄 개발중
+│ │ │ ├─ evolution_organ.py
+│ │ │ └─ health_organ.py (감시자/부모 장기 성격)
+│ │ │
+│ │ ├─ C:\leemay_project\bot\ (실전 병기) 🔄 개발중
+│ │ │ ├─ 역할: 매매 및 지식 수집 ✅ 완료(정의)
+│ │ │ ├─ 핵심 파일 🔄 개발중(이동/정본화)
+│ │ │ │ ├─ upbit-smart-bot-v8.0-ULTIMATE.py (실전 매매) ✅ 완료(배치) / ⚪ 미가동
+│ │ │ │ ├─ upbit-smart-bot-v8.0-LEARNING.py (전략 학습) ⏳ 예정
+│ │ │ │ ├─ upbit-backtest.py (백테스트) ⏳ 예정
+│ │ │ │ ├─ youtube_learner.py (유튜브 학습) ⏳ 예정
+│ │ │ │ └─ youtube_smart_learner.py (Whisper 기반) ⏳ 예정
+│ │ │ └─ 특징: 선택적 가동, 목적별 실행 ✅ 완료
+│ │ │
+│ │ ├─ C:\leemay_project\data\ (근본 기억) 🔄 개발중(검증)
+│ │ │ ├─ 역할: DB 정본 보관소 ✅ 완료
+│ │ │ ├─ 핵심 파일
+│ │ │ │ ├─ server.db (대화/학습 데이터) ✅ 완료
+│ │ │ │ ├─ upbit_bot.db (트레이딩 기록) ⚠️ 미표시/검증 필요 🔄 개발중
+│ │ │ │ └─ sim_trading.db (시뮬레이션) ⏳ 예정
+│ │ │ ├─ 연결 방식: 루트에 하드링크(mklink) 설치 🔄 개발중(루트 무결성 복원과 함께 정리)
+│ │ │ └─ 특징: 싱크씽 제외 구역 ✅ 완료
+│ │ │
+│ │ ├─ C:\leemay_project\ops\ (사령실) ✅ 완료(기본) / 🔄 개발중(확장)
+│ │ │ ├─ 역할: 제어 스크립트 보관 ✅ 완료
+│ │ │ ├─ 핵심 파일 (BAT 6종) 🔄 개발중(현황 반영)
+│ │ │ │ ├─ 01_CONTROL_START.bat (CONTROL 시작) ✅ 완료
+│ │ │ │ ├─ 02_BOTS_START.bat (BOTS 시작) ✅ 완료
+│ │ │ │ ├─ 03_BOTS_STOP.bat (BOTS 중지) ✅ 완료
+│ │ │ │ ├─ 99_STATUS.bat (전체 상태 점검) ✅ 완료
+│ │ │ │ │ └─ 종합 등급: OK / WARN / FAIL ✅ 완료
+│ │ │ │ ├─ 10_TRADING_PARAM.bat (전략 파라미터 조정) ⏳ 예정
+│ │ │ │ └─ 11_RECOVERY.bat (자가 복구 실행) ⏳ 예정
+│ │ │ ├─ 추가 정본 스크립트 🆕 ✅ 완료
+│ │ │ │ ├─ 00_SYSTEM_PREP.bat (시스템 준비)
+│ │ │ │ └─ 98_HEARTBEAT.bat (심장박동 생존 감시 v3.0)
+│ │ │ └─ 특징: REM 주석 사용 필수 ✅ 완료
+│ │ │
+│ │ └─ C:\leemay_project\brain\ (지식고) 🆕 ✅ 완료(기본) / 🔄 개발중(Stage 4.5)
+│ │ ├─ 역할: 리포트 및 전략 문서 보관 ✅ 완료
+│ │ ├─ 핵심 파일
+│ │ │ ├─ 지능_성장_보고서.md (분야별 학습 현황) ✅ 완료(파일 존재)
+│ │ │ ├─ 전략_파라미터.json (트레이딩 설정) ✅ 완료(파일 존재)
+│ │ │ ├─ 자가_복구_리포트.log (에러 기록) ✅ 완료(파일 존재)
+│ │ │ └─ 교본.md (운영 매뉴얼) ✅ 완료(파일 존재)
+│ │ ├─ Stage 4.5 물리 기억 🆕 🔄 개발중
+│ │ │ ├─ questions.db (정본 경로: C:\leemay_project\brain\questions.db)
+│ │ │ ├─ questions.db-shm / questions.db-wal
+│ │ │ └─ evolution_map.json
+│ │ └─ 특징: 자가 진화 시스템의 근간 ✅ 완료
+│ │
+│ ├─ 🔄 프로세스 독립 (No-Down Policy) ✅ 완료(원칙) / 🔄 개발중(자동화 강화)
+│ │ ├─ pythonw 사용 ✅ 완료
+│ │ │ └─ 콘솔 창 없이 백그라운드 실행 ✅ 완료
+│ │ ├─ 효과 ✅ 완료(정의)
+│ │ │ ├─ 관제창(99_STATUS) 닫아도 프로세스 유지
+│ │ │ ├─ 봇(5000) 영구 가동
+│ │ │ └─ 서버(5001) 영구 가동
+│ │ └─ 구현: ops\01_CONTROL_START.bat ✅ 완료
+│ │
+│ └─ 🛡️ 루트 무결성 원칙 🔄 개발중(현황 반영)
+│ ├─ 규칙: C:\leemay_project 루트 = 폴더만 존재 🔄 개발중 (루트에 로그/텍스트 파일 잔존)
+│ ├─ 예외: DB 연결용 하드링크만 허용 🔄 개발중
+│ │ ├─ mklink /H server.db data\server.db
+│ │ └─ mklink /H upbit_bot.db data\upbit_bot.db
+│ └─ 효과: 백업 자동 동기화 (OneDrive 제외) ✅ 완료(정의)
+│
+├─ 🛠️ [운영 철학] - Core Principles 🆕
+│ │
+│ ├─ 🎯 지능 시각화 ⏳ 예정
+│ │ ├─ 성장 레이더 차트
+│ │ │ ├─ 분야별 지능 수치 시각화
+│ │ │ ├─ 코딩/트레이딩/AI/시스템/데이터 등
+│ │ │ └─ 실시간 업데이트 (3초 폴링)
+│ │ ├─ 진화 게이지 대시보드
+│ │ │ ├─ 총 학습량 (누적 대화 수)
+│ │ │ ├─ 분야별 성장률 (주간 증가량)
+│ │ │ └─ 최근 학습 히스토리 (타임라인)
+│ │ └─ 구현 위치: control_5001.html ⏳ 예정
+│ │
+│ ├─ 🎚️ 전략 직축 제어 ⏳ 예정
+│ │ ├─ 대시보드 슬라이더
+│ │ │ ├─ 전략별 가중치 조정 (0~100%)
+│ │ │ ├─ 리스크 레벨 설정 (1~5)
+│ │ │ └─ 손절/익절 임계값 조정
+│ │ ├─ 실시간 반영
+│ │ │ └─ 슬라이더 이동 → API 호출 → 봇 파라미터 즉시 변경
+│ │ └─ 구현: ops\10_TRADING_PARAM.bat (백엔드) ⏳ 예정
+│ │
+│ ├─ 🔧 자가 복구 🔄 개발중(Stage 4.5) / ⏳ 예정(완전자동)
+│ │ ├─ 에러 감지 🔄 개발중
+│ │ │ ├─ API Server 다운
+│ │ │ ├─ Trading Bot 크래시
+│ │ │ ├─ DB 연결 실패
+│ │ │ └─ Cloudflare Tunnel 끊김
+│ │ ├─ 자동 대응 🔄 개발중
+│ │ │ ├─ brain\자가_복구_리포트.log 생성 ✅ 완료(파일 존재)
+│ │ │ ├─ ops\11_RECOVERY.bat 자동 실행 ⏳ 예정
+│ │ │ └─ 복구 실패 시 관리자 알림 (Discord/Email) ⏳ 예정
+│ │ └─ 상태: 🔄 개발중
+│ │
+│ └─ 🚀 No-Down Policy ✅ 완료(원칙)
+│ ├─ pythonw 백그라운드 실행 ✅ 완료
+│ ├─ Cloudflare Tunnel 영구 연결 ✅ 완료(5001) / 🔄 개발중(5000)
+│ ├─ MongoDB Atlas 클라우드 안정성 ✅ 완료
+│ └─ 효과: 24시간 무중단 서비스 ✅ 완료(정의)
+│
+├─ ✅ [완료된 작전] - Current Progress
+│ │
+│ ├─ 🧹 루트 대청소 ✅ 완료(1차) / 🔄 개발중(무결성 복원)
+│ │ └─ 수십 개 쓰레기 파일 → backups\garbage로 격리 ✅ 완료
+│ │ └─ (.sh, .html, 과거 백업 등)
+│ │
+│ ├─ 💾 DB 격리 및 연결 🔄 개발중(검증)
+│ │ ├─ server.db + upbit_bot.db → \data 폴더 이전 🔄 개발중 (upbit_bot.db 미표시/확인 필요)
+│ │ └─ 루트에 하드 링크(mklink) 설치 🔄 개발중(루트 무결성 복원과 함께 정리)
+│ │ └─ 시스템 중단 없이 안전 구역 대피 성공 ✅ 완료(의도/원칙)
+│ │
+│ ├─ 🎛️ 사령실(ops) 규격화 ✅ 완료(핵심) / 🔄 개발중(확장)
+│ │ ├─ [OPS PACK v1] 정본 6종 생성 🔄 개발중(현황 반영: 00/98 포함, 10/11은 예정)
+│ │ └─ 불순물 파일 강제 소거 → 무결성 상태 달성 ✅ 완료
+│ │
+│ ├─ 📦 파일 이송 완료 🔄 개발중(잔재 정리)
+│ │ ├─ 봇 소스코드 → \bot ✅ 완료(폴더 구성)
+│ │ └─ 배치 파일 → \ops ✅ 완료
+│ │
+│ ├─ 🏗️ 시스템 아키텍처 확립 ✅ 완료(기본) / 🔄 개발중(Stage 4.5)
+│ │ ├─ CONTROL vs BOTS 철학 정립 ✅ 완료
+│ │ ├─ 24/7 가동 체계 구축 ✅ 완료
+│ │ ├─ 외부 접속 경로 확립 (Cloudflare Tunnel) ✅ 완료(5001) / 🔄 개발중(5000 검증)
+│ │ └─ Cloudflare config.yml 확정 ✅ 완료(설정)
+│ │ └─ ai_trading: 5001 → 5000 (복구 후) ⏳ 예정(서비스 검증)
+│ │
+│ ├─ 🎨 대시보드 통합 완료 🆕 🔄 개발중(최종 검증)
+│ │ ├─ control_5001.html (CONTROL 대시보드) ✅ 완료
+│ │ ├─ trading_5000.html (Trading 대시보드) 🔄 개발중(파일/서빙 검증)
+│ │ ├─ assets/app.css (공통 스타일) ✅ 완료
+│ │ ├─ assets/app.js (공통 JS) ✅ 완료
+│ │ └─ 통합 효과 ✅ 완료(정의)
+│ │ ├─ HTML 파일 80% 감소 (10+ → 2)
+│ │ ├─ 중복 코드 100% 제거
+│ │ ├─ E-MAY 이미지 450px 대형 표시
+│ │ └─ 버튼 상태 실시간 반영 (3초 폴링)
+│ │
+│ └─ 📚 문서화 완료 ✅ 완료(기본)
+│ ├─ docs/ARCHITECTURE.md (시스템 아키텍처) ✅ 완료
+│ ├─ docs/RUNBOOK.md (운영 매뉴얼) ✅ 완료
+│ ├─ docs/AI_TRADING_RECOVERY_PLAN.md (봇 복구 가이드) ✅ 완료
+│ └─ BOTS_CLASSIFICATION.md (AI 봇 분류) ✅ 완료(존재 시) / ⚠️ 확인 필요
+│
+└─ 🚀 [남은 작전] - Remaining Tasks
+│
+├─ 작전 1: Trading Bot (5000) 복구 ⏳ 예정
+│ ├─ 현재 상태: ⚪ 비활성
+│ ├─ 복구 체크리스트
+│ │ ├─ ☐ Upbit API 키 유효성 확인
+│ │ ├─ ☐ upbit_bot.db 무결성 검증
+│ │ ├─ ☐ Python 의존성 설치 확인
+│ │ ├─ ☐ 포트 5000 충돌 확인
+│ │ ├─ ☐ 수동 봇 시작 테스트
+│ │ ├─ ☐ ops\02_BOTS_START.bat 업데이트
+│ │ ├─ ☐ Cloudflare config.yml 적용
+│ │ │ └─ ai_trading: localhost:5001 → localhost:5000
+│ │ └─ ☐ 24시간 모니터링
+│ └─ 문서: docs/AI_TRADING_RECOVERY_PLAN.md
+│
+├─ 작전 2: 지능 시각화 대시보드 구현 🎯 ⏳ 예정
+│ ├─ 데이터 수집 파이프라인 구축 🔄 개발중
+│ │ ├─ Tampermonkey 스크립트 배포 ✅ 완료
+│ │ ├─ /api/conversations/import 엔드포인트 테스트 ✅ 완료
+│ │ └─ MongoDB 저장 로직 검증 🔄 개발중
+│ ├─ 분석 알고리즘 개발 ⏳ 예정
+│ │ ├─ 분야별 분류 (자동 태깅)
+│ │ ├─ 지능 점수 계산 로직
+│ │ └─ 성장률 추세 분석
+│ ├─ UI 구현 ⏳ 예정
+│ │ ├─ 레이더 차트 (Chart.js)
+│ │ ├─ 진화 게이지
+│ │ └─ 학습 히스토리 타임라인
+│ └─ 상태: 🔄 진행 예정
+│
+├─ 작전 3: 전략 직축 제어 구현 ⏳ 계획 중
+│ ├─ 대시보드 슬라이더 UI
+│ │ ├─ 전략별 가중치 조정
+│ │ ├─ 리스크 레벨 설정
+│ │ └─ 손절/익절 임계값 조정
+│ ├─ API 엔드포인트
+│ │ └─ POST /api/trading/params
+│ ├─ 백엔드 로직
+│ │ └─ ops\10_TRADING_PARAM.bat 구현
+│ └─ 상태: ⏳ 계획 중
+│
+└─ 작전 4: 자가 복구 로직 가동 🔄 개발중(Stage 4.5) / ⏳ 계획 중(완전자동)
+├─ 에러 감지 시스템
+│ ├─ Health check 폴링 (10초)
+│ ├─ 프로세스 상태 모니터링
+│ └─ DB 연결 상태 확인
+├─ 자동 복구 로직
+│ ├─ brain\자가_복구_리포트.log 생성 ✅ 완료(파일 존재)
+│ ├─ ops\11_RECOVERY.bat 자동 실행 ⏳ 예정
+│ └─ 복구 실패 시 알림 전송 ⏳ 예정
